@@ -1,22 +1,28 @@
 package main
 
+import (
+	"github.com/dragonfax/flutter-go-example/flutter"
+	"github.com/dragonfax/flutter-go-example/listview"
+	"github.com/dragonfax/flutter-go-example/wordpairs"
+)
+
 func main() {
-	runApp(&MyApp{})
+	flutter.RunApp(&MyApp{})
 }
 
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context *BuildContext) (Widget, error) {
+func (ma *MyApp) Build(context *flutter.BuildContext) (flutter.Widget, error) {
 
-	return &MaterialApp{
-		title: "Welcome to Flutter",
-		home: &Scaffold{
-			appBar: &AppBar{
-				title: &Text{"Welcome to Flutter"},
+	return &flutter.MaterialApp{
+		Title: "Welcome to Flutter",
+		Home: &flutter.Scaffold{
+			AppBar: &flutter.AppBar{
+				Title: &flutter.Text{"Welcome to Flutter"},
 			},
-			body: &Center{
-				child: &RandomWords{},
+			Body: &flutter.Center{
+				Child: &RandomWords{},
 			},
 		},
 	}, nil
@@ -25,36 +31,40 @@ func (ma *MyApp) Build(context *BuildContext) (Widget, error) {
 type RandomWords struct {
 }
 
-func (r *RandomWords) CreateState() State {
-	return &RandomWordsState{suggestions: make([]WordPair, 0, 0)}
+func (r *RandomWords) CreateState() flutter.State {
+	return &RandomWordsState{suggestions: make([]wordpairs.WordPair, 0)}
 }
 
 type RandomWordsState struct {
-	suggestions []WordPair
+	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build(bc *BuildContext) (Widget, error) {
+func isOdd(i int) bool {
+	return i%2 == 1
+}
+
+func (rws *RandomWordsState) Build(bc *flutter.BuildContext) (flutter.Widget, error) {
 	return listview.Builder{
-		Padding: &EdgeInsets{all: 16.0},
-		ItemBuilder: func(context BuildContext, i int) (Widget) {
-			if ( isOdd(i) ) {
-				return &Divider{}
+		Padding: flutter.EdgeInsets{All: 16.0},
+		ItemBuilder: func(context flutter.BuildContext, i int) flutter.Widget {
+			if isOdd(i) {
+				return &flutter.Divider{}
 			}
 
-			r := i % 2
-			if ( r >= rws.suggestions.length ) {
-				rws.suggestions = append(rws.suggestions,wordpairs.randomNum(10)...)
+			r := i / 2
+			if r >= len(rws.suggestions) {
+				rws.suggestions = append(rws.suggestions, wordpairs.RandomNum(10)...)
 			}
 
 			return rws.BuildRow(rws.suggestions[r])
 		},
-	}, nil;
+	}, nil
 }
 
-func (rws *RandomWordsState) BuildRow(wp WordPair) Widget {
-	return &ListTile{
-		title: &Text{
-			text: wp.asPascalCase(),
-		}
+func (rws *RandomWordsState) BuildRow(wp wordpairs.WordPair) flutter.Widget {
+	return &listview.ListTile{
+		Title: &flutter.Text{
+			Text: wp.AsPascalCase(),
+		},
 	}
 }

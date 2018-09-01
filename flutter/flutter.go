@@ -1,6 +1,13 @@
-package main
+package flutter
 
 type Widget interface {
+}
+
+type EdgeInsets struct {
+	All int
+}
+
+type Divider struct {
 }
 
 type StatefulWidget interface {
@@ -15,11 +22,11 @@ type StatelessWidget interface {
 	Build(*BuildContext) (Widget, error)
 }
 
-func runApp(w Widget) {
+func RunApp(w Widget) {
 }
 
 type AppBar struct {
-	title Widget
+	Title Widget
 }
 
 func (w AppBar) Build(bc *BuildContext) (Widget, error) {
@@ -27,7 +34,7 @@ func (w AppBar) Build(bc *BuildContext) (Widget, error) {
 }
 
 type Center struct {
-	child Widget
+	Child Widget
 }
 
 func (w Center) Build(bc *BuildContext) (Widget, error) {
@@ -35,7 +42,7 @@ func (w Center) Build(bc *BuildContext) (Widget, error) {
 }
 
 type Text struct {
-	text string
+	Text string
 }
 
 func (w Text) Build(bc *BuildContext) (Widget, error) {
@@ -46,8 +53,8 @@ type BuildContext struct {
 }
 
 type MaterialApp struct {
-	title string
-	home  Widget
+	Title string
+	Home  Widget
 }
 
 func (w MaterialApp) Build(bc *BuildContext) (Widget, error) {
@@ -55,8 +62,8 @@ func (w MaterialApp) Build(bc *BuildContext) (Widget, error) {
 }
 
 type Scaffold struct {
-	appBar *AppBar
-	body   Widget
+	AppBar *AppBar
+	Body   Widget
 }
 
 func (w Scaffold) Build(bc *BuildContext) (Widget, error) {
