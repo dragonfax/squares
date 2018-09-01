@@ -9,8 +9,6 @@ type MyApp struct {
 
 func (ma *MyApp) Build(context *BuildContext) (Widget, error) {
 
-	wp := wordPair.random()
-
 	return &MaterialApp{
 		title: "Welcome to Flutter",
 		home: &Scaffold{
@@ -18,8 +16,24 @@ func (ma *MyApp) Build(context *BuildContext) (Widget, error) {
 				title: &Text{"Welcome to Flutter"},
 			},
 			body: &Center{
-				child: &Text{wp.AsPascalCase()},
+				child: &RandomWords{},
 			},
 		},
 	}, nil
+}
+
+type RandomWords struct {
+}
+
+func (r *RandomWords) CreateState() State {
+	return &RandomWordsState{}
+}
+
+type RandomWordsState struct {
+}
+
+func (rws *RandomWordsState) Build(bc *BuildContext) (Widget, error) {
+	wp := wordPair.random()
+
+	return &Text{wp.AsPascalCase()}, nil
 }

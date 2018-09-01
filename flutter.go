@@ -1,6 +1,17 @@
 package main
 
 type Widget interface {
+}
+
+type StatefulWidget interface {
+	CreateState() State
+}
+
+type State interface {
+	Build(*BuildContext) (Widget, error)
+}
+
+type StatelessWidget interface {
 	Build(*BuildContext) (Widget, error)
 }
 
