@@ -30,7 +30,7 @@ var suggestions = make([]wordpairs.WordPair, 0)
 func NewRandomWords() flutter.Widget {
 	return listview.Builder{
 		Padding: flutter.EdgeInsets{All: 16.0},
-		ItemBuilder: func(context flutter.BuildContext, i int) flutter.Widget {
+		ItemBuilder: func(context *flutter.BuildContext, i int) flutter.Widget {
 			if isOdd(i) {
 				return &flutter.Divider{}
 			}

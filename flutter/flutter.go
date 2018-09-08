@@ -16,12 +16,12 @@ type HasBuild interface { // StatelessWidget
 }
 
 type HasChild interface { // Container
-	Child() Widget
+	GetChild() Widget
 	SetChild(Widget)
 }
 
 type HasChildren interface {
-	Children() []Widget
+	GetChildren() []Widget
 	SetChildren([]Widget)
 }
 
@@ -40,8 +40,41 @@ type Center struct {
 	Child Widget
 }
 
+func (ce *Center) GetChild() Widget {
+	return ce.Child
+}
+
+func (p *Center) SetChild(c Widget) {
+	p.Child = c
+}
+
 type Text struct {
 	Text string
+}
+
+type Column struct {
+	Children []Widget
+}
+
+func (c *Column) GetChildren() []Widget {
+	return c.Children
+}
+
+func (c *Column) SetChildren(cs []Widget) {
+	c.Children = cs
+}
+
+type Padding struct {
+	Padding EdgeInsets
+	Child   Widget
+}
+
+func (p *Padding) GetChild() Widget {
+	return p.Child
+}
+
+func (p *Padding) SetChild(c Widget) {
+	p.Child = c
 }
 
 func RunApp(w Widget) error {
@@ -91,13 +124,13 @@ func processTree(context *BuildContext, w Widget) (Widget, error) {
 	}
 
 	if p, ok := w.(HasChild); ok {
-		child, err := processTree(context, p.Child())
+		child, err := processTree(context, p.GetChild())
 		if err != nil {
 			return nil, err
 		}
 		p.SetChild(child)
 	} else if p, ok := w.(HasChildren); ok {
-		children := p.Children()
+		children := p.GetChildren()
 		newChildren := make([]Widget, len(children))
 		for i, c := range children {
 			nc, err := processTree(context, c)
