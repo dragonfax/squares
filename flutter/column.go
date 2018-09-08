@@ -49,11 +49,3 @@ func (ce *Column) layout(c constraints) error {
 
 	return nil
 }
-
-func MaxUint16(a, b uint16) uint16 {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}

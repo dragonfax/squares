@@ -96,3 +96,11 @@ func (c constraints) addMargins(in EdgeInsets) constraints {
 	}
 	return c
 }
+
+func MaxUint16(a, b uint16) uint16 {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
+}
