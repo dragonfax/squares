@@ -6,14 +6,11 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-type BuildContext struct {
-}
-
 type Widget interface {
 }
 
 type hasBuild interface { // StatelessWidget
-	Build(*BuildContext) (Widget, error)
+	Build() (Widget, error)
 }
 
 type hasChild interface { // Container

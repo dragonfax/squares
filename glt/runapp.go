@@ -73,9 +73,7 @@ func RunApp(app Widget) error {
 	running := true
 	for running {
 
-		context := &BuildContext{}
-
-		w, err := buildRenderTree(context, app)
+		w, err := buildRenderTree(app)
 		if err != nil {
 			return err
 		}
@@ -107,20 +105,20 @@ func RunApp(app Widget) error {
 	return nil
 }
 
-func buildRenderTree(context *BuildContext, w Widget) (Widget, error) {
+func buildRenderTree(w Widget) (Widget, error) {
 
 	/* Either you have a Build, or children, or nothing */
 
 	if b, ok := w.(hasBuild); ok {
-		w2, err := b.Build(context)
+		w2, err := b.Build()
 		if err != nil {
 			return nil, err
 		}
-		return buildRenderTree(context, w2)
+		return buildRenderTree(w2)
 	}
 
 	if p, ok := w.(hasChild); ok {
-		child, err := buildRenderTree(context, p.getChild())
+		child, err := buildRenderTree(p.getChild())
 		if err != nil {
 			return nil, err
 		}
@@ -129,7 +127,7 @@ func buildRenderTree(context *BuildContext, w Widget) (Widget, error) {
 		children := p.getChildren()
 		newChildren := make([]Widget, len(children))
 		for i, c := range children {
-			nc, err := buildRenderTree(context, c)
+			nc, err := buildRenderTree(c)
 			if err != nil {
 				return nil, err
 			}

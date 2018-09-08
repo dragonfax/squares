@@ -16,7 +16,7 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context *glt.BuildContext) (glt.Widget, error) {
+func (ma *MyApp) Build() (glt.Widget, error) {
 
 	return &glt.Center{Child: NewRandomWords()}, nil
 }
@@ -30,7 +30,7 @@ var suggestions = make([]wordpairs.WordPair, 0)
 func NewRandomWords() glt.Widget {
 	return listview.Builder{
 		Padding: glt.EdgeInsets{All: 16.0},
-		ItemBuilder: func(context *glt.BuildContext, i int) glt.Widget {
+		ItemBuilder: func(i int) glt.Widget {
 			if isOdd(i) {
 				return &glt.Divider{}
 			}
