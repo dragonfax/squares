@@ -37,7 +37,9 @@ func NewRandomWords() flutter.Widget {
 
 			r := i / 2
 			if r >= len(suggestions) {
-				suggestions = append(suggestions, wordpairs.RandomNum(10)...)
+				for i := 0; i < 10; i++ {
+					suggestions = append(suggestions, wordpairs.GenerateWordPair())
+				}
 			}
 
 			return BuildRow(suggestions[r])

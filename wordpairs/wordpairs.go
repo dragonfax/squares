@@ -1,16 +1,39 @@
 package wordpairs
 
+import (
+	"math/rand"
+	"strings"
+	"time"
+)
+
+var words = []string{
+	"first",
+	"second",
+	"third",
+	"fourth",
+	"hello",
+	"world",
+}
+
 type WordPair struct {
+	First  string
+	Second string
 }
 
 func (wp WordPair) AsPascalCase() string {
-	return "HelloWorld"
+	return PascalCase(wp.First) + PascalCase(wp.Second)
 }
 
-func RandomNum(i int) []WordPair {
-	wpl := make([]WordPair, i)
-	for x := 0; x < i; x++ {
-		wpl[x] = WordPair{}
-	}
-	return wpl
+func GenerateWordPair() WordPair {
+	return WordPair{First: RandomWord(), Second: RandomWord()}
+}
+
+var random = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+func RandomWord() string {
+	return words[random.Intn(len(words))]
+}
+
+func PascalCase(s string) string {
+	return strings.ToUpper(string(s[0])) + s[1:]
 }
