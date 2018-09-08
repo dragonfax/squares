@@ -23,7 +23,7 @@ type hasChildren interface {
 	setChildren([]Widget)
 }
 
-type StatefulWidget interface {
+type statefulWidget interface {
 	CreateState() State
 }
 
