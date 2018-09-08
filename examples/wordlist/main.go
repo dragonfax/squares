@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/dragonfax/glitter/listview"
-	"github.com/dragonfax/glitter/wordpairs"
+	"github.com/dragonfax/glitter/examples/wordlist/wordpairs"
+	"github.com/dragonfax/glitter/glt"
+	"github.com/dragonfax/glitter/glt/listview"
 )
 
 func main() {

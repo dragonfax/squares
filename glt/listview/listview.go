@@ -1,5 +1,7 @@
 package listview
 
+import "github.com/dragonfax/glitter/glt"
+
 type ItemBuilderFunc func(*glt.BuildContext, int) glt.Widget
 
 type Builder struct {
