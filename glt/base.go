@@ -9,18 +9,16 @@ import (
 type Widget interface {
 }
 
-type hasBuild interface { // StatelessWidget
+type statelessWidget interface {
 	Build() (Widget, error)
 }
 
-type hasChild interface { // Container
+type hasChild interface {
 	getChild() Widget
-	setChild(Widget)
 }
 
 type hasChildren interface {
 	getChildren() []Widget
-	setChildren([]Widget)
 }
 
 type statefulWidget interface {
@@ -29,10 +27,6 @@ type statefulWidget interface {
 
 type State interface {
 	Build() Widget
-}
-
-type hasRender interface { // RenderObject
-	Render(*sdl.Renderer) error
 }
 
 type EdgeInsets struct {
@@ -64,11 +58,51 @@ func (ce parentData) getParentData() *parentData {
 	return &ce
 }
 
-type coreWidget interface {
+type element interface {
 	layout(c constraints) error
 	getParentData() *parentData
 	getSize() Size
 	render(Offset, *sdl.Renderer)
+}
+
+type statefulElement struct {
+	widget Widget
+	state  State
+	child  element
+}
+
+var _ element = statefulElement{}
+
+func (se statefulElement) getSize() Size {
+	return se.child.getSize()
+}
+
+func (se statefulElement) getParentData() *parentData {
+	return se.child.getParentData()
+}
+
+func (se statefulElement) layout(c constraints) error {
+	return se.child.layout(c)
+}
+
+func (se statefulElement) render(o Offset, r *sdl.Renderer) {
+	se.child.render(o, r)
+}
+
+type hasChildElement interface {
+	setChild(element)
+}
+
+type hasChildrenElements interface {
+	setChildrenElements([]element)
+}
+
+/* A widget that has a special Element just for it
+ *	Such a widget won't have a Build() method,
+ *	And may or may not have chilcdren
+ */
+type elementWidget interface {
+	createElement() element
 }
 
 // use MaxUint32 for +Inf during layout

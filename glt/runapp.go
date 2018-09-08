@@ -1,6 +1,7 @@
 package glt
 
 import (
+	"errors"
 	"path"
 	"runtime"
 
@@ -52,7 +53,7 @@ func initRender() {
 	}
 }
 
-func render(rootWidget coreWidget) {
+func render(rootWidget element) {
 
 	renderer.SetDrawColor(0, 0, 0, 255)
 	renderer.Clear()
@@ -73,20 +74,19 @@ func RunApp(app Widget) error {
 	running := true
 	for running {
 
-		w, err := buildRenderTree(app)
+		elementTree, err := buildElementTree(app)
 		if err != nil {
 			return err
 		}
 
-		cw := w.(coreWidget)
-		err = cw.layout(windowConstraints)
+		err = elementTree.layout(windowConstraints)
 		if err != nil {
 			return err
 		}
 
 		gfx.FramerateDelay(fps)
 
-		render(cw)
+		render(elementTree)
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch event := event.(type) {
@@ -105,36 +105,54 @@ func RunApp(app Widget) error {
 	return nil
 }
 
-func buildRenderTree(w Widget) (Widget, error) {
+func buildElementTree(w Widget) (element, error) {
 
-	/* Either you have a Build, or children, or nothing */
+	/* Concrete widget (possibly with children) or non-concrete widget (you have a Build method) */
 
-	if b, ok := w.(hasBuild); ok {
+	if b, ok := w.(statelessWidget); ok {
+		// Non-concrete widget
 		w2, err := b.Build()
 		if err != nil {
 			return nil, err
 		}
-		return buildRenderTree(w2)
-	}
-
-	if p, ok := w.(hasChild); ok {
-		child, err := buildRenderTree(p.getChild())
+		// we don't keep an element for stateless widgets.
+		return buildElementTree(w2)
+	} else if sw, ok := w.(statefulWidget); ok {
+		state := sw.CreateState()
+		e := statefulElement{widget: w, state: state}
+		childElement, err := buildElementTree(state)
 		if err != nil {
 			return nil, err
 		}
-		p.setChild(child)
-	} else if p, ok := w.(hasChildren); ok {
-		children := p.getChildren()
-		newChildren := make([]Widget, len(children))
-		for i, c := range children {
-			nc, err := buildRenderTree(c)
+		e.child = childElement
+		return e, nil
+	} else if cw, ok := w.(elementWidget); ok {
+		// you're a concrete widget, you may (or may not) have children.
+
+		e := cw.createElement()
+
+		if p, ok := cw.(hasChild); ok {
+			pe := e.(hasChildElement)
+			child, err := buildElementTree(p.getChild())
 			if err != nil {
 				return nil, err
 			}
-			newChildren[i] = nc
+			pe.setChild(child)
+		} else if p, ok := w.(hasChildren); ok {
+			pe := e.(hasChildrenElements)
+			children := p.getChildren()
+			newChildrenElements := make([]element, len(children))
+			for i, c := range children {
+				nc, err := buildElementTree(c)
+				if err != nil {
+					return nil, err
+				}
+				newChildrenElements[i] = nc
+			}
+			pe.setChildrenElements(newChildrenElements)
 		}
-		p.setChildren(newChildren)
+		return e, nil
+	} else {
+		return nil, errors.New("unknown widget type in tree")
 	}
-
-	return w, nil
 }

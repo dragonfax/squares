@@ -45,7 +45,7 @@ func (t *Text) layout(c constraints) error {
 func (t *Text) render(offset Offset, renderer *sdl.Renderer) {
 	ux := int32(offset.x)
 	uy := int32(offset.y)
-	surface, err := font.RenderUTF8Blended(t.Text, sdl.Color{200, 200, 200, 255})
+	surface, err := font.RenderUTF8Blended(t.Text, sdl.Color{R: 200, G: 200, B: 200, A: 255})
 	if err != nil {
 		panic(err)
 	}

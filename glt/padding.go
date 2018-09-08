@@ -21,7 +21,7 @@ func (p *Padding) layout(c constraints) error {
 
 	c2 := c.addMargins(p.Padding)
 
-	cw := p.Child.(coreWidget)
+	cw := p.Child.(element)
 	cw.layout(c2)
 
 	// multi child containers would read the sizes from the children, and position them accordingly.
@@ -36,7 +36,7 @@ func (p *Padding) layout(c constraints) error {
 }
 
 func (c *Padding) render(offset Offset, renderer *sdl.Renderer) {
-	cchild := c.Child.(coreWidget)
+	cchild := c.Child.(element)
 	internalOffset := cchild.getParentData().offset
 	offset.x += internalOffset.x
 	offset.y += internalOffset.y

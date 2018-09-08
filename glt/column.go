@@ -24,7 +24,7 @@ func (ce *Column) layout(c constraints) error {
 
 	for _, child := range ce.Children {
 
-		cw := child.(coreWidget)
+		cw := child.(element)
 
 		// TODO not sure about this.
 		// might need to do them one at a time. and see whats left for the others.
@@ -55,7 +55,7 @@ func (ce *Column) layout(c constraints) error {
 func (c *Column) render(offset Offset, renderer *sdl.Renderer) {
 
 	for _, child := range c.Children {
-		cchild := child.(coreWidget)
+		cchild := child.(element)
 		cchild.render(offset, renderer)
 		offset.y += cchild.getSize().height
 	}
