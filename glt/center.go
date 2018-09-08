@@ -7,22 +7,22 @@ type Center struct {
 }
 
 // test
-var e element = &centerElement{}
+var e Element = &CenterElement{}
 
-type centerElement struct {
+type CenterElement struct {
 	widget Widget
-	child  element
+	child  Element
 	sizeData
 	parentData
 }
 
-func (ce *centerElement) getChild() Widget {
+func (ce *CenterElement) getChild() Widget {
 	return ce.child
 }
 
-func (ce *centerElement) layout(c constraints) error {
+func (ce *CenterElement) layout(c Constraints) error {
 
-	cw := ce.child.(element)
+	cw := ce.child.(Element)
 	cw.layout(c)
 
 	ce.size = Size{width: c.maxWidth, height: c.maxHeight}
@@ -37,8 +37,8 @@ func (ce *centerElement) layout(c constraints) error {
 	return nil
 }
 
-func (c *centerElement) render(offset Offset, renderer *sdl.Renderer) {
-	cchild := c.child.(element)
+func (c *CenterElement) render(offset Offset, renderer *sdl.Renderer) {
+	cchild := c.child.(Element)
 	internalOffset := cchild.getParentData().offset
 	offset.x += internalOffset.x
 	offset.y += internalOffset.y

@@ -2,26 +2,26 @@ package glt
 
 import "github.com/veandco/go-sdl2/sdl"
 
-type statefulElement struct {
+type StatefulElement struct {
 	widget Widget
 	state  State
-	child  element
+	child  Element
 }
 
-var _ element = statefulElement{}
+var _ Element = StatefulElement{}
 
-func (se statefulElement) getSize() Size {
+func (se StatefulElement) getSize() Size {
 	return se.child.getSize()
 }
 
-func (se statefulElement) getParentData() *parentData {
+func (se StatefulElement) getParentData() *parentData {
 	return se.child.getParentData()
 }
 
-func (se statefulElement) layout(c constraints) error {
+func (se StatefulElement) layout(c Constraints) error {
 	return se.child.layout(c)
 }
 
-func (se statefulElement) render(o Offset, r *sdl.Renderer) {
+func (se StatefulElement) render(o Offset, r *sdl.Renderer) {
 	se.child.render(o, r)
 }

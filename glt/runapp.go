@@ -3,6 +3,7 @@ package glt
 import (
 	"errors"
 	"path"
+	"reflect"
 	"runtime"
 
 	"github.com/veandco/go-sdl2/gfx"
@@ -16,7 +17,7 @@ const WINDOW_HEIGHT = 600
 var renderer *sdl.Renderer
 var font *ttf.Font
 
-var windowConstraints = constraints{
+var windowConstraints = Constraints{
 	minWidth:  WINDOW_WIDTH,
 	minHeight: WINDOW_HEIGHT,
 	maxWidth:  WINDOW_WIDTH,
@@ -53,12 +54,12 @@ func initRender() {
 	}
 }
 
-func render(rootWidget element) {
+func render(rootElement Element) {
 
 	renderer.SetDrawColor(0, 0, 0, 255)
 	renderer.Clear()
 
-	rootWidget.render(Offset{0, 0}, renderer)
+	rootElement.render(Offset{0, 0}, renderer)
 
 	renderer.Present()
 }
@@ -74,7 +75,7 @@ func RunApp(app Widget) error {
 	running := true
 	for running {
 
-		elementTree, err := buildElementTree(app)
+		elementTree, err := buildElementTree(app, nil)
 		if err != nil {
 			return err
 		}
@@ -105,45 +106,53 @@ func RunApp(app Widget) error {
 	return nil
 }
 
-func buildElementTree(w Widget) (element, error) {
+func buildElementTree(w Widget, currentElement Element) (Element, error) {
 
 	/* Concrete widget (possibly with children) or non-concrete widget (you have a Build method) */
 
-	if b, ok := w.(statelessWidget); ok {
-		// Non-concrete widget
+	if b, ok := w.(StatelessWidget); ok {
 		w2, err := b.Build()
 		if err != nil {
 			return nil, err
 		}
 		// we don't keep an element for stateless widgets.
-		return buildElementTree(w2)
-	} else if sw, ok := w.(statefulWidget); ok {
-		state := sw.CreateState()
-		e := statefulElement{widget: w, state: state}
-		childElement, err := buildElementTree(state)
+		return buildElementTree(w2, currentElement)
+	} else if sw, ok := w.(StatefulWidget); ok {
+
+		// reuse an existing state?
+		var state State
+		ce, ok := currentElement.(StatefulElement)
+		if ok && ce.state != nil && reflect.TypeOf(w) == reflect.TypeOf(ce.widget) {
+			state = ce.state
+		} else {
+			state = sw.CreateState()
+		}
+
+		e := StatefulElement{widget: w, state: state}
+		childElement, err := buildElementTree(state, e)
 		if err != nil {
 			return nil, err
 		}
 		e.child = childElement
 		return e, nil
-	} else if cw, ok := w.(elementWidget); ok {
+	} else if cw, ok := w.(ElementWidget); ok {
 		// you're a concrete widget, you may (or may not) have children.
 
 		e := cw.createElement()
 
-		if p, ok := cw.(hasChild); ok {
-			pe := e.(hasChildElement)
-			child, err := buildElementTree(p.getChild())
+		if p, ok := cw.(HasChild); ok {
+			pe := e.(HasChildElement)
+			child, err := buildElementTree(p.getChild(), e)
 			if err != nil {
 				return nil, err
 			}
-			pe.setChild(child)
-		} else if p, ok := w.(hasChildren); ok {
-			pe := e.(hasChildrenElements)
+			pe.setChildElement(child)
+		} else if p, ok := w.(HasChildren); ok {
+			pe := e.(HasChildrenElements)
 			children := p.getChildren()
-			newChildrenElements := make([]element, len(children))
+			newChildrenElements := make([]Element, len(children))
 			for i, c := range children {
-				nc, err := buildElementTree(c)
+				nc, err := buildElementTree(c, e)
 				if err != nil {
 					return nil, err
 				}

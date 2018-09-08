@@ -17,7 +17,7 @@ type Size struct {
 }
 
 // use MaxUint32 for +Inf during layout
-type constraints struct {
+type Constraints struct {
 	minWidth, minHeight, maxWidth, maxHeight uint16
 }
 
@@ -25,7 +25,7 @@ func (s Size) addMargin(in EdgeInsets) Size {
 	return Size{width: s.width + in.All, height: s.height + in.All}
 }
 
-func (c constraints) addMargins(in EdgeInsets) constraints {
+func (c Constraints) addMargins(in EdgeInsets) Constraints {
 	// TODO fix the math here
 	if c.minWidth > in.All {
 		c.minWidth -= in.All

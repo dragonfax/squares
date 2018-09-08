@@ -5,9 +5,23 @@ import "github.com/veandco/go-sdl2/sdl"
 type Padding struct {
 	Padding EdgeInsets
 	Child   Widget
+}
+
+func (p Padding) createElement() Element {
+	return &PaddingElement{widget: p}
+}
+
+type PaddingElement struct {
+	widget Padding
 	sizeData
 	parentData
+	childElementData
 }
+
+var _ ElementWidget = &Padding{}
+var _ Element = &PaddingElement{}
+var _ HasChild = &Padding{}
+var _ HasChildElement = &PaddingElement{}
 
 func (p *Padding) getChild() Widget {
 	return p.Child
@@ -17,28 +31,26 @@ func (p *Padding) setChild(child Widget) {
 	p.Child = child
 }
 
-func (p *Padding) layout(c constraints) error {
+func (element *PaddingElement) layout(c Constraints) error {
 
-	c2 := c.addMargins(p.Padding)
+	innerConstraints := c.addMargins(element.widget.Padding)
 
-	cw := p.Child.(element)
-	cw.layout(c2)
+	element.child.layout(innerConstraints)
 
 	// multi child containers would read the sizes from the children, and position them accordingly.
-	childSize := cw.getSize()
-	paddedSize := childSize.addMargin(p.Padding)
-	p.size = paddedSize
+	childSize := element.child.getSize()
+	paddedSize := childSize.addMargin(element.widget.Padding)
+	element.size = paddedSize
 
 	// offset for Padding is easy, just offset by the padding amount.
-	cw.getParentData().offset = Offset{p.Padding.All, p.Padding.All}
+	element.child.getParentData().offset = Offset{element.widget.Padding.All, element.widget.Padding.All}
 
 	return nil
 }
 
-func (c *Padding) render(offset Offset, renderer *sdl.Renderer) {
-	cchild := c.Child.(element)
-	internalOffset := cchild.getParentData().offset
+func (element *PaddingElement) render(offset Offset, renderer *sdl.Renderer) {
+	internalOffset := element.child.getParentData().offset
 	offset.x += internalOffset.x
 	offset.y += internalOffset.y
-	cchild.render(offset, renderer)
+	element.child.render(offset, renderer)
 }

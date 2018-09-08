@@ -16,7 +16,7 @@ func (c *Column) setChildren(cs []Widget) {
 	c.Children = cs
 }
 
-func (ce *Column) layout(c constraints) error {
+func (ce *Column) layout(c Constraints) error {
 
 	ce.size = Size{0, 0}
 
@@ -24,11 +24,11 @@ func (ce *Column) layout(c constraints) error {
 
 	for _, child := range ce.Children {
 
-		cw := child.(element)
+		cw := child.(Element)
 
 		// TODO not sure about this.
 		// might need to do them one at a time. and see whats left for the others.
-		con := constraints{
+		con := Constraints{
 			minWidth:  c.maxWidth,
 			minHeight: c.minHeight / numChildren,
 			maxWidth:  c.maxWidth,
@@ -55,7 +55,7 @@ func (ce *Column) layout(c constraints) error {
 func (c *Column) render(offset Offset, renderer *sdl.Renderer) {
 
 	for _, child := range c.Children {
-		cchild := child.(element)
+		cchild := child.(Element)
 		cchild.render(offset, renderer)
 		offset.y += cchild.getSize().height
 	}

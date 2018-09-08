@@ -9,7 +9,7 @@ type Divider struct {
 	parentData
 }
 
-func (ce *Divider) layout(c constraints) error {
+func (ce *Divider) layout(c Constraints) error {
 
 	ce.size = Size{width: c.maxWidth, height: 5}
 
@@ -33,7 +33,7 @@ type Text struct {
 	parentData
 }
 
-func (t *Text) layout(c constraints) error {
+func (t *Text) layout(c Constraints) error {
 	cWidth := len(t.Text) * CHARACTER_WIDTH
 	cHeight := 1 * CHARACTER_HEIGHT
 
