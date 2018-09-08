@@ -23,6 +23,14 @@ type hasChildren interface {
 	setChildren([]Widget)
 }
 
+type StatefulWidget interface {
+	CreateState() State
+}
+
+type State interface {
+	Build() Widget
+}
+
 type hasRender interface { // RenderObject
 	Render(*sdl.Renderer) error
 }

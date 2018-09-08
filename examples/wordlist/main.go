@@ -18,16 +18,25 @@ type MyApp struct {
 
 func (ma *MyApp) Build() (glt.Widget, error) {
 
-	return &glt.Center{Child: NewRandomWords()}, nil
+	return &glt.Center{Child: &RandomWords{}}, nil
 }
 
 func isOdd(i int) bool {
 	return i%2 == 1
 }
 
-var suggestions = make([]wordpairs.WordPair, 0)
+type RandomWords struct {
+}
 
-func NewRandomWords() glt.Widget {
+func (*RandomWords) CreateState() glt.State {
+	return &RandomWordsState{make([]wordpairs.WordPair, 0, 10)}
+}
+
+type RandomWordsState struct {
+	suggestions []wordpairs.WordPair
+}
+
+func (rws *RandomWordsState) Build() glt.Widget {
 	return listview.Builder{
 		Padding: glt.EdgeInsets{All: 16.0},
 		ItemBuilder: func(i int) glt.Widget {
@@ -36,13 +45,13 @@ func NewRandomWords() glt.Widget {
 			}
 
 			r := i / 2
-			if r >= len(suggestions) {
+			if r >= len(rws.suggestions) {
 				for i := 0; i < 10; i++ {
-					suggestions = append(suggestions, wordpairs.GenerateWordPair())
+					rws.suggestions = append(rws.suggestions, wordpairs.GenerateWordPair())
 				}
 			}
 
-			return BuildRow(suggestions[r])
+			return BuildRow(rws.suggestions[r])
 		},
 	}
 }
