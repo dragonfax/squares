@@ -1,6 +1,8 @@
 package flutter
 
 import (
+	"math"
+
 	"github.com/davecgh/go-spew/spew"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -30,7 +32,7 @@ type HasRender interface { // RenderObject
 }
 
 type EdgeInsets struct {
-	All int
+	All uint16
 }
 
 type Divider struct {
@@ -64,18 +66,58 @@ func (c *Column) SetChildren(cs []Widget) {
 	c.Children = cs
 }
 
-type Padding struct {
-	Padding EdgeInsets
-	Child   Widget
+type Offset struct {
+	x, y uint16
 }
 
-func (p *Padding) GetChild() Widget {
-	return p.Child
+type Size struct {
+	width, height uint16
 }
 
-func (p *Padding) SetChild(c Widget) {
-	p.Child = c
+type ParentData struct {
+	offset Offset
 }
+
+type CoreWidget interface {
+	layout(c Constraints) error
+	getParentData() *ParentData
+	getSize() Size
+}
+
+// use MaxUint32 for +Inf during layout
+type Constraints struct {
+	minWidth, minHeight, maxWidth, maxHeight uint16
+}
+
+func (s Size) addMargin(in EdgeInsets) Size {
+	return Size{width: s.width + in.All, height: s.height + in.All}
+}
+
+func (c Constraints) addMargins(in EdgeInsets) Constraints {
+	// TODO fix the math here
+	if c.minWidth > in.All {
+		c.minWidth -= in.All
+	} else {
+		c.minWidth = 0
+	}
+
+	if c.minHeight > in.All {
+		c.minHeight -= in.All
+	} else {
+		c.minHeight = 0
+	}
+
+	if c.maxWidth != math.MaxUint16 {
+		c.maxWidth -= in.All
+	}
+	if c.maxHeight != math.MaxUint16 {
+		c.maxHeight -= in.All
+	}
+	return c
+}
+
+const WINDOW_WIDTH = 800
+const WINDOW_HEIGHT = 600
 
 func RunApp(w Widget) error {
 	// var renderer *sdl.Renderer
@@ -86,7 +128,7 @@ func RunApp(w Widget) error {
 		defer sdl.Quit()
 
 		window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-			800, 600, sdl.WINDOW_SHOWN)
+			WINDOW_WIDTH, WINDOW_HEIGHT, sdl.WINDOW_SHOWN)
 		if err != nil {
 			panic(err)
 		}
@@ -95,7 +137,7 @@ func RunApp(w Widget) error {
 
 	context := &BuildContext{}
 
-	w, err := processTree(context, w)
+	w, err := buildTree(context, w)
 	if err != nil {
 		return err
 	}
@@ -106,12 +148,28 @@ func RunApp(w Widget) error {
 		}
 	*/
 
+	windowConstraints := Constraints{
+		minWidth:  WINDOW_WIDTH,
+		minHeight: WINDOW_HEIGHT,
+		maxWidth:  WINDOW_WIDTH,
+		maxHeight: WINDOW_HEIGHT,
+	}
+	cw := w.(CoreWidget)
+	err = cw.layout(windowConstraints)
+	if err != nil {
+		return err
+	}
+
 	spew.Dump(w)
 
 	return nil
 }
 
-func processTree(context *BuildContext, w Widget) (Widget, error) {
+func layoutTree(root Widget) {
+
+}
+
+func buildTree(context *BuildContext, w Widget) (Widget, error) {
 
 	/* Either you have a Build, or children, or nothing */
 
@@ -120,11 +178,11 @@ func processTree(context *BuildContext, w Widget) (Widget, error) {
 		if err != nil {
 			return nil, err
 		}
-		return processTree(context, w2)
+		return buildTree(context, w2)
 	}
 
 	if p, ok := w.(HasChild); ok {
-		child, err := processTree(context, p.GetChild())
+		child, err := buildTree(context, p.GetChild())
 		if err != nil {
 			return nil, err
 		}
@@ -133,7 +191,7 @@ func processTree(context *BuildContext, w Widget) (Widget, error) {
 		children := p.GetChildren()
 		newChildren := make([]Widget, len(children))
 		for i, c := range children {
-			nc, err := processTree(context, c)
+			nc, err := buildTree(context, c)
 			if err != nil {
 				return nil, err
 			}
