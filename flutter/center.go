@@ -3,18 +3,18 @@ package flutter
 type Center struct {
 	Child      Widget
 	size       Size
-	parentData ParentData
+	parentData parentData
 }
 
-func (ce *Center) GetChild() Widget {
+func (ce *Center) getChild() Widget {
 	return ce.Child
 }
 
-func (ce *Center) SetChild(c Widget) {
+func (ce *Center) setChild(c Widget) {
 	ce.Child = c
 }
 
-func (ce *Center) getParentData() *ParentData {
+func (ce *Center) getParentData() *parentData {
 	return &ce.parentData
 }
 
@@ -22,9 +22,9 @@ func (ce *Center) getSize() Size {
 	return ce.size
 }
 
-func (ce *Center) layout(c Constraints) error {
+func (ce *Center) layout(c constraints) error {
 
-	cw := ce.Child.(CoreWidget)
+	cw := ce.Child.(coreWidget)
 	cw.layout(c)
 
 	ce.size = Size{width: c.maxWidth, height: c.maxHeight}

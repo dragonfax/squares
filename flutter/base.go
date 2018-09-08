@@ -12,21 +12,21 @@ type BuildContext struct {
 type Widget interface {
 }
 
-type HasBuild interface { // StatelessWidget
+type hasBuild interface { // StatelessWidget
 	Build(*BuildContext) (Widget, error)
 }
 
-type HasChild interface { // Container
-	GetChild() Widget
-	SetChild(Widget)
+type hasChild interface { // Container
+	getChild() Widget
+	setChild(Widget)
 }
 
-type HasChildren interface {
-	GetChildren() []Widget
-	SetChildren([]Widget)
+type hasChildren interface {
+	getChildren() []Widget
+	setChildren([]Widget)
 }
 
-type HasRender interface { // RenderObject
+type hasRender interface { // RenderObject
 	Render(*sdl.Renderer) error
 }
 
@@ -42,18 +42,18 @@ type Size struct {
 	width, height uint16
 }
 
-type ParentData struct {
+type parentData struct {
 	offset Offset
 }
 
-type CoreWidget interface {
-	layout(c Constraints) error
-	getParentData() *ParentData
+type coreWidget interface {
+	layout(c constraints) error
+	getParentData() *parentData
 	getSize() Size
 }
 
 // use MaxUint32 for +Inf during layout
-type Constraints struct {
+type constraints struct {
 	minWidth, minHeight, maxWidth, maxHeight uint16
 }
 
@@ -61,7 +61,7 @@ func (s Size) addMargin(in EdgeInsets) Size {
 	return Size{width: s.width + in.All, height: s.height + in.All}
 }
 
-func (c Constraints) addMargins(in EdgeInsets) Constraints {
+func (c constraints) addMargins(in EdgeInsets) constraints {
 	// TODO fix the math here
 	if c.minWidth > in.All {
 		c.minWidth -= in.All

@@ -34,13 +34,13 @@ func RunApp(w Widget) error {
 		}
 	*/
 
-	windowConstraints := Constraints{
+	windowConstraints := constraints{
 		minWidth:  WINDOW_WIDTH,
 		minHeight: WINDOW_HEIGHT,
 		maxWidth:  WINDOW_WIDTH,
 		maxHeight: WINDOW_HEIGHT,
 	}
-	cw := w.(CoreWidget)
+	cw := w.(coreWidget)
 	err = cw.layout(windowConstraints)
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func buildTree(context *BuildContext, w Widget) (Widget, error) {
 
 	/* Either you have a Build, or children, or nothing */
 
-	if b, ok := w.(HasBuild); ok {
+	if b, ok := w.(hasBuild); ok {
 		w2, err := b.Build(context)
 		if err != nil {
 			return nil, err
@@ -63,14 +63,14 @@ func buildTree(context *BuildContext, w Widget) (Widget, error) {
 		return buildTree(context, w2)
 	}
 
-	if p, ok := w.(HasChild); ok {
-		child, err := buildTree(context, p.GetChild())
+	if p, ok := w.(hasChild); ok {
+		child, err := buildTree(context, p.getChild())
 		if err != nil {
 			return nil, err
 		}
-		p.SetChild(child)
-	} else if p, ok := w.(HasChildren); ok {
-		children := p.GetChildren()
+		p.setChild(child)
+	} else if p, ok := w.(hasChildren); ok {
+		children := p.getChildren()
 		newChildren := make([]Widget, len(children))
 		for i, c := range children {
 			nc, err := buildTree(context, c)
@@ -79,7 +79,7 @@ func buildTree(context *BuildContext, w Widget) (Widget, error) {
 			}
 			newChildren[i] = nc
 		}
-		p.SetChildren(newChildren)
+		p.setChildren(newChildren)
 	}
 
 	return w, nil

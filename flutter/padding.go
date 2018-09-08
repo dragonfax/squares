@@ -4,18 +4,18 @@ type Padding struct {
 	Padding    EdgeInsets
 	Child      Widget
 	size       Size
-	parentData ParentData
+	parentData parentData
 }
 
-func (p *Padding) GetChild() Widget {
+func (p *Padding) getChild() Widget {
 	return p.Child
 }
 
-func (p *Padding) SetChild(child Widget) {
+func (p *Padding) setChild(child Widget) {
 	p.Child = child
 }
 
-func (p *Padding) getParentData() *ParentData {
+func (p *Padding) getParentData() *parentData {
 	return &p.parentData
 }
 
@@ -23,11 +23,11 @@ func (p *Padding) getSize() Size {
 	return p.size
 }
 
-func (p *Padding) layout(c Constraints) error {
+func (p *Padding) layout(c constraints) error {
 
 	c2 := c.addMargins(p.Padding)
 
-	cw := p.Child.(CoreWidget)
+	cw := p.Child.(coreWidget)
 	cw.layout(c2)
 
 	// multi child containers would read the sizes from the children, and position them accordingly.
