@@ -21,10 +21,8 @@ func (ce *Center) layout(c constraints) error {
 
 	ce.size = Size{width: c.maxWidth, height: c.maxHeight}
 
-	// multi child containers would read the sizes from the children, and position them accordingly.
 	childSize := cw.getSize()
 
-	// offset for Padding is easy, just offset by the padding amount.
 	cw.getParentData().offset = Offset{
 		x: (ce.size.width - childSize.width) / 2,
 		y: (ce.size.height - childSize.height) / 2,
