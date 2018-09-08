@@ -1,13 +1,12 @@
 package main
 
 import (
-	"github.com/dragonfax/flutter-go-example/flutter"
-	"github.com/dragonfax/flutter-go-example/listview"
-	"github.com/dragonfax/flutter-go-example/wordpairs"
+	"github.com/dragonfax/glitter/listview"
+	"github.com/dragonfax/glitter/wordpairs"
 )
 
 func main() {
-	err := flutter.RunApp(&MyApp{})
+	err := glt.RunApp(&MyApp{})
 	if err != nil {
 		panic(err)
 	}
@@ -16,9 +15,9 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context *flutter.BuildContext) (flutter.Widget, error) {
+func (ma *MyApp) Build(context *glt.BuildContext) (glt.Widget, error) {
 
-	return &flutter.Center{Child: NewRandomWords()}, nil
+	return &glt.Center{Child: NewRandomWords()}, nil
 }
 
 func isOdd(i int) bool {
@@ -27,12 +26,12 @@ func isOdd(i int) bool {
 
 var suggestions = make([]wordpairs.WordPair, 0)
 
-func NewRandomWords() flutter.Widget {
+func NewRandomWords() glt.Widget {
 	return listview.Builder{
-		Padding: flutter.EdgeInsets{All: 16.0},
-		ItemBuilder: func(context *flutter.BuildContext, i int) flutter.Widget {
+		Padding: glt.EdgeInsets{All: 16.0},
+		ItemBuilder: func(context *glt.BuildContext, i int) glt.Widget {
 			if isOdd(i) {
-				return &flutter.Divider{}
+				return &glt.Divider{}
 			}
 
 			r := i / 2
@@ -47,9 +46,9 @@ func NewRandomWords() flutter.Widget {
 	}
 }
 
-func BuildRow(wp wordpairs.WordPair) flutter.Widget {
+func BuildRow(wp wordpairs.WordPair) glt.Widget {
 	return &listview.ListTile{
-		Title: &flutter.Text{
+		Title: &glt.Text{
 			Text: wp.AsPascalCase(),
 		},
 	}
