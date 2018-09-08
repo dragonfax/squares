@@ -18,6 +18,7 @@ func (p *Padding) SetChild(child Widget) {
 func (p *Padding) getParentData() *ParentData {
 	return &p.parentData
 }
+
 func (p *Padding) getSize() Size {
 	return p.size
 }
