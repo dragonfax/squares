@@ -42,8 +42,21 @@ type Size struct {
 	width, height uint16
 }
 
+type sizeData struct {
+	size Size
+}
+
+func (sd sizeData) getSize() Size {
+	return sd.size
+}
+
 type parentData struct {
 	offset Offset
+}
+
+// let an embedded struct return itself in order to match interfaces (interfaces for struct elements)
+func (ce parentData) getParentData() *parentData {
+	return &ce
 }
 
 type coreWidget interface {

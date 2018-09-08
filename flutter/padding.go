@@ -1,10 +1,10 @@
 package flutter
 
 type Padding struct {
-	Padding    EdgeInsets
-	Child      Widget
-	size       Size
-	parentData parentData
+	Padding EdgeInsets
+	Child   Widget
+	size    Size
+	parentData
 }
 
 func (p *Padding) getChild() Widget {
@@ -13,10 +13,6 @@ func (p *Padding) getChild() Widget {
 
 func (p *Padding) setChild(child Widget) {
 	p.Child = child
-}
-
-func (p *Padding) getParentData() *parentData {
-	return &p.parentData
 }
 
 func (p *Padding) getSize() Size {

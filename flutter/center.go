@@ -1,9 +1,9 @@
 package flutter
 
 type Center struct {
-	Child      Widget
-	size       Size
-	parentData parentData
+	Child Widget
+	size  Size
+	parentData
 }
 
 func (ce *Center) getChild() Widget {
@@ -12,10 +12,6 @@ func (ce *Center) getChild() Widget {
 
 func (ce *Center) setChild(c Widget) {
 	ce.Child = c
-}
-
-func (ce *Center) getParentData() *parentData {
-	return &ce.parentData
 }
 
 func (ce *Center) getSize() Size {
