@@ -4,6 +4,7 @@ import (
 	"path"
 	"runtime"
 
+	"github.com/veandco/go-sdl2/gfx"
 	"github.com/veandco/go-sdl2/sdl"
 	"github.com/veandco/go-sdl2/ttf"
 )
@@ -13,6 +14,13 @@ const WINDOW_HEIGHT = 600
 
 var renderer *sdl.Renderer
 var font *ttf.Font
+
+var windowConstraints = constraints{
+	minWidth:  WINDOW_WIDTH,
+	minHeight: WINDOW_HEIGHT,
+	maxWidth:  WINDOW_WIDTH,
+	maxHeight: WINDOW_HEIGHT,
+}
 
 func initRender() {
 
@@ -55,39 +63,48 @@ func render(rootWidget coreWidget) {
 }
 
 func RunApp(w Widget) error {
-	context := &BuildContext{}
-
-	w, err := buildTree(context, w)
-	if err != nil {
-		return err
-	}
-
-	/*
-		if d, ok := w.(HasRender); ok {
-			d.Render(renderer)
-		}
-	*/
-
-	windowConstraints := constraints{
-		minWidth:  WINDOW_WIDTH,
-		minHeight: WINDOW_HEIGHT,
-		maxWidth:  WINDOW_WIDTH,
-		maxHeight: WINDOW_HEIGHT,
-	}
-	cw := w.(coreWidget)
-	err = cw.layout(windowConstraints)
-	if err != nil {
-		return err
-	}
-
-	// spew.Dump(w)
 
 	initRender()
-	render(cw)
 
-	for {
-		sdl.PollEvent()
+	fps := &gfx.FPSmanager{}
+	gfx.InitFramerate(fps)
+	gfx.SetFramerate(fps, 60)
+
+	running := true
+	for running {
+
+		context := &BuildContext{}
+
+		w, err := buildTree(context, w)
+		if err != nil {
+			return err
+		}
+
+		cw := w.(coreWidget)
+		err = cw.layout(windowConstraints)
+		if err != nil {
+			return err
+		}
+
+		gfx.FramerateDelay(fps)
+
+		render(cw)
+
+		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+			switch event := event.(type) {
+			case *sdl.QuitEvent:
+				running = false
+				break
+			case *sdl.KeyboardEvent:
+				if event.Type == sdl.KEYDOWN && event.Keysym.Sym == sdl.K_q {
+					running = false
+					break
+				}
+			}
+		}
 	}
+
+	return nil
 }
 
 func buildTree(context *BuildContext, w Widget) (Widget, error) {
