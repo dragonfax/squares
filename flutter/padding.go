@@ -3,7 +3,7 @@ package flutter
 type Padding struct {
 	Padding EdgeInsets
 	Child   Widget
-	size    Size
+	sizeData
 	parentData
 }
 
@@ -13,10 +13,6 @@ func (p *Padding) getChild() Widget {
 
 func (p *Padding) setChild(child Widget) {
 	p.Child = child
-}
-
-func (p *Padding) getSize() Size {
-	return p.size
 }
 
 func (p *Padding) layout(c constraints) error {

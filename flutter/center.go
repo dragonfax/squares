@@ -2,7 +2,7 @@ package flutter
 
 type Center struct {
 	Child Widget
-	size  Size
+	sizeData
 	parentData
 }
 
@@ -12,10 +12,6 @@ func (ce *Center) getChild() Widget {
 
 func (ce *Center) setChild(c Widget) {
 	ce.Child = c
-}
-
-func (ce *Center) getSize() Size {
-	return ce.size
 }
 
 func (ce *Center) layout(c constraints) error {
