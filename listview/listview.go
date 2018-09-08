@@ -9,6 +9,14 @@ type Builder struct {
 	ItemBuilder ItemBuilderFunc
 }
 
+func (w Builder) Build(bc *flutter.BuildContext) (flutter.Widget, error) {
+	return nil, nil
+}
+
 type ListTile struct {
 	Title flutter.Widget
+}
+
+func (w ListTile) Build(bc *flutter.BuildContext) (flutter.Widget, error) {
+	return nil, nil
 }

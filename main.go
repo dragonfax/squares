@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	flutter.RunApp(&MyApp{})
+	err := flutter.RunApp(&MyApp{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 type MyApp struct {
@@ -15,35 +18,16 @@ type MyApp struct {
 
 func (ma *MyApp) Build(context *flutter.BuildContext) (flutter.Widget, error) {
 
-	return &flutter.MaterialApp{
-		Title: "Welcome to Flutter",
-		Home: &flutter.Scaffold{
-			AppBar: &flutter.AppBar{
-				Title: &flutter.Text{"Welcome to Flutter"},
-			},
-			Body: &flutter.Center{
-				Child: &RandomWords{},
-			},
-		},
-	}, nil
-}
-
-type RandomWords struct {
-}
-
-func (r *RandomWords) CreateState() flutter.State {
-	return &RandomWordsState{suggestions: make([]wordpairs.WordPair, 0)}
-}
-
-type RandomWordsState struct {
-	suggestions []wordpairs.WordPair
+	return &flutter.Center{Child: NewRandomWords()}, nil
 }
 
 func isOdd(i int) bool {
 	return i%2 == 1
 }
 
-func (rws *RandomWordsState) Build(bc *flutter.BuildContext) (flutter.Widget, error) {
+var suggestions = make([]wordpairs.WordPair, 0)
+
+func NewRandomWords() flutter.Widget {
 	return listview.Builder{
 		Padding: flutter.EdgeInsets{All: 16.0},
 		ItemBuilder: func(context flutter.BuildContext, i int) flutter.Widget {
@@ -52,16 +36,16 @@ func (rws *RandomWordsState) Build(bc *flutter.BuildContext) (flutter.Widget, er
 			}
 
 			r := i / 2
-			if r >= len(rws.suggestions) {
-				rws.suggestions = append(rws.suggestions, wordpairs.RandomNum(10)...)
+			if r >= len(suggestions) {
+				suggestions = append(suggestions, wordpairs.RandomNum(10)...)
 			}
 
-			return rws.BuildRow(rws.suggestions[r])
+			return BuildRow(suggestions[r])
 		},
-	}, nil
+	}
 }
 
-func (rws *RandomWordsState) BuildRow(wp wordpairs.WordPair) flutter.Widget {
+func BuildRow(wp wordpairs.WordPair) flutter.Widget {
 	return &listview.ListTile{
 		Title: &flutter.Text{
 			Text: wp.AsPascalCase(),
