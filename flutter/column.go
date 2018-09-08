@@ -1,5 +1,7 @@
 package flutter
 
+import "github.com/veandco/go-sdl2/sdl"
+
 type Column struct {
 	Children []Widget
 	sizeData
@@ -48,4 +50,13 @@ func (ce *Column) layout(c constraints) error {
 	}
 
 	return nil
+}
+
+func (c *Column) render(offset Offset, renderer *sdl.Renderer) {
+
+	for _, child := range c.Children {
+		cchild := child.(coreWidget)
+		cchild.render(offset, renderer)
+		offset.y += cchild.getSize().height
+	}
 }

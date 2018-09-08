@@ -1,5 +1,7 @@
 package flutter
 
+import "github.com/veandco/go-sdl2/sdl"
+
 type Padding struct {
 	Padding EdgeInsets
 	Child   Widget
@@ -31,4 +33,12 @@ func (p *Padding) layout(c constraints) error {
 	cw.getParentData().offset = Offset{p.Padding.All, p.Padding.All}
 
 	return nil
+}
+
+func (c *Padding) render(offset Offset, renderer *sdl.Renderer) {
+	cchild := c.Child.(coreWidget)
+	internalOffset := cchild.getParentData().offset
+	offset.x += internalOffset.x
+	offset.y += internalOffset.y
+	cchild.render(offset, renderer)
 }

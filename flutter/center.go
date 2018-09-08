@@ -1,5 +1,7 @@
 package flutter
 
+import "github.com/veandco/go-sdl2/sdl"
+
 type Center struct {
 	Child Widget
 	sizeData
@@ -29,4 +31,12 @@ func (ce *Center) layout(c constraints) error {
 	}
 
 	return nil
+}
+
+func (c *Center) render(offset Offset, renderer *sdl.Renderer) {
+	cchild := c.Child.(coreWidget)
+	internalOffset := cchild.getParentData().offset
+	offset.x += internalOffset.x
+	offset.y += internalOffset.y
+	cchild.render(offset, renderer)
 }

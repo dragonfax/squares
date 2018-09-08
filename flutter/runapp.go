@@ -1,26 +1,60 @@
 package flutter
 
-import "github.com/davecgh/go-spew/spew"
+import (
+	"path"
+	"runtime"
+
+	"github.com/veandco/go-sdl2/sdl"
+	"github.com/veandco/go-sdl2/ttf"
+)
 
 const WINDOW_WIDTH = 800
 const WINDOW_HEIGHT = 600
 
+var renderer *sdl.Renderer
+var font *ttf.Font
+
+func initRender() {
+
+	if err := sdl.Init(sdl.INIT_VIDEO); err != nil {
+		panic(err)
+	}
+	// defer sdl.Quit()
+
+	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+		WINDOW_WIDTH, WINDOW_HEIGHT, sdl.WINDOW_SHOWN)
+	if err != nil {
+		panic(err)
+	}
+
+	renderer, err = sdl.CreateRenderer(window, -1, 0)
+	if err != nil {
+		panic(err)
+	}
+	//defer window.Destroy()
+
+	err = ttf.Init()
+	if err != nil {
+		panic(err)
+	}
+	_, file, _, _ := runtime.Caller(0)
+	font, err = ttf.OpenFont(path.Dir(file)+"/fonts/OpenSans-Regular.ttf", 12)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func render(rootWidget coreWidget) {
+
+	renderer.SetDrawColor(0, 0, 0, 255)
+	renderer.Clear()
+
+	rootWidget.render(Offset{0, 0}, renderer)
+
+	renderer.Present()
+}
+
 func RunApp(w Widget) error {
-	// var renderer *sdl.Renderer
-	/*
-		if err := sdl.Init(sdl.INIT_VIDEO); err != nil {
-			panic(err)
-		}
-		defer sdl.Quit()
-
-		window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-			WINDOW_WIDTH, WINDOW_HEIGHT, sdl.WINDOW_SHOWN)
-		if err != nil {
-			panic(err)
-		}
-		defer window.Destroy()
-	*/
-
 	context := &BuildContext{}
 
 	w, err := buildTree(context, w)
@@ -46,9 +80,14 @@ func RunApp(w Widget) error {
 		return err
 	}
 
-	spew.Dump(w)
+	// spew.Dump(w)
 
-	return nil
+	initRender()
+	render(cw)
+
+	for {
+		sdl.PollEvent()
+	}
 }
 
 func buildTree(context *BuildContext, w Widget) (Widget, error) {

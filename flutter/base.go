@@ -63,6 +63,7 @@ type coreWidget interface {
 	layout(c constraints) error
 	getParentData() *parentData
 	getSize() Size
+	render(Offset, *sdl.Renderer)
 }
 
 // use MaxUint32 for +Inf during layout
