@@ -131,7 +131,6 @@ func buildElementTree(w Widget, currentElement Element) (Element, error) {
 		var state State
 		ce, ok := currentElement.(*StatefulElement)
 		if ok && ce.state != nil && reflect.TypeOf(w) == reflect.TypeOf(ce.widget) {
-			println("reusing state")
 			state = ce.state
 		} else {
 			state = sw.CreateState()
