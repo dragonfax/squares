@@ -30,6 +30,10 @@ func (ce *CenterElement) GetWidget() Widget {
 	return ce.widget
 }
 
+func (ce *CenterElement) updateWidget(widget Widget) {
+	ce.widget = widget.(*Center)
+}
+
 func (ce *CenterElement) layout(c Constraints) error {
 
 	ce.child.layout(c)
