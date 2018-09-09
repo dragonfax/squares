@@ -20,7 +20,7 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build() (glt.Widget, error) {
+func (ma *MyApp) Build(context glt.BuildContext) (glt.Widget, error) {
 
 	return &glt.Center{Child: &RandomWords{}}, nil
 }
@@ -40,7 +40,7 @@ type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build() (glt.Widget, error) {
+func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error) {
 	return &listview.Builder{
 		Padding: glt.EdgeInsets{All: 16.0},
 		ItemBuilder: func(i int) glt.Widget {

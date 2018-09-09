@@ -22,7 +22,7 @@ type BuilderState struct {
 }
 
 func (bs *BuilderState) Build(context glt.BuildContext) (glt.Widget, error) {
-	widget := context.GetWidget().(Builder)
+	widget := context.GetWidget().(*Builder)
 	children := make([]glt.Widget, 10)
 	println("rebuilding at ", bs.firstItem)
 	for i := 0; i < 10; i++ {

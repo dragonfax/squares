@@ -32,7 +32,7 @@ type MouseWheelListenerState struct {
 }
 
 func (mwls *MouseWheelListenerState) Build(context BuildContext) (Widget, error) {
-	widget := context.GetWidget().(MouseWheelListener)
+	widget := context.GetWidget().(*MouseWheelListener)
 	mouseWheelCallback = widget.Callback
 	return widget.Child, nil
 }

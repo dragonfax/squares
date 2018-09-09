@@ -126,7 +126,13 @@ func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element
 		return nil, err
 	}
 
-	childElement, err := buildElementTree(builtWidget, oldElement)
+	var oldChildElement Element
+	oldStatelessElement, ok := oldElement.(*StatelessElement)
+	if oldElement != nil && ok {
+		oldChildElement = oldStatelessElement.child
+	}
+
+	childElement, err := buildElementTree(builtWidget, oldChildElement)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +150,7 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 		// reusing state
 		state = oldStatefulElement.state
 	} else if !ok {
-		println("creating state, oldElement was not a StatefulElement")
+		println(fmt.Sprintf("creating state, oldElement was not a StatefulElement, %T", oldElement))
 		state = widget.CreateState()
 	} else if oldStatefulElement.state == nil {
 		println("creating state, state was nil")
@@ -160,7 +166,13 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 	}
 
 	e := &StatefulElement{widget: widget, state: state}
-	childElement, err := buildElementTree(state, oldChildElement)
+
+	childWidget, err := state.Build(e)
+	if err != nil {
+		return nil, err
+	}
+
+	childElement, err := buildElementTree(childWidget, oldChildElement)
 	if err != nil {
 		return nil, err
 	}
