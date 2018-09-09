@@ -7,6 +7,18 @@ package glt
  * As a result we don't use this for Widgets, but will use it for elements.
  * */
 
+type widgetData struct {
+	widget Widget
+}
+
+func (ce *widgetData) GetWidget() Widget {
+	return ce.widget
+}
+
+func (ce *widgetData) updateWidget(widget Widget) {
+	ce.widget = widget
+}
+
 type sizeData struct {
 	size Size
 }

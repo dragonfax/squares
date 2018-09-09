@@ -12,7 +12,7 @@ type Center struct {
 }
 
 type CenterElement struct {
-	widget *Center
+	widgetData
 	sizeData
 	parentData
 	childElementData
@@ -23,15 +23,9 @@ func (ce *Center) getChild() Widget {
 }
 
 func (ce *Center) createElement() Element {
-	return &CenterElement{widget: ce}
-}
-
-func (ce *CenterElement) GetWidget() Widget {
-	return ce.widget
-}
-
-func (ce *CenterElement) updateWidget(widget Widget) {
-	ce.widget = widget.(*Center)
+	element := &CenterElement{}
+	element.widget = ce
+	return element
 }
 
 func (ce *CenterElement) layout(c Constraints) error {
