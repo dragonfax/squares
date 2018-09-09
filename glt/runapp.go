@@ -27,7 +27,7 @@ var windowConstraints = Constraints{
 
 func initRender() {
 
-	if err := sdl.Init(sdl.INIT_VIDEO); err != nil {
+	if err := sdl.Init(sdl.INIT_VIDEO | sdl.INIT_EVENTS | sdl.INIT_TIMER); err != nil {
 		panic(err)
 	}
 	// defer sdl.Quit()
@@ -103,6 +103,16 @@ func RunApp(app Widget) error {
 					running = false
 					break
 				}
+			case *sdl.MouseWheelEvent:
+				if mouseWheelCallback != nil {
+					if event.Y > 0 {
+						println("got mouse up")
+						mouseWheelCallback(MOUSEWHEEL_UP)
+					} else if event.Y < 0 {
+						println("got moues down")
+						mouseWheelCallback(MOUSEWHEEL_DOWN)
+					}
+				}
 			}
 		}
 	}
@@ -114,6 +124,10 @@ func buildElementTree(w Widget, currentElement Element) (Element, error) {
 
 	if w == nil {
 		panic("widget was nil.")
+	}
+
+	if reflect.ValueOf(w).Kind() != reflect.Ptr {
+		return nil, errors.New(fmt.Sprintf("widget in tree is not a pointer, type %T, value %v", w, w))
 	}
 
 	/* Concrete widget (possibly with children) or non-concrete widget (you have a Build method) */
