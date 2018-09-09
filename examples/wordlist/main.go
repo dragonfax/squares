@@ -13,6 +13,8 @@ func main() {
 	}
 }
 
+var _ glt.StatelessWidget = &MyApp{}
+
 type MyApp struct {
 }
 
@@ -25,6 +27,8 @@ func isOdd(i int) bool {
 	return i%2 == 1
 }
 
+var _ glt.StatefulWidget = &RandomWords{}
+
 type RandomWords struct {
 }
 
@@ -32,11 +36,13 @@ func (*RandomWords) CreateState() glt.State {
 	return &RandomWordsState{make([]wordpairs.WordPair, 0, 10)}
 }
 
+var _ glt.State = &RandomWordsState{}
+
 type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build() glt.Widget {
+func (rws *RandomWordsState) Build() (glt.Widget, error) {
 	return listview.Builder{
 		Padding: glt.EdgeInsets{All: 16.0},
 		ItemBuilder: func(i int) glt.Widget {
@@ -53,7 +59,7 @@ func (rws *RandomWordsState) Build() glt.Widget {
 
 			return BuildRow(rws.suggestions[r])
 		},
-	}
+	}, nil
 }
 
 func BuildRow(wp wordpairs.WordPair) glt.Widget {

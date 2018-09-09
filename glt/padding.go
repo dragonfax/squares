@@ -2,26 +2,26 @@ package glt
 
 import "github.com/veandco/go-sdl2/sdl"
 
+var _ ElementWidget = &Padding{}
+var _ Element = &PaddingElement{}
+var _ HasChild = &Padding{}
+var _ HasChildElement = &PaddingElement{}
+
 type Padding struct {
 	Padding EdgeInsets
 	Child   Widget
 }
 
-func (p Padding) createElement() Element {
+func (p *Padding) createElement() Element {
 	return &PaddingElement{widget: p}
 }
 
 type PaddingElement struct {
-	widget Padding
+	widget *Padding
 	sizeData
 	parentData
 	childElementData
 }
-
-var _ ElementWidget = &Padding{}
-var _ Element = &PaddingElement{}
-var _ HasChild = &Padding{}
-var _ HasChildElement = &PaddingElement{}
 
 func (p *Padding) getChild() Widget {
 	return p.Child

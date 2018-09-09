@@ -22,7 +22,11 @@ type StatefulWidget interface {
 }
 
 type State interface {
-	Build() Widget
+	/* StatlessWidget interface is included here only so that we get the same signature
+	 * for the Build() method. If we add more methods to the StatelessWidget interface,
+	 * we may not want them for State, so in that case remove this embedded interface.
+	 */
+	StatelessWidget
 }
 
 type Element interface {

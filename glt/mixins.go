@@ -35,3 +35,15 @@ func (ce childElementData) getChildElement() Element {
 func (ce *childElementData) setChildElement(child Element) {
 	ce.child = child
 }
+
+type childrenElementsData struct {
+	children []Element
+}
+
+func (ce childrenElementsData) getChildrenElements() []Element {
+	return ce.children
+}
+
+func (ce *childrenElementsData) setChildrenElements(children []Element) {
+	ce.children = children
+}

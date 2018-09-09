@@ -2,6 +2,7 @@ package glt
 
 import (
 	"errors"
+	"fmt"
 	"path"
 	"reflect"
 	"runtime"
@@ -162,6 +163,6 @@ func buildElementTree(w Widget, currentElement Element) (Element, error) {
 		}
 		return e, nil
 	} else {
-		return nil, errors.New("unknown widget type in tree")
+		return nil, errors.New(fmt.Sprintf("unknown widget type in tree, type %T, value %v", w, w))
 	}
 }

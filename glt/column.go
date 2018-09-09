@@ -2,29 +2,37 @@ package glt
 
 import "github.com/veandco/go-sdl2/sdl"
 
+var _ ElementWidget = &Column{}
+var _ Element = &ColumnElement{}
+var _ HasChildren = &Column{}
+var _ HasChildrenElements = &ColumnElement{}
+
 type Column struct {
 	Children []Widget
-	sizeData
-	parentData
 }
 
 func (c *Column) getChildren() []Widget {
 	return c.Children
 }
 
-func (c *Column) setChildren(cs []Widget) {
-	c.Children = cs
+func (c *Column) createElement() Element {
+	return &ColumnElement{widget: c}
 }
 
-func (ce *Column) layout(c Constraints) error {
+type ColumnElement struct {
+	widget *Column
+	sizeData
+	parentData
+	childrenElementsData
+}
+
+func (ce *ColumnElement) layout(c Constraints) error {
 
 	ce.size = Size{0, 0}
 
-	numChildren := uint16(len(ce.Children))
+	numChildren := uint16(len(ce.children))
 
-	for _, child := range ce.Children {
-
-		cw := child.(Element)
+	for _, child := range ce.children {
 
 		// TODO not sure about this.
 		// might need to do them one at a time. and see whats left for the others.
@@ -35,14 +43,14 @@ func (ce *Column) layout(c Constraints) error {
 			maxHeight: c.maxHeight / numChildren,
 		}
 
-		cw.layout(con)
+		child.layout(con)
 
-		childSize := cw.getSize()
+		childSize := child.getSize()
 		ce.size.width = MaxUint16(childSize.width, ce.size.width)
 		offsetHeight := ce.size.height
 		ce.size.height += childSize.height
 
-		cw.getParentData().offset = Offset{
+		child.getParentData().offset = Offset{
 			x: 0,
 			y: offsetHeight,
 		}
@@ -52,11 +60,10 @@ func (ce *Column) layout(c Constraints) error {
 	return nil
 }
 
-func (c *Column) render(offset Offset, renderer *sdl.Renderer) {
+func (c *ColumnElement) render(offset Offset, renderer *sdl.Renderer) {
 
-	for _, child := range c.Children {
-		cchild := child.(Element)
-		cchild.render(offset, renderer)
-		offset.y += cchild.getSize().height
+	for _, child := range c.children {
+		child.render(offset, renderer)
+		offset.y += child.getSize().height
 	}
 }
