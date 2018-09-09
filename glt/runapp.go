@@ -73,16 +73,15 @@ func RunApp(app Widget) error {
 	gfx.InitFramerate(fps)
 	gfx.SetFramerate(fps, 60)
 
-	var rootElement Element
+	rootElement, err := buildElementTree(app, nil)
+	if err != nil {
+		return err
+	}
 
 	running := true
 	for running {
 
-		var err error
-		rootElement, err = buildElementTree(app, rootElement)
-		if err != nil {
-			return err
-		}
+		rebuildDirty(rootElement)
 
 		err = rootElement.layout(windowConstraints)
 		if err != nil {
@@ -115,6 +114,31 @@ func RunApp(app Widget) error {
 		}
 	}
 
+	return nil
+}
+
+/* recurse the element tree, rebuilding any subtree that is marked dirty */
+func rebuildDirty(element Element) error {
+	statefulElement, ok := element.(*StatefulElement)
+	if ok && !statefulElement.built {
+		// this follows the children implicitely
+		newElement, err := buildElementTree(element.GetWidget(), element)
+		if err != nil {
+			return err
+		}
+		if statefulElement != newElement.(*StatefulElement) {
+			panic("statefulelement changed element during dirty rebuild")
+		}
+	} else {
+		// just follow the children.
+		var children = getElementChildren(element)
+		for _, child := range children {
+			err := rebuildDirty(child)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -181,6 +205,7 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 		return nil, err
 	}
 	element.child = childElement
+	element.built = true
 	return element, nil
 }
 

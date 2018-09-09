@@ -31,11 +31,13 @@ func (bs *BuilderState) Build(context glt.BuildContext) (glt.Widget, error) {
 
 	return &glt.MouseWheelListener{
 		Callback: func(d glt.MouseWheelDirection) {
-			if d == glt.MOUSEWHEEL_UP {
-				bs.firstItem += 1
-			} else if d == glt.MOUSEWHEEL_DOWN && bs.firstItem > 0 {
-				bs.firstItem -= 1
-			}
+			context.(glt.StatefulContext).SetState(func() {
+				if d == glt.MOUSEWHEEL_UP {
+					bs.firstItem += 1
+				} else if d == glt.MOUSEWHEEL_DOWN && bs.firstItem > 0 {
+					bs.firstItem -= 1
+				}
+			})
 		},
 		Child: &glt.Column{Children: children},
 	}, nil

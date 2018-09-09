@@ -5,8 +5,14 @@ import "github.com/veandco/go-sdl2/sdl"
 type Widget interface {
 }
 
+type SetStateFunc func()
+
 type BuildContext interface {
 	GetWidget() Widget
+}
+
+type StatefulContext interface {
+	SetState(SetStateFunc)
 }
 
 type StatelessWidget interface {
