@@ -53,11 +53,9 @@ func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error)
 				for x := 0; x < 10; x++ {
 					rws.suggestions = append(rws.suggestions, wordpairs.GenerateWordPair())
 				}
-				println(">>>> suggestions up to ", len(rws.suggestions))
 			}
 
 			wp := rws.suggestions[r]
-			println("using suggestion ", wp.AsPascalCase())
 			return BuildRow(wp)
 		},
 	}, nil
