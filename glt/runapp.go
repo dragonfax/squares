@@ -119,12 +119,20 @@ func RunApp(app Widget) error {
 }
 
 func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element, error) {
-	builtWidget, err := sw.Build()
+	element := &StatelessElement{widget: sw}
+
+	builtWidget, err := sw.Build(element)
 	if err != nil {
 		return nil, err
 	}
-	// we don't keep an element for stateless widgets.
-	return buildElementTree(builtWidget, oldElement)
+
+	childElement, err := buildElementTree(builtWidget, oldElement)
+	if err != nil {
+		return nil, err
+	}
+	element.child = childElement
+
+	return element, nil
 }
 
 func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Element, error) {
@@ -206,7 +214,7 @@ func processElementChildren(widget ElementWidget, newElement Element, oldElement
 
 		// check if we have an old element to reuse (for keeping state)
 		var oldChildElement Element
-		if len(oldElementChildren) > i && sameType(widgetChild, oldElementChildren[i].getWidget()) {
+		if len(oldElementChildren) > i && sameType(widgetChild, oldElementChildren[i].GetWidget()) {
 			oldChildElement = oldElementChildren[i]
 		}
 

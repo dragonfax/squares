@@ -20,7 +20,7 @@ type DividerElement struct {
 	parentData
 }
 
-func (de *DividerElement) getWidget() Widget {
+func (de *DividerElement) GetWidget() Widget {
 	return de.widget
 }
 

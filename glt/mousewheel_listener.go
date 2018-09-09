@@ -25,14 +25,14 @@ func (mwl *MouseWheelListener) getChild() Widget {
 }
 
 func (mwl *MouseWheelListener) CreateState() State {
-	return &MouseWheelListenerState{widget: mwl}
+	return &MouseWheelListenerState{}
 }
 
 type MouseWheelListenerState struct {
-	widget *MouseWheelListener
 }
 
-func (mwls *MouseWheelListenerState) Build() (Widget, error) {
-	mouseWheelCallback = mwls.widget.Callback
-	return mwls.widget.Child, nil
+func (mwls *MouseWheelListenerState) Build(context BuildContext) (Widget, error) {
+	widget := context.GetWidget().(MouseWheelListener)
+	mouseWheelCallback = widget.Callback
+	return widget.Child, nil
 }

@@ -26,7 +26,7 @@ func (ce *Center) createElement() Element {
 	return &CenterElement{widget: ce}
 }
 
-func (ce *CenterElement) getWidget() Widget {
+func (ce *CenterElement) GetWidget() Widget {
 	return ce.widget
 }
 

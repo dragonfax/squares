@@ -31,7 +31,7 @@ type PaddingElement struct {
 	childElementData
 }
 
-func (pe *PaddingElement) getWidget() Widget {
+func (pe *PaddingElement) GetWidget() Widget {
 	return pe.widget
 }
 

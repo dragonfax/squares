@@ -22,7 +22,7 @@ type TextElement struct {
 	parentData
 }
 
-func (t *TextElement) getWidget() Widget {
+func (t *TextElement) GetWidget() Widget {
 	return t.widget
 }
 

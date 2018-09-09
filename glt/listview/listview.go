@@ -14,20 +14,20 @@ type Builder struct {
 }
 
 func (b *Builder) CreateState() glt.State {
-	return &BuilderState{widget: b}
+	return &BuilderState{}
 }
 
 type BuilderState struct {
-	widget    *Builder
 	firstItem int
 }
 
-func (bs *BuilderState) Build() (glt.Widget, error) {
+func (bs *BuilderState) Build(context glt.BuildContext) (glt.Widget, error) {
+	widget := context.GetWidget().(Builder)
 	children := make([]glt.Widget, 10)
 	println("rebuilding at ", bs.firstItem)
 	for i := 0; i < 10; i++ {
-		child := bs.widget.ItemBuilder(bs.firstItem + i)
-		children[i] = &glt.Padding{Padding: bs.widget.Padding, Child: child}
+		child := widget.ItemBuilder(bs.firstItem + i)
+		children[i] = &glt.Padding{Padding: widget.Padding, Child: child}
 	}
 
 	return &glt.MouseWheelListener{
@@ -50,6 +50,6 @@ type ListTile struct {
 	Title glt.Widget
 }
 
-func (w ListTile) Build() (glt.Widget, error) {
+func (w ListTile) Build(context glt.BuildContext) (glt.Widget, error) {
 	return w.Title, nil
 }

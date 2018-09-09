@@ -26,7 +26,7 @@ type ColumnElement struct {
 	childrenElementsData
 }
 
-func (ce *ColumnElement) getWidget() Widget {
+func (ce *ColumnElement) GetWidget() Widget {
 	return ce.widget
 }
 

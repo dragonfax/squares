@@ -5,8 +5,12 @@ import "github.com/veandco/go-sdl2/sdl"
 type Widget interface {
 }
 
+type BuildContext interface {
+	GetWidget() Widget
+}
+
 type StatelessWidget interface {
-	Build() (Widget, error)
+	Build(context BuildContext) (Widget, error)
 }
 
 type HasChild interface {
@@ -34,7 +38,7 @@ type Element interface {
 	getParentData() *parentData
 	getSize() Size
 	render(Offset, *sdl.Renderer)
-	getWidget() Widget
+	BuildContext
 }
 
 type HasChildElement interface {

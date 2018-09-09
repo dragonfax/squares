@@ -10,7 +10,7 @@ type StatefulElement struct {
 
 var _ Element = &StatefulElement{}
 
-func (se *StatefulElement) getWidget() Widget {
+func (se *StatefulElement) GetWidget() Widget {
 	return se.widget
 }
 
