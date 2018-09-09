@@ -106,10 +106,8 @@ func RunApp(app Widget) error {
 			case *sdl.MouseWheelEvent:
 				if mouseWheelCallback != nil {
 					if event.Y > 0 {
-						println("got mouse up")
 						mouseWheelCallback(MOUSEWHEEL_UP)
 					} else if event.Y < 0 {
-						println("got moues down")
 						mouseWheelCallback(MOUSEWHEEL_DOWN)
 					}
 				}
@@ -120,88 +118,107 @@ func RunApp(app Widget) error {
 	return nil
 }
 
+func elementFromStatelessWidget(sw StatelessWidget, currentElement Element) (Element, error) {
+	builtWidget, err := sw.Build()
+	if err != nil {
+		return nil, err
+	}
+	// we don't keep an element for stateless widgets.
+	return buildElementTree(builtWidget, currentElement)
+}
+
+func elementFromStatefulWidget(sw StatefulWidget, currentElement Element) (Element, error) {
+
+	// reuse an existing state?
+	var state State
+	ce, ok := currentElement.(*StatefulElement)
+	if ok && ce.state != nil && reflect.TypeOf(sw) == reflect.TypeOf(ce.widget) {
+		state = ce.state
+	} else if !ok {
+		println("creating state, currentElement was not a StatefulElement")
+		state = sw.CreateState()
+	} else if ce.state == nil {
+		println("creating state, state was nil")
+		state = sw.CreateState()
+	} else {
+		println(fmt.Sprintf("creating state, types didn't match %T vs %T", sw, ce.widget))
+		state = sw.CreateState()
+	}
+
+	e := &StatefulElement{widget: sw, state: state}
+	childElement, err := buildElementTree(state, e)
+	if err != nil {
+		return nil, err
+	}
+	e.child = childElement
+	return e, nil
+
+}
+
+func elementFromElementWidget(ew ElementWidget, currentElement Element) (Element, error) {
+	// you're a concrete widget, you may (or may not) have children.
+
+	// TODO wasteful if we won't use it.
+	newElement := ew.createElement()
+
+	if parentWidget, ok := ew.(HasChild); ok {
+
+		// get the next child to pass down.
+		var childElement Element
+		if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
+			childElement = currentElement.(HasChildElement).getChildElement()
+		}
+
+		childWidget := parentWidget.getChild()
+		newChild, err := buildElementTree(childWidget, childElement)
+		if err != nil {
+			return nil, err
+		}
+		newElement.(HasChildElement).setChildElement(newChild)
+	} else if parentWidget, ok := ew.(HasChildren); ok {
+
+		var oldChildrenElements []Element
+		if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
+			oldChildrenElements = currentElement.(HasChildrenElements).getChildrenElements()
+		}
+
+		children := parentWidget.getChildren()
+		newChildrenElements := make([]Element, len(children))
+		for i, c := range children {
+
+			var oldChildElement Element
+			if oldChildrenElements != nil {
+				oldChildElement = oldChildrenElements[i]
+			}
+
+			nc, err := buildElementTree(c, oldChildElement)
+			if err != nil {
+				return nil, err
+			}
+			newChildrenElements[i] = nc
+		}
+		newElement.(HasChildrenElements).setChildrenElements(newChildrenElements)
+	}
+	return newElement, nil
+
+}
+
 func buildElementTree(w Widget, currentElement Element) (Element, error) {
 
 	if w == nil {
-		panic("widget was nil.")
+		return nil, errors.New("widget was nil.")
 	}
 
 	if reflect.ValueOf(w).Kind() != reflect.Ptr {
 		return nil, errors.New(fmt.Sprintf("widget in tree is not a pointer, type %T, value %v", w, w))
 	}
 
-	/* Concrete widget (possibly with children) or non-concrete widget (you have a Build method) */
-
 	if b, ok := w.(StatelessWidget); ok {
-		w2, err := b.Build()
-		if err != nil {
-			return nil, err
-		}
-		// we don't keep an element for stateless widgets.
-		return buildElementTree(w2, currentElement)
+		return elementFromStatelessWidget(b, currentElement)
 	} else if sw, ok := w.(StatefulWidget); ok {
-
-		// reuse an existing state?
-		var state State
-		ce, ok := currentElement.(*StatefulElement)
-		if ok && ce.state != nil && reflect.TypeOf(w) == reflect.TypeOf(ce.widget) {
-			state = ce.state
-		} else {
-			state = sw.CreateState()
-		}
-
-		e := &StatefulElement{widget: w, state: state}
-		childElement, err := buildElementTree(state, e)
-		if err != nil {
-			return nil, err
-		}
-		e.child = childElement
-		return e, nil
-	} else if widget, ok := w.(ElementWidget); ok {
-		// you're a concrete widget, you may (or may not) have children.
-
-		// TODO wasteful if we won't use it.
-		newElement := widget.createElement()
-
-		if parentWidget, ok := widget.(HasChild); ok {
-
-			// get the next child to pass down.
-			var childElement Element
-			if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
-				childElement = currentElement.(HasChildElement).getChildElement()
-			}
-
-			childWidget := parentWidget.getChild()
-			newChild, err := buildElementTree(childWidget, childElement)
-			if err != nil {
-				return nil, err
-			}
-			newElement.(HasChildElement).setChildElement(newChild)
-		} else if parentWidget, ok := widget.(HasChildren); ok {
-
-			var oldChildrenElements []Element
-			if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
-				oldChildrenElements = currentElement.(HasChildrenElements).getChildrenElements()
-			}
-
-			children := parentWidget.getChildren()
-			newChildrenElements := make([]Element, len(children))
-			for i, c := range children {
-
-				var oldChildElement Element
-				if oldChildrenElements != nil {
-					oldChildElement = oldChildrenElements[i]
-				}
-
-				nc, err := buildElementTree(c, oldChildElement)
-				if err != nil {
-					return nil, err
-				}
-				newChildrenElements[i] = nc
-			}
-			newElement.(HasChildrenElements).setChildrenElements(newChildrenElements)
-		}
-		return newElement, nil
+		return elementFromStatefulWidget(sw, currentElement)
+	} else if ew, ok := w.(ElementWidget); ok {
+		return elementFromElementWidget(ew, currentElement)
 	} else {
 		return nil, errors.New(fmt.Sprintf("unknown widget type in tree, type %T, value %v", w, w))
 	}
