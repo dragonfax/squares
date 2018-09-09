@@ -81,12 +81,17 @@ func RunApp(app Widget) error {
 	running := true
 	for running {
 
-		rebuildDirty(rootElement)
+		err = rebuildDirty(rootElement)
+		if err != nil {
+			return err
+		}
 
 		err = rootElement.layout(windowConstraints)
 		if err != nil {
 			return err
 		}
+
+		floatUpRendered(rootElement)
 
 		gfx.FramerateDelay(fps)
 
@@ -129,6 +134,7 @@ func rebuildDirty(element Element) error {
 		if statefulElement != newElement.(*StatefulElement) {
 			panic("statefulelement changed element during dirty rebuild")
 		}
+		statefulElement.rendered = false
 	} else {
 		// just follow the children.
 		var children = getElementChildren(element)
@@ -140,6 +146,26 @@ func rebuildDirty(element Element) error {
 		}
 	}
 	return nil
+}
+
+func floatUpRendered(element Element) bool {
+	statefulElement, ok := element.(*StatefulElement)
+	if ok && !statefulElement.rendered {
+		return false
+	} else {
+		var children = getElementChildren(element)
+		var rendered = true
+		for _, child := range children {
+			r := floatUpRendered(child)
+			if !r {
+				if ok {
+					statefulElement.rendered = false
+				}
+				rendered = false
+			}
+		}
+		return rendered
+	}
 }
 
 func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element, error) {

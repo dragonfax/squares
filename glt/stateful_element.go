@@ -29,7 +29,14 @@ func (se *StatefulElement) getSize() Size {
 }
 
 func (se *StatefulElement) layout(c Constraints) error {
-	return se.child.layout(c)
+	beforeSize := se.getSize()
+	err := se.child.layout(c)
+	afterSize := se.getSize()
+	if beforeSize != afterSize {
+		se.rendered = false
+	}
+
+	return err
 }
 
 func (se *StatefulElement) updateWidget(widget Widget) {
@@ -44,15 +51,11 @@ func (se *StatefulElement) render(o Offset, r *sdl.Renderer) {
 	if !se.rendered || se.renderedSize != size {
 		// create a new composite
 
-		println("rendering to texture")
-
 		if se.renderedSize != size {
 			// reclaim the texture and create a new one of the right size
 			if se.renderedTexture != nil {
-				println("destroying texture")
 				se.renderedTexture.Destroy()
 			}
-			println("creating new texture")
 			t, err := r.CreateTexture(sdl.PIXELFORMAT_RGBA8888, sdl.TEXTUREACCESS_TARGET, int32(size.width), int32(size.height))
 			if err != nil {
 				panic(err)
@@ -65,7 +68,6 @@ func (se *StatefulElement) render(o Offset, r *sdl.Renderer) {
 		r.SetRenderTarget(se.renderedTexture)
 		r.SetDrawColor(0, 0, 0, 255)
 		r.Clear()
-		println("rendering")
 		se.child.render(Offset{0, 0}, r)
 		// r.Present()
 		r.SetRenderTarget(prevTarget)
@@ -75,7 +77,6 @@ func (se *StatefulElement) render(o Offset, r *sdl.Renderer) {
 	}
 
 	// use the composite
-	println("compositing texture")
 	srcRect := &sdl.Rect{X: 0, Y: 0, W: int32(size.width), H: int32(size.height)}
 	dstRect := &sdl.Rect{X: int32(o.x), Y: int32(o.y), W: int32(size.width), H: int32(size.height)}
 	r.Copy(se.renderedTexture, srcRect, dstRect)
