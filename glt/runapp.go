@@ -127,31 +127,31 @@ func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element
 	return buildElementTree(builtWidget, oldElement)
 }
 
-func elementFromStatefulWidget(sw StatefulWidget, oldElement Element) (Element, error) {
+func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Element, error) {
 
 	// reuse an existing state?
 	var state State
-	ce, ok := oldElement.(*StatefulElement)
-	if ok && ce.state != nil && reflect.TypeOf(sw) == reflect.TypeOf(ce.widget) {
+	oldStatefulElement, ok := oldElement.(*StatefulElement)
+	if ok && oldStatefulElement.state != nil && reflect.TypeOf(widget) == reflect.TypeOf(oldStatefulElement.widget) {
 		// reusing state
-		state = ce.state
+		state = oldStatefulElement.state
 	} else if !ok {
 		println("creating state, oldElement was not a StatefulElement")
-		state = sw.CreateState()
-	} else if ce.state == nil {
+		state = widget.CreateState()
+	} else if oldStatefulElement.state == nil {
 		println("creating state, state was nil")
-		state = sw.CreateState()
+		state = widget.CreateState()
 	} else {
-		println(fmt.Sprintf("creating state, types didn't match %T vs %T", sw, ce.widget))
-		state = sw.CreateState()
+		println(fmt.Sprintf("creating state, types didn't match %T vs %T", widget, oldStatefulElement.widget))
+		state = widget.CreateState()
 	}
 
 	var oldChildElement Element
-	if ce != nil {
-		oldChildElement = ce.child
+	if oldStatefulElement != nil {
+		oldChildElement = oldStatefulElement.child
 	}
 
-	e := &StatefulElement{widget: sw, state: state}
+	e := &StatefulElement{widget: widget, state: state}
 	childElement, err := buildElementTree(state, oldChildElement)
 	if err != nil {
 		return nil, err
