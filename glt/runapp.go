@@ -119,16 +119,26 @@ func RunApp(app Widget) error {
 }
 
 func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element, error) {
-	element := NewStatelessElement(sw)
+	oldStatelessElement, ok := oldElement.(*StatelessElement)
 
+	// reusing the existing element
+	var element *StatelessElement
+	if ok && sameType(sw, oldStatelessElement.GetWidget()) {
+		element = oldStatelessElement
+		element.updateWidget(sw)
+	} else {
+		element = NewStatelessElement(sw)
+	}
+
+	// rebuild the widget
 	builtWidget, err := sw.Build(element)
 	if err != nil {
 		return nil, err
 	}
 
+	// check on the children
 	var oldChildElement Element
-	oldStatelessElement, ok := oldElement.(*StatelessElement)
-	if oldElement != nil && ok {
+	if oldStatelessElement != nil {
 		oldChildElement = oldStatelessElement.child
 	}
 
@@ -142,43 +152,36 @@ func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element
 }
 
 func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Element, error) {
-
-	// reuse an existing state?
-	var state State
 	oldStatefulElement, ok := oldElement.(*StatefulElement)
-	if ok && oldStatefulElement.state != nil && reflect.TypeOf(widget) == reflect.TypeOf(oldStatefulElement.widget) {
-		// reusing state
-		state = oldStatefulElement.state
-	} else if !ok {
-		println(fmt.Sprintf("creating state, oldElement was not a StatefulElement, %T", oldElement))
-		state = widget.CreateState()
-	} else if oldStatefulElement.state == nil {
-		println("creating state, state was nil")
-		state = widget.CreateState()
+
+	// reusing the existing element & state?
+	var element *StatefulElement
+	if ok && sameType(widget, oldStatefulElement.GetWidget()) {
+		element = oldStatefulElement
+		element.updateWidget(widget)
 	} else {
-		println(fmt.Sprintf("creating state, types didn't match %T vs %T", widget, oldStatefulElement.widget))
-		state = widget.CreateState()
+		println("new element, creating new state")
+		state := widget.CreateState()
+		element = NewStatefulElement(widget, state)
 	}
 
+	// build the state
+	childWidget, err := element.state.Build(element)
+	if err != nil {
+		return nil, err
+	}
+
+	// build the child subtree
 	var oldChildElement Element
 	if oldStatefulElement != nil {
 		oldChildElement = oldStatefulElement.child
 	}
-
-	e := NewStatefulElement(widget, state)
-
-	childWidget, err := state.Build(e)
-	if err != nil {
-		return nil, err
-	}
-
 	childElement, err := buildElementTree(childWidget, oldChildElement)
 	if err != nil {
 		return nil, err
 	}
-	e.child = childElement
-	return e, nil
-
+	element.child = childElement
+	return element, nil
 }
 
 func sameType(a, b interface{}) bool {
@@ -241,24 +244,18 @@ func processElementChildren(widget ElementWidget, newElement Element, oldElement
 }
 
 func elementFromElementWidget(ew ElementWidget, oldElement Element) (Element, error) {
-	// you're a concrete widget, you may (or may not) have children.
 
-	// TODO wasteful if we won't use it.
-	newElement := ew.createElement()
-
-	var err error
-	if oldElement == nil {
-		err = processElementChildren(ew, newElement, nil)
-		return newElement, err
+	// reusing the existing element & state?
+	var element Element
+	if oldElement != nil && sameType(ew, oldElement.GetWidget()) {
+		element = oldElement
+		element.updateWidget(ew)
+	} else {
+		element = ew.createElement()
 	}
 
-	if !sameType(oldElement, newElement) {
-		err = processElementChildren(ew, newElement, nil)
-		return newElement, err
-	}
-
-	err = processElementChildren(ew, newElement, oldElement)
-	return newElement, err
+	err := processElementChildren(ew, element, oldElement)
+	return element, err
 }
 
 func buildElementTree(w Widget, oldElement Element) (Element, error) {
