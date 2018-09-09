@@ -155,52 +155,84 @@ func elementFromStatefulWidget(sw StatefulWidget, currentElement Element) (Eleme
 
 }
 
+func sameType(a, b interface{}) bool {
+	return reflect.TypeOf(a) == reflect.TypeOf(b)
+}
+
+func getWidgetChildren(ew ElementWidget) []Widget {
+	if parent, ok := ew.(HasChild); ok {
+		return []Widget{parent.getChild()}
+	} else if parent, ok := ew.(HasChildren); ok {
+		return parent.getChildren()
+	}
+	return []Widget{}
+}
+
+func setElementChildren(e Element, ec []Element) {
+	if parent, ok := e.(HasChildElement); ok {
+		if len(ec) > 1 {
+			panic("unhandleable")
+		}
+		if len(ec) == 1 {
+			parent.setChildElement(ec[0])
+		}
+	} else if parent, ok := e.(HasChildrenElements); ok {
+		parent.setChildrenElements(ec)
+	}
+}
+
+func getElementChildren(e Element) []Element {
+	if parent, ok := e.(HasChildElement); ok {
+		return []Element{parent.getChildElement()}
+	} else if parent, ok := e.(HasChildrenElements); ok {
+		return parent.getChildrenElements()
+	}
+	return []Element{}
+}
+
+func processElementChildren(widget ElementWidget, newElement Element, currentElement Element) error {
+
+	widgetChildren := getWidgetChildren(widget)
+	newElementChildren := make([]Element, len(widgetChildren))
+	oldElementChildren := getElementChildren(currentElement)
+
+	for i, widgetChild := range widgetChildren {
+
+		// check if we have an old element to reuse (for keeping state)
+		var oldChildElement Element
+		if len(oldElementChildren) > i && sameType(widgetChild, oldElementChildren[i].getWidget()) {
+			oldChildElement = oldElementChildren[i]
+		}
+
+		newChildElement, err := buildElementTree(widgetChild, oldChildElement)
+		if err != nil {
+			return err
+		}
+		newElementChildren[i] = newChildElement
+	}
+	setElementChildren(newElement, newElementChildren)
+	return nil
+}
+
 func elementFromElementWidget(ew ElementWidget, currentElement Element) (Element, error) {
 	// you're a concrete widget, you may (or may not) have children.
 
 	// TODO wasteful if we won't use it.
 	newElement := ew.createElement()
 
-	if parentWidget, ok := ew.(HasChild); ok {
-
-		// get the next child to pass down.
-		var childElement Element
-		if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
-			childElement = currentElement.(HasChildElement).getChildElement()
-		}
-
-		childWidget := parentWidget.getChild()
-		newChild, err := buildElementTree(childWidget, childElement)
-		if err != nil {
-			return nil, err
-		}
-		newElement.(HasChildElement).setChildElement(newChild)
-	} else if parentWidget, ok := ew.(HasChildren); ok {
-
-		var oldChildrenElements []Element
-		if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
-			oldChildrenElements = currentElement.(HasChildrenElements).getChildrenElements()
-		}
-
-		children := parentWidget.getChildren()
-		newChildrenElements := make([]Element, len(children))
-		for i, c := range children {
-
-			var oldChildElement Element
-			if oldChildrenElements != nil {
-				oldChildElement = oldChildrenElements[i]
-			}
-
-			nc, err := buildElementTree(c, oldChildElement)
-			if err != nil {
-				return nil, err
-			}
-			newChildrenElements[i] = nc
-		}
-		newElement.(HasChildrenElements).setChildrenElements(newChildrenElements)
+	var err error
+	if currentElement == nil {
+		err = processElementChildren(ew, newElement, nil)
+		return newElement, err
 	}
-	return newElement, nil
 
+	if !sameType(currentElement, newElement) {
+		err = processElementChildren(ew, newElement, nil)
+		return newElement, err
+	}
+
+	err = processElementChildren(ew, newElement, currentElement)
+	return newElement, err
 }
 
 func buildElementTree(w Widget, currentElement Element) (Element, error) {

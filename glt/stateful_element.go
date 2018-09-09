@@ -8,7 +8,11 @@ type StatefulElement struct {
 	child  Element
 }
 
-var _ Element = StatefulElement{}
+var _ Element = &StatefulElement{}
+
+func (se *StatefulElement) getWidget() Widget {
+	return se.widget
+}
 
 func (se StatefulElement) getSize() Size {
 	return se.child.getSize()

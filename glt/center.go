@@ -26,6 +26,10 @@ func (ce *Center) createElement() Element {
 	return &CenterElement{widget: ce}
 }
 
+func (ce *CenterElement) getWidget() Widget {
+	return ce.widget
+}
+
 func (ce *CenterElement) layout(c Constraints) error {
 
 	ce.child.layout(c)

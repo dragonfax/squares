@@ -22,20 +22,24 @@ type BuilderState struct {
 	firstItem int
 }
 
-func (bs BuilderState) Build() (glt.Widget, error) {
+func (bs *BuilderState) Build() (glt.Widget, error) {
 	children := make([]glt.Widget, 10)
-	for i := bs.firstItem; i < bs.firstItem+10; i++ {
-		child := bs.widget.ItemBuilder(i)
+	println("rebuilding at ", bs.firstItem)
+	for i := 0; i < 10; i++ {
+		child := bs.widget.ItemBuilder(bs.firstItem + i)
 		children[i] = &glt.Padding{Padding: bs.widget.Padding, Child: child}
 	}
 
 	return &glt.MouseWheelListener{
 		Callback: func(d glt.MouseWheelDirection) {
-			println("received mouse callback")
 			if d == glt.MOUSEWHEEL_UP {
+				println("scrolling up")
 				bs.firstItem += 1
+				println("first item was set to ", bs.firstItem)
 			} else if d == glt.MOUSEWHEEL_DOWN && bs.firstItem > 0 {
+				println("scrolling down")
 				bs.firstItem -= 1
+				println("first item was set to ", bs.firstItem)
 			}
 		},
 		Child: &glt.Column{Children: children},

@@ -26,6 +26,10 @@ type ColumnElement struct {
 	childrenElementsData
 }
 
+func (ce *ColumnElement) getWidget() Widget {
+	return ce.widget
+}
+
 func (ce *ColumnElement) layout(c Constraints) error {
 
 	ce.size = Size{0, 0}

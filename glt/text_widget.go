@@ -22,6 +22,10 @@ type TextElement struct {
 	parentData
 }
 
+func (t *TextElement) getWidget() Widget {
+	return t.widget
+}
+
 func (t *TextElement) layout(c Constraints) error {
 	cWidth := len(t.widget.Text) * CHARACTER_WIDTH
 	cHeight := 1 * CHARACTER_HEIGHT

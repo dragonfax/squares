@@ -16,6 +16,14 @@ func (p *Padding) createElement() Element {
 	return &PaddingElement{widget: p}
 }
 
+func (p *Padding) getChild() Widget {
+	return p.Child
+}
+
+func (p *Padding) setChild(child Widget) {
+	p.Child = child
+}
+
 type PaddingElement struct {
 	widget *Padding
 	sizeData
@@ -23,12 +31,8 @@ type PaddingElement struct {
 	childElementData
 }
 
-func (p *Padding) getChild() Widget {
-	return p.Child
-}
-
-func (p *Padding) setChild(child Widget) {
-	p.Child = child
+func (pe *PaddingElement) getWidget() Widget {
+	return pe.widget
 }
 
 func (element *PaddingElement) layout(c Constraints) error {
