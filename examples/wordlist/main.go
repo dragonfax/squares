@@ -50,12 +50,15 @@ func (rws *RandomWordsState) Build() (glt.Widget, error) {
 
 			r := i / 2
 			if r >= len(rws.suggestions) {
-				for i := 0; i < 10; i++ {
+				for x := 0; x < 10; x++ {
 					rws.suggestions = append(rws.suggestions, wordpairs.GenerateWordPair())
 				}
+				println(">>>> suggestions up to ", len(rws.suggestions))
 			}
 
-			return BuildRow(rws.suggestions[r])
+			wp := rws.suggestions[r]
+			println("using suggestion ", wp.AsPascalCase())
+			return BuildRow(wp)
 		},
 	}, nil
 }
