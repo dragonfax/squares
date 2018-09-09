@@ -73,22 +73,25 @@ func RunApp(app Widget) error {
 	gfx.InitFramerate(fps)
 	gfx.SetFramerate(fps, 60)
 
+	var rootElement Element
+
 	running := true
 	for running {
 
-		elementTree, err := buildElementTree(app, nil)
+		var err error
+		rootElement, err = buildElementTree(app, rootElement)
 		if err != nil {
 			return err
 		}
 
-		err = elementTree.layout(windowConstraints)
+		err = rootElement.layout(windowConstraints)
 		if err != nil {
 			return err
 		}
 
 		gfx.FramerateDelay(fps)
 
-		render(elementTree)
+		render(rootElement)
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch event := event.(type) {
@@ -109,6 +112,10 @@ func RunApp(app Widget) error {
 
 func buildElementTree(w Widget, currentElement Element) (Element, error) {
 
+	if w == nil {
+		panic("widget was nil.")
+	}
+
 	/* Concrete widget (possibly with children) or non-concrete widget (you have a Build method) */
 
 	if b, ok := w.(StatelessWidget); ok {
@@ -122,46 +129,66 @@ func buildElementTree(w Widget, currentElement Element) (Element, error) {
 
 		// reuse an existing state?
 		var state State
-		ce, ok := currentElement.(StatefulElement)
+		ce, ok := currentElement.(*StatefulElement)
 		if ok && ce.state != nil && reflect.TypeOf(w) == reflect.TypeOf(ce.widget) {
+			println("reusing state")
 			state = ce.state
 		} else {
 			state = sw.CreateState()
 		}
 
-		e := StatefulElement{widget: w, state: state}
+		e := &StatefulElement{widget: w, state: state}
 		childElement, err := buildElementTree(state, e)
 		if err != nil {
 			return nil, err
 		}
 		e.child = childElement
 		return e, nil
-	} else if cw, ok := w.(ElementWidget); ok {
+	} else if widget, ok := w.(ElementWidget); ok {
 		// you're a concrete widget, you may (or may not) have children.
 
-		e := cw.createElement()
+		// TODO wasteful if we won't use it.
+		newElement := widget.createElement()
 
-		if p, ok := cw.(HasChild); ok {
-			pe := e.(HasChildElement)
-			child, err := buildElementTree(p.getChild(), e)
+		if parentWidget, ok := widget.(HasChild); ok {
+
+			// get the next child to pass down.
+			var childElement Element
+			if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
+				childElement = currentElement.(HasChildElement).getChildElement()
+			}
+
+			childWidget := parentWidget.getChild()
+			newChild, err := buildElementTree(childWidget, childElement)
 			if err != nil {
 				return nil, err
 			}
-			pe.setChildElement(child)
-		} else if p, ok := w.(HasChildren); ok {
-			pe := e.(HasChildrenElements)
-			children := p.getChildren()
+			newElement.(HasChildElement).setChildElement(newChild)
+		} else if parentWidget, ok := widget.(HasChildren); ok {
+
+			var oldChildrenElements []Element
+			if currentElement != nil && reflect.TypeOf(newElement) == reflect.TypeOf(currentElement) {
+				oldChildrenElements = currentElement.(HasChildrenElements).getChildrenElements()
+			}
+
+			children := parentWidget.getChildren()
 			newChildrenElements := make([]Element, len(children))
 			for i, c := range children {
-				nc, err := buildElementTree(c, e)
+
+				var oldChildElement Element
+				if oldChildrenElements != nil {
+					oldChildElement = oldChildrenElements[i]
+				}
+
+				nc, err := buildElementTree(c, oldChildElement)
 				if err != nil {
 					return nil, err
 				}
 				newChildrenElements[i] = nc
 			}
-			pe.setChildrenElements(newChildrenElements)
+			newElement.(HasChildrenElements).setChildrenElements(newChildrenElements)
 		}
-		return e, nil
+		return newElement, nil
 	} else {
 		return nil, errors.New(fmt.Sprintf("unknown widget type in tree, type %T, value %v", w, w))
 	}

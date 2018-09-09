@@ -38,9 +38,11 @@ type Element interface {
 
 type HasChildElement interface {
 	setChildElement(Element)
+	getChildElement() Element
 }
 
 type HasChildrenElements interface {
+	getChildrenElements() []Element
 	setChildrenElements([]Element)
 }
 
