@@ -38,6 +38,7 @@ type Element interface {
 	getParentData() *parentData
 	getSize() Size
 	render(Offset, *sdl.Renderer)
+	updateWidget(Widget)
 	BuildContext
 }
 
