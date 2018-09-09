@@ -35,7 +35,8 @@ type State interface {
 
 type Element interface {
 	layout(c Constraints) error
-	getParentData() *parentData
+	getOffset() Offset
+	setOffset(Offset)
 	getSize() Size
 	render(Offset, *sdl.Renderer)
 	updateWidget(Widget)

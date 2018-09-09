@@ -5,20 +5,18 @@ import "github.com/veandco/go-sdl2/sdl"
 var _ Element = &StatelessElement{}
 
 type StatelessElement struct {
-	widget Widget
-	child  Element
+	elementData
+	childElementData
 }
 
-func (se *StatelessElement) GetWidget() Widget {
-	return se.widget
+func NewStatelessElement(widget Widget) *StatelessElement {
+	se := &StatelessElement{}
+	se.widget = widget
+	return se
 }
 
 func (se StatelessElement) getSize() Size {
 	return se.child.getSize()
-}
-
-func (se StatelessElement) getParentData() *parentData {
-	return se.child.getParentData()
 }
 
 func (se StatelessElement) layout(c Constraints) error {

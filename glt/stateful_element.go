@@ -3,23 +3,22 @@ package glt
 import "github.com/veandco/go-sdl2/sdl"
 
 type StatefulElement struct {
-	widget Widget
-	state  State
-	child  Element
+	elementData
+	state State
+	childElementData
 }
 
 var _ Element = &StatefulElement{}
 
-func (se *StatefulElement) GetWidget() Widget {
-	return se.widget
+func NewStatefulElement(widget Widget, state State) *StatefulElement {
+	se := &StatefulElement{}
+	se.widget = widget
+	se.state = state
+	return se
 }
 
 func (se StatefulElement) getSize() Size {
 	return se.child.getSize()
-}
-
-func (se StatefulElement) getParentData() *parentData {
-	return se.child.getParentData()
 }
 
 func (se StatefulElement) layout(c Constraints) error {

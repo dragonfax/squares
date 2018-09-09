@@ -16,18 +16,14 @@ func (c *Column) getChildren() []Widget {
 }
 
 func (c *Column) createElement() Element {
-	return &ColumnElement{widget: c}
+	ce := &ColumnElement{}
+	ce.widget = c
+	return ce
 }
 
 type ColumnElement struct {
-	widget *Column
-	sizeData
-	parentData
+	elementData
 	childrenElementsData
-}
-
-func (ce *ColumnElement) GetWidget() Widget {
-	return ce.widget
 }
 
 func (ce *ColumnElement) layout(c Constraints) error {
@@ -54,10 +50,10 @@ func (ce *ColumnElement) layout(c Constraints) error {
 		offsetHeight := ce.size.height
 		ce.size.height += childSize.height
 
-		child.getParentData().offset = Offset{
+		child.setOffset(Offset{
 			x: 0,
 			y: offsetHeight,
-		}
+		})
 
 	}
 

@@ -11,13 +11,13 @@ type Divider struct {
 }
 
 func (d *Divider) createElement() Element {
-	return &DividerElement{widget: d}
+	de := &DividerElement{}
+	de.widget = d
+	return de
 }
 
 type DividerElement struct {
-	widget *Divider
-	sizeData
-	parentData
+	elementData
 }
 
 func (de *DividerElement) GetWidget() Widget {

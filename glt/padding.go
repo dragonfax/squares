@@ -13,7 +13,9 @@ type Padding struct {
 }
 
 func (p *Padding) createElement() Element {
-	return &PaddingElement{widget: p}
+	pe := &PaddingElement{}
+	pe.widget = p
+	return pe
 }
 
 func (p *Padding) getChild() Widget {
@@ -25,35 +27,31 @@ func (p *Padding) setChild(child Widget) {
 }
 
 type PaddingElement struct {
-	widget *Padding
-	sizeData
-	parentData
+	elementData
 	childElementData
-}
-
-func (pe *PaddingElement) GetWidget() Widget {
-	return pe.widget
 }
 
 func (element *PaddingElement) layout(c Constraints) error {
 
-	innerConstraints := c.addMargins(element.widget.Padding)
+	widget := element.widget.(*Padding)
+
+	innerConstraints := c.addMargins(widget.Padding)
 
 	element.child.layout(innerConstraints)
 
 	// multi child containers would read the sizes from the children, and position them accordingly.
 	childSize := element.child.getSize()
-	paddedSize := childSize.addMargin(element.widget.Padding)
+	paddedSize := childSize.addMargin(widget.Padding)
 	element.size = paddedSize
 
 	// offset for Padding is easy, just offset by the padding amount.
-	element.child.getParentData().offset = Offset{element.widget.Padding.All, element.widget.Padding.All}
+	element.child.setOffset(Offset{widget.Padding.All, widget.Padding.All})
 
 	return nil
 }
 
 func (element *PaddingElement) render(offset Offset, renderer *sdl.Renderer) {
-	internalOffset := element.child.getParentData().offset
+	internalOffset := element.child.getOffset()
 	offset.x += internalOffset.x
 	offset.y += internalOffset.y
 	element.child.render(offset, renderer)

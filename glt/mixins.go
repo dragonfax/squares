@@ -6,34 +6,30 @@ package glt
  * as the user would have to type something weird like Struct{Child.Child: child}.
  * As a result we don't use this for Widgets, but will use it for elements.
  * */
-
-type widgetData struct {
+type elementData struct {
 	widget Widget
-}
-
-func (ce *widgetData) GetWidget() Widget {
-	return ce.widget
-}
-
-func (ce *widgetData) updateWidget(widget Widget) {
-	ce.widget = widget
-}
-
-type sizeData struct {
-	size Size
-}
-
-func (sd sizeData) getSize() Size {
-	return sd.size
-}
-
-type parentData struct {
+	size   Size
 	offset Offset
 }
 
-// let an embedded struct return itself in order to match interfaces (interfaces for struct elements)
-func (ce parentData) getParentData() *parentData {
-	return &ce
+func (ce *elementData) GetWidget() Widget {
+	return ce.widget
+}
+
+func (ce *elementData) updateWidget(widget Widget) {
+	ce.widget = widget
+}
+
+func (sd elementData) getSize() Size {
+	return sd.size
+}
+
+func (ed *elementData) getOffset() Offset {
+	return ed.offset
+}
+
+func (ed *elementData) setOffset(offset Offset) {
+	ed.offset = offset
 }
 
 type childElementData struct {

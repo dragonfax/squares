@@ -119,7 +119,7 @@ func RunApp(app Widget) error {
 }
 
 func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element, error) {
-	element := &StatelessElement{widget: sw}
+	element := NewStatelessElement(sw)
 
 	builtWidget, err := sw.Build(element)
 	if err != nil {
@@ -165,7 +165,7 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 		oldChildElement = oldStatefulElement.child
 	}
 
-	e := &StatefulElement{widget: widget, state: state}
+	e := NewStatefulElement(widget, state)
 
 	childWidget, err := state.Build(e)
 	if err != nil {

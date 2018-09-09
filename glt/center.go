@@ -12,9 +12,7 @@ type Center struct {
 }
 
 type CenterElement struct {
-	widgetData
-	sizeData
-	parentData
+	elementData
 	childElementData
 }
 
@@ -35,16 +33,16 @@ func (ce *CenterElement) layout(c Constraints) error {
 	ce.size = Size{width: c.maxWidth, height: c.maxHeight}
 
 	childSize := ce.child.getSize()
-	ce.child.getParentData().offset = Offset{
+	ce.child.setOffset(Offset{
 		x: (ce.size.width - childSize.width) / 2,
 		y: (ce.size.height - childSize.height) / 2,
-	}
+	})
 
 	return nil
 }
 
 func (element *CenterElement) render(offset Offset, renderer *sdl.Renderer) {
-	internalOffset := element.child.getParentData().offset
+	internalOffset := element.child.getOffset()
 	offset.x += internalOffset.x
 	offset.y += internalOffset.y
 	element.child.render(offset, renderer)
