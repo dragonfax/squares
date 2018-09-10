@@ -26,4 +26,4 @@ const (
 	BrightnessLight Brightness = iota
 )
 
-var IconsCreate = Icon{}
+var IconsCreate = &IconData{}

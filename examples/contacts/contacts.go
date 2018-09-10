@@ -37,15 +37,13 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 	}, nil
 }
 
-type VoidCallback func()
-
 var _ glt.StatelessWidget = &ContactItem{}
 
 type ContactItem struct {
 	Icon      *glt.IconData
 	Lines     []string
 	Tooltip   string
-	OnPressed VoidCallback
+	OnPressed func()
 }
 
 func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
@@ -106,13 +104,17 @@ var _ glt.State = &ContactsDemoState{}
 
 type ContactsDemoState struct {
 	scaffoldKey  *glt.GlobalKey
-	appBarHeight float32
+	appBarHeight uint16
 }
 
 // Use Init() in lue of a constructor
 func (cds *ContactsDemoState) Init() {
 	cds.scaffoldKey = glt.NewGlobalKey()
 	cds.appBarHeight = 256.0
+}
+
+func showSnackBar(key *glt.GlobalKey, snackBar *glt.SnackBar) {
+	key.currentState.showSnackBar(snackBar)
 }
 
 func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error) {
@@ -132,7 +134,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 							Icon:    &glt.Icon{Icon: glt.IconsCreate},
 							Tooltip: "Edit",
 							OnPressed: func() {
-								cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+								showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 									Content: &glt.Text{"Editing isn't supported in this screen."},
 								})
 							},
@@ -207,7 +209,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 													Content: &glt.Text{"Pretend that this opened your SMS application."},
 												})
 											},
@@ -220,7 +222,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 													Content: &glt.Text{"A messaging app appears."},
 												})
 											},
@@ -233,7 +235,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 													Content: &glt.Text{"Imagine if you will, a messaging application."},
 												})
 											},
@@ -252,7 +254,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Icon:    glt.IconsEmail,
 										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+											showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 												Content: &glt.Text{"Here, your e-mail application would open."},
 											})
 										},
@@ -265,7 +267,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Icon:    glt.IconsEmail,
 										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+											showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 												Content: &glt.Text{"Summon your favorite e-mail application here."},
 											})
 										},
@@ -283,7 +285,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+											showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 												Content: &glt.Text{"This would show a map of San Francisco."},
 											})
 										},
@@ -297,7 +299,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+											showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 												Content: &glt.Text{"This would show a map of Mountain View."},
 											})
 										},
@@ -311,7 +313,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+											showSnackBar(cds.scaffoldKey, &glt.SnackBar{
 												Content: &glt.Text{"This would also show a map, if this was not a demo."},
 											})
 										},
