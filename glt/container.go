@@ -7,7 +7,7 @@ type Container struct {
 	Child      Widget
 	Padding    EdgeInsets
 	Width      uint16
-	Decoration *BoxDecoration
+	Decoration BoxDecoration
 }
 
 type BoxDecoration struct {
@@ -102,7 +102,7 @@ const (
 )
 
 type SliverList struct {
-	Delegate SliverChildListDelegate
+	Delegate *SliverChildListDelegate
 }
 
 type SliverChildListDelegate struct {

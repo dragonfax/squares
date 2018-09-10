@@ -138,12 +138,12 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 							},
 						},
 						&glt.PopupMenuButton{
-							OnSelected: func(value AppBarBehavior) {
-								context.setState(func() {
-									appBarBehavior = value
+							OnSelected: func(value interface{}) {
+								context.(glt.StatefulContext).SetState(func() {
+									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context glt.BuildContext) (Widget, err) {
+							ItemBuilder: func(context glt.BuildContext) (glt.Widget, error) {
 								return []glt.PopupMenuItem{
 									&glt.PopupMenuItem{
 										Value: AppBarBehaviorNormal,

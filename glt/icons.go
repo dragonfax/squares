@@ -6,14 +6,14 @@ type IconData struct {
 }
 
 type Icon struct {
-	Icon IconData
+	Icon *IconData
 }
 
 type Color struct {
 }
 
 type IconButton struct {
-	Icon      Icon
+	Icon      *Icon
 	Tooltip   string
 	OnPressed VoidCallback
 }
