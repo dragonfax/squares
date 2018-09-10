@@ -16,8 +16,8 @@ type ContactCategory struct {
 func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 	return &glt.Container{
 		Padding: glt.EdgeInsets{Vertical: 16.0},
-		Decoration: &glt.BoxDecoration{
-			Border: &glt.Border{Bottom: &glt.BorderSide{}},
+		Decoration: glt.BoxDecoration{
+			Border: glt.Border{Bottom: glt.BorderSide{}},
 		},
 		Child: &glt.SafeArea{
 			Top:    false,
@@ -75,7 +75,7 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 	}
 	return &glt.MergeSemantics{
 		Child: &glt.Padding{
-			Padding: &glt.EdgeInsets{Vertical: 16.0},
+			Padding: glt.EdgeInsets{Vertical: 16.0},
 			Child: &glt.Row{
 				MainAxisAlignment: glt.MainAxisAlignmentSpaceBetween,
 				Children:          rowChildren,
@@ -183,8 +183,8 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 								// This gradient ensures that the toolbar icons are distinct
 								// against the background image.
 								&glt.DecoratedBox{
-									Decoration: &glt.BoxDecoration{
-										Gradient: &glt.LinearGradient{
+									Decoration: glt.BoxDecoration{
+										Gradient: glt.LinearGradient{
 											Begin:  glt.Alignment{0.0, -1.0},
 											End:    glt.Alignment{0.0, -0.4},
 											Colors: []glt.Color{glt.Color{0x60000000}, glt.Color{0x00000000}},
