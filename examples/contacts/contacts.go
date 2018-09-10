@@ -1,19 +1,19 @@
+package main
+
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import	"github.com/dragonfax/glitter/glt"
 
-class _ContactCategory extends StatelessWidget {
-  const _ContactCategory({ Key key, this.icon, this.children }) : super(key: key);
+var _ StatelessWidget = &ContactCategory{} 
 
-  final IconData icon;
-  final List<Widget> children;
+type ContactCategory struct {
+  icon IconData
+  Children []Widget
+}
 
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
+func (cc *ContactCategory) Build(context glt.BuildContext) (Widget, error) {
     return new Container(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       decoration: new BoxDecoration(
