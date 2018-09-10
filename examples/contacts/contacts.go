@@ -9,7 +9,7 @@ import "github.com/dragonfax/glitter/glt"
 var _ StatelessWidget = &ContactCategory{}
 
 type ContactCategory struct {
-	icon     IconData
+	Icon     IconData
 	Children []Widget
 }
 
