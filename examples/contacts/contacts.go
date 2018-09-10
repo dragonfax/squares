@@ -9,7 +9,7 @@ import "github.com/dragonfax/glitter/glt"
 var _ glt.StatelessWidget = &ContactCategory{}
 
 type ContactCategory struct {
-	Icon     glt.IconData
+	Icon     *glt.IconData
 	Children []glt.Widget
 }
 
@@ -28,7 +28,7 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 					&glt.Container{
 						Padding: glt.EdgeInsets{Vertical: 24.0},
 						Width:   72.0,
-						Child:   &glt.Icon{Icon: icon, Color: themeData.primaryColor},
+						Child:   &glt.Icon{Icon: icon},
 					},
 					&glt.Expanded{Child: &glt.Column{Children: children}},
 				},
@@ -143,7 +143,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 									appBarBehavior = value
 								})
 							},
-							ItemBuilder: func(context glt.BuildContext) {
+							ItemBuilder: func(context glt.BuildContext) (Widget, err) {
 								return []glt.PopupMenuItem{
 									&glt.PopupMenuItem{
 										Value: AppBarBehaviorNormal,
@@ -161,7 +161,7 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 										Value: AppBarBehaviorSnapping,
 										Child: &glt.Text{"App bar snaps"},
 									},
-								}
+								}, nil
 							},
 						},
 					},
@@ -185,8 +185,8 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 								&glt.DecoratedBox{
 									Decoration: &glt.BoxDecoration{
 										Gradient: &glt.LinearGradient{
-											Begin:  glt.Alignment(0.0, -1.0),
-											End:    glt.Alignment(0.0, -0.4),
+											Begin:  glt.Alignment{0.0, -1.0},
+											End:    glt.Alignment{0.0, -0.4},
 											Colors: []glt.Color{glt.Color{0x60000000}, glt.Color{0x00000000}},
 										},
 									},
@@ -196,162 +196,163 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 					},
 				},
 				&glt.SliverList{
-					Delegate: &glt.SliverChildListDelegate{[]glt.Widget{
-						&glt.AnnotatedRegion{
-							Value: glt.SystemUiOverlayStyleDark,
-							Child: &glt.ContactCategory{
-								Icon: glt.IconsCall,
+					Delegate: &glt.SliverChildListDelegate{
+						Children: []glt.Widget{
+							&glt.AnnotatedRegion{
+								Value: glt.SystemUiOverlayStyleDark,
+								Child: &glt.ContactCategory{
+									Icon: glt.IconsCall,
+									Children: []glt.Widget{
+										&glt.ContactItem{
+											Icon:    glt.IconsMessage,
+											Tooltip: "Send message",
+											OnPressed: func() {
+												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"Pretend that this opened your SMS application."},
+												})
+											},
+											Lines: []string{
+												"(650) 555-1234",
+												"Mobile",
+											},
+										},
+										&ContactItem{
+											Icon:    glt.IconsMessage,
+											Tooltip: "Send message",
+											OnPressed: func() {
+												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"A messaging app appears."},
+												})
+											},
+											Lines: []string{
+												"(323) 555-6789",
+												"Work",
+											},
+										},
+										&ContactItem{
+											Icon:    glt.IconsMessage,
+											Tooltip: "Send message",
+											OnPressed: func() {
+												cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"Imagine if you will, a messaging application."},
+												})
+											},
+											Lines: []string{
+												"(650) 555-6789",
+												"Home",
+											},
+										},
+									},
+								},
+							},
+							&ContactCategory{
+								Icon: glt.IconsContactMail,
 								Children: []glt.Widget{
-									&glt.ContactItem{
-										Icon:    glt.IconsMessage,
-										Tooltip: "Send message",
+									&ContactItem{
+										Icon:    glt.IconsEmail,
+										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-												Content: &glt.Text{"Pretend that this opened your SMS application."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"Here, your e-mail application would open."},
 											})
 										},
 										Lines: []string{
-											"(650) 555-1234",
-											"Mobile",
+											"ali_connors@example.com",
+											"Personal",
 										},
 									},
 									&ContactItem{
-										Icon:    glt.IconsMessage,
-										Tooltip: "Send message",
+										Icon:    glt.IconsEmail,
+										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-												Content: &glt.Text{"A messaging app appears."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"Summon your favorite e-mail application here."},
 											})
 										},
 										Lines: []string{
-											"(323) 555-6789",
+											"aliconnors@example.com",
+											"Work",
+										},
+									},
+								},
+							},
+							&ContactCategory{
+								Icon: glt.IconsLocationOn,
+								Children: []glt.Widget{
+									&ContactItem{
+										Icon:    glt.IconsMap,
+										Tooltip: "Open map",
+										OnPressed: func() {
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"This would show a map of San Francisco."},
+											})
+										},
+										Lines: []string{
+											"2000 Main Street",
+											"San Francisco, CA",
+											"Home",
+										},
+									},
+									&ContactItem{
+										Icon:    glt.IconsMap,
+										Tooltip: "Open map",
+										OnPressed: func() {
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"This would show a map of Mountain View."},
+											})
+										},
+										Lines: []string{
+											"1600 Amphitheater Parkway",
+											"Mountain View, CA",
 											"Work",
 										},
 									},
 									&ContactItem{
-										Icon:    glt.IconsMessage,
-										Tooltip: "Send message",
+										Icon:    glt.IconsMap,
+										Tooltip: "Open map",
 										OnPressed: func() {
 											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-												Content: &glt.Text{"Imagine if you will, a messaging application."},
+												Content: &glt.Text{"This would also show a map, if this was not a demo."},
 											})
 										},
 										Lines: []string{
-											"(650) 555-6789",
-											"Home",
+											"126 Severyns Ave",
+											"Mountain View, CA",
+											"Jet Travel",
 										},
 									},
 								},
 							},
-						},
-						&ContactCategory{
-							Icon: glt.IconsContactMail,
-							Children: []glt.Widget{
-								&ContactItem{
-									Icon:    glt.IconsEmail,
-									Tooltip: "Send personal e-mail",
-									OnPressed: func() {
-										cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-											Content: &glt.Text{"Here, your e-mail application would open."},
-										})
+							&ContactCategory{
+								Icon: glt.IconsToday,
+								Children: []glt.Widget{
+									&ContactItem{
+										Lines: []string{
+											"Birthday",
+											"January 9th, 1989",
+										},
 									},
-									Lines: []string{
-										"ali_connors@example.com",
-										"Personal",
+									&ContactItem{
+										Lines: []string{
+											"Wedding anniversary",
+											"June 21st, 2014",
+										},
 									},
-								},
-								&ContactItem{
-									Icon:    glt.IconsEmail,
-									Tooltip: "Send work e-mail",
-									OnPressed: func() {
-										cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-											Content: &glt.Text{"Summon your favorite e-mail application here."},
-										})
+									&ContactItem{
+										Lines: []string{
+											"First day in office",
+											"January 20th, 2015",
+										},
 									},
-									Lines: []string{
-										"aliconnors@example.com",
-										"Work",
+									&ContactItem{
+										Lines: []string{
+											"Last day in office",
+											"August 9th, 2018",
+										},
 									},
 								},
 							},
-						},
-						&ContactCategory{
-							Icon: glt.IconsLocationOn,
-							Children: []glt.Widget{
-								&ContactItem{
-									Icon:    glt.IconsMap,
-									Tooltip: "Open map",
-									OnPressed: func() {
-										cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-											Content: &glt.Text{"This would show a map of San Francisco."},
-										})
-									},
-									Lines: []string{
-										"2000 Main Street",
-										"San Francisco, CA",
-										"Home",
-									},
-								},
-								&ContactItem{
-									Icon:    glt.IconsMap,
-									Tooltip: "Open map",
-									OnPressed: func() {
-										cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-											Content: &glt.Text{"This would show a map of Mountain View."},
-										})
-									},
-									Lines: []string{
-										"1600 Amphitheater Parkway",
-										"Mountain View, CA",
-										"Work",
-									},
-								},
-								&ContactItem{
-									Icon:    glt.IconsMap,
-									Tooltip: "Open map",
-									OnPressed: func() {
-										cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
-											Content: &glt.Text{"This would also show a map, if this was not a demo."},
-										})
-									},
-									Lines: []string{
-										"126 Severyns Ave",
-										"Mountain View, CA",
-										"Jet Travel",
-									},
-								},
-							},
-						},
-						&ContactCategory{
-							Icon: glt.IconsToday,
-							Children: []glt.Widget{
-								&ContactItem{
-									Lines: []string{
-										"Birthday",
-										"January 9th, 1989",
-									},
-								},
-								&ContactItem{
-									Lines: []string{
-										"Wedding anniversary",
-										"June 21st, 2014",
-									},
-								},
-								&ContactItem{
-									Lines: []string{
-										"First day in office",
-										"January 20th, 2015",
-									},
-								},
-								&ContactItem{
-									Lines: []string{
-										"Last day in office",
-										"August 9th, 2018",
-									},
-								},
-							},
-						},
-					}},
+						}},
 				},
 			},
 		},

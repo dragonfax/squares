@@ -8,7 +8,8 @@ var _ HasChildren = &Column{}
 var _ HasChildrenElements = &ColumnElement{}
 
 type Column struct {
-	Children []Widget
+	CrossAxisAlignment CrossAxisAlignment
+	Children           []Widget
 }
 
 func (c *Column) getChildren() []Widget {
