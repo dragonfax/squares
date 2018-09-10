@@ -14,77 +14,77 @@ type ContactCategory struct {
 }
 
 func (cc *ContactCategory) Build(context glt.BuildContext) (Widget, error) {
-    return new Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      decoration: new BoxDecoration(
-        border: new Border(bottom: new BorderSide(color: themeData.dividerColor))
-      ),
-      child: new DefaultTextStyle(
-        style: Theme.of(context).textTheme.subhead,
-        child: new SafeArea(
-          top: false,
-          bottom: false,
-          child: new Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Container(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                width: 72.0,
-                child: new Icon(icon, color: themeData.primaryColor)
-              ),
-              new Expanded(child: new Column(children: children))
-            ],
-          ),
-        ),
-      ),
-    );
+    return &glt.Container{
+      Padding: EdgeInsets{Vertical: 16.0},
+      Decoration: &BoxDecoration{
+        Border: &Border{Bottom: &BorderSide{Color: themeData.dividerColor}}
+      },
+      Child: &DefaultTextStyle{
+        Style: Theme.of(context).textTheme.subhead,
+        Child: &SafeArea{
+          Top: false,
+          Bottom: false,
+          Child: &Row{
+            CrossAxisAlignment: CrossAxisAlignment.start,
+            Children: []Widget{
+              &Container{
+                Padding: EdgeInsets{Vertical: 24.0},
+                Width: 72.0,
+                Child: &Icon{Icon: icon, Color: themeData.primaryColor},
+              },
+              &Expanded{Child: &Column{Children: children}},
+            },
+          },
+        },
+      },
   }
 }
 
-class _ContactItem extends StatelessWidget {
-  _ContactItem({ Key key, this.icon, this.lines, this.tooltip, this.onPressed })
-    : assert(lines.length > 1),
-      super(key: key);
+var _ StatelessWidget = &ContactItem
 
-  final IconData icon;
-  final List<String> lines;
-  final String tooltip;
-  final VoidCallback onPressed;
+type ContactItem struct {
+  Icon IconData
+  lines []string
+  Tooltip string
+  onPressed VoidCallback
+}
 
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    final List<Widget> columnChildren = lines.sublist(0, lines.length - 1).map((String line) => new Text(line)).toList();
-    columnChildren.add(new Text(lines.last, style: themeData.textTheme.caption));
-
-    final List<Widget> rowChildren = <Widget>[
-      new Expanded(
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: columnChildren
-        )
-      )
-    ];
-    if (icon != null) {
-      rowChildren.add(new SizedBox(
-        width: 72.0,
-        child: new IconButton(
-          icon: new Icon(icon),
-          color: themeData.primaryColor,
-          onPressed: onPressed
-        )
-      ));
+func (ci *ContactItem) Build(context glt.BuildContext) (Widget,error) {
+    // ThemeData themeData = Theme.of(context);
+    var columnChildren []Widget = make([]Widget,0, len(lines))
+    for _, line := range lines[0:-1] {
+      columnChildren = append(columnChildren,&glt.Text{Text: line})
     }
-    return new MergeSemantics(
-      child: new Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: rowChildren
-        )
-      ),
-    );
-  }
+    columnChildren = append(columnChildren, &Text{Text: lines[-1], Style: themeData.textTheme.caption})
+
+    rowChildren := []Widget{
+      &glt.Expanded{
+        Child: &Column{
+          CrossAxisAlignment: CrossAxisAlignment.start,
+          Children: columnChildren,
+        }
+      }
+    };
+
+    if icon != nil {
+      rowChildren = append(rowChildren, &SizedBox{
+        Width: 72.0,
+        Child: &IconButton{
+          Icon: &Icon{Icon: icon},
+          Color: themeData.primaryColor,
+          OnPressed: onPressed,
+        }
+      });
+    }
+    return &MergeSemantics{
+      Child: &Padding{
+        Padding: &EdgeInsets{Vertical: 16.0},
+        Child: &Row{
+          MainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Children: rowChildren,
+        },
+      },
+    };
 }
 
 class ContactsDemo extends StatefulWidget {
