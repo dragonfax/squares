@@ -4,25 +4,24 @@ package glt
 // var _ HasChild = &Container{}
 
 type Container struct {
-	Child Widget,
-	Padding EdgeInsets
-	Widget uint16
-	Dectoration *BoxDecoration
-
+	Child      Widget
+	Padding    EdgeInsets
+	Width      uint16
+	Decoration *BoxDecoration
 }
 
 type BoxDecoration struct {
-	Border Border
+	Border   Border
 	Gradient LinearGradient
 }
 
 type DecoratedBox struct {
-	Dectoration BoxDectoration
+	Decoration BoxDecoration
 }
 
 type LinearGradient struct {
-	Begin Alignment
-	End Alignment
+	Begin  Alignment
+	End    Alignment
 	Colors []Color
 }
 
@@ -38,15 +37,15 @@ type BorderSide struct {
 }
 
 type SafeArea struct {
-	Top bool
+	Top    bool
 	Bottom bool
-	Child Widget
+	Child  Widget
 }
 
 type Row struct {
 	CrossAxisAlignment CrossAxisAlignment
-	MainAxisAlignment MainAxisAlignment
-	Children []Widget
+	MainAxisAlignment  MainAxisAlignment
+	Children           []Widget
 }
 
 type CrossAxisAlignment uint8
@@ -62,36 +61,37 @@ const (
 )
 
 type Expanded struct {
-	Child
+	Child Widget
 }
 
 type SizedBox struct {
 	Width uint16
-	Children
+	Child Widget
 }
 
 type MergeSemantics struct {
+	Child Widget
 }
 
 type CustomScrollView struct {
-	Children []Widget
+	Slivers []Widget
 }
 
 type SliverAppBar struct {
 	ExpandedHeight uint16
-	Pinned bool
-	Floating bool
-	Snap bool
-	Children []Widget
+	Pinned         bool
+	Floating       bool
+	Snap           bool
+	Actions        []Widget
 }
 
 type FlexibleSpaceBar struct {
-	Title Widget
+	Title      Widget
 	Background Widget
 }
 
 type Stack struct {
-	Fit StackFit
+	Fit      StackFit
 	Children []Widget
 }
 
@@ -109,7 +109,7 @@ type SliverChildListDelegate struct {
 	Children []Widget
 }
 
-type SystemUiOverlayStyle uin8
+type SystemUiOverlayStyle uint8
 
 const (
 	SystemUiOverlayStyleDark SystemUiOverlayStyle = iota

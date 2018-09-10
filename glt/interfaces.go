@@ -15,7 +15,10 @@ type StatefulContext interface {
 	SetState(SetStateFunc)
 }
 
+type BuildFunc func(context BuildContext) (Widget, error)
+
 type StatelessWidget interface {
+	// Can't embed function types as interface methods, so we'll just copy the definition of BuildFunc
 	Build(context BuildContext) (Widget, error)
 }
 

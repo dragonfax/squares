@@ -28,9 +28,9 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 					&glt.Container{
 						Padding: glt.EdgeInsets{Vertical: 24.0},
 						Width:   72.0,
-						Child:   &glt.Icon{Icon: icon},
+						Child:   &glt.Icon{Icon: cc.Icon},
 					},
-					&glt.Expanded{Child: &glt.Column{Children: children}},
+					&glt.Expanded{Child: &glt.Column{Children: cc.Children}},
 				},
 			},
 		},
@@ -69,7 +69,7 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 			Width: 72.0,
 			Child: &glt.IconButton{
 				Icon:      &glt.Icon{Icon: ci.Icon},
-				OnPressed: onPressed,
+				OnPressed: ci.OnPressed,
 			},
 		})
 	}

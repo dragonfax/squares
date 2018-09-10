@@ -1,8 +1,8 @@
 package glt
 
 type Scaffold struct {
-	Key   *GlobalKey
-	Child Widget
+	Key  *GlobalKey
+	Body Widget
 }
 
 type SnackBar struct {

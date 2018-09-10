@@ -5,6 +5,12 @@ type Asset struct {
 	Package string
 }
 
+type BoxFit uint8
+
+const (
+	BoxFitCover BoxFit = iota
+)
+
 type Image struct {
 	Fit    BoxFit
 	Height uint16
