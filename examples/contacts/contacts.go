@@ -14,7 +14,7 @@ type ContactCategory struct {
 }
 
 func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
-	var themeData ThemeData = glt.Theme.of(context)
+	var themeData glt.ThemeData = glt.Theme.of(context)
 	return &glt.Container{
 		Padding: glt.EdgeInsets{Vertical: 16.0},
 		Decoration: &glt.BoxDecoration{
@@ -26,7 +26,7 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 				Top:    false,
 				Bottom: false,
 				Child: &glt.Row{
-					CrossAxisAlignment: glt.CrossAxisAlignment.start,
+					CrossAxisAlignment: glt.CrossAxisAlignmentStart,
 					Children: []glt.Widget{
 						&glt.Container{
 							Padding: glt.EdgeInsets{Vertical: 24.0},
@@ -40,6 +40,8 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 		},
 	}
 }
+
+type VoidCallback func()
 
 var _ glt.StatelessWidget = &ContactItem
 
@@ -61,7 +63,7 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 	rowChildren := []glt.Widget{
 		&glt.Expanded{
 			Child: &glt.Column{
-				CrossAxisAlignment: glt.CrossAxisAlignment.start,
+				CrossAxisAlignment: glt.CrossAxisAlignmentStart,
 				Children:           columnChildren,
 			},
 		},
@@ -81,7 +83,7 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 		Child: &glt.Padding{
 			Padding: &glt.EdgeInsets{Vertical: 16.0},
 			Child: &glt.Row{
-				MainAxisAlignment: glt.MainAxisAlignment.spaceBetween,
+				MainAxisAlignment: glt.MainAxisAlignmentSpaceBetween,
 				Children:          rowChildren,
 			},
 		},
@@ -124,8 +126,8 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 
 	return &glt.Theme{
 		Data: &glt.ThemeData{
-			Brightness:    glt.Brightness.light,
-			PrimarySwatch: glt.Colors.indigo,
+			Brightness:    glt.BrightnessLight,
+			PrimarySwatch: glt.ColorsIndigo,
 			Platform:      glt.Theme.of(context).platform,
 		},
 		Child: &glt.Scaffold{

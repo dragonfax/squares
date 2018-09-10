@@ -5,7 +5,8 @@ import (
 )
 
 type EdgeInsets struct {
-	All uint16
+	All      uint16
+	Vertical uint16
 }
 
 type Offset struct {

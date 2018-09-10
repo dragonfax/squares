@@ -44,3 +44,6 @@ func (t *TextElement) render(offset Offset, renderer *sdl.Renderer) {
 	}
 	renderer.Copy(texture, nil, &sdl.Rect{X: ux, Y: uy, W: surface.W, H: surface.H})
 }
+
+type DefaultTextStyle struct {
+}
