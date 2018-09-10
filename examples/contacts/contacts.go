@@ -6,34 +6,34 @@ package main
 
 import "github.com/dragonfax/glitter/glt"
 
-var _ StatelessWidget = &ContactCategory{}
+var _ glt.StatelessWidget = &ContactCategory{}
 
 type ContactCategory struct {
-	Icon     IconData
-	Children []Widget
+	Icon     glt.IconData
+	Children []glt.Widget
 }
 
-func (cc *ContactCategory) Build(context glt.BuildContext) (Widget, error) {
-	var themeData ThemeData = Theme.of(context)
+func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
+	var themeData ThemeData = glt.Theme.of(context)
 	return &glt.Container{
-		Padding: EdgeInsets{Vertical: 16.0},
-		Decoration: &BoxDecoration{
-			Border: &Border{Bottom: &BorderSide{Color: themeData.dividerColor}},
+		Padding: glt.EdgeInsets{Vertical: 16.0},
+		Decoration: &glt.BoxDecoration{
+			Border: &glt.Border{Bottom: &glt.BorderSide{Color: themeData.dividerColor}},
 		},
-		Child: &DefaultTextStyle{
-			Style: Theme.of(context).textTheme.subhead,
-			Child: &SafeArea{
+		Child: &glt.DefaultTextStyle{
+			Style: glt.Theme.of(context).textTheme.subhead,
+			Child: &glt.SafeArea{
 				Top:    false,
 				Bottom: false,
-				Child: &Row{
-					CrossAxisAlignment: CrossAxisAlignment.start,
-					Children: []Widget{
-						&Container{
-							Padding: EdgeInsets{Vertical: 24.0},
+				Child: &glt.Row{
+					CrossAxisAlignment: glt.CrossAxisAlignment.start,
+					Children: []glt.Widget{
+						&glt.Container{
+							Padding: glt.EdgeInsets{Vertical: 24.0},
 							Width:   72.0,
-							Child:   &Icon{Icon: icon, Color: themeData.primaryColor},
+							Child:   &glt.Icon{Icon: icon, Color: themeData.primaryColor},
 						},
-						&Expanded{Child: &Column{Children: children}},
+						&glt.Expanded{Child: &glt.Column{Children: children}},
 					},
 				},
 			},
@@ -41,59 +41,59 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (Widget, error) {
 	}
 }
 
-var _ StatelessWidget = &ContactItem
+var _ glt.StatelessWidget = &ContactItem
 
 type ContactItem struct {
-	Icon      IconData
+	Icon      glt.IconData
 	lines     []string
 	Tooltip   string
 	onPressed VoidCallback
 }
 
-func (ci *ContactItem) Build(context glt.BuildContext) (Widget, error) {
+func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 	// ThemeData themeData = Theme.of(context);
-	var columnChildren []Widget = make([]Widget, 0, len(lines))
+	var columnChildren []glt.Widget = make([]glt.Widget, 0, len(lines))
 	for _, line := range lines[0:-1] {
 		columnChildren = append(columnChildren, &glt.Text{Text: line})
 	}
-	columnChildren = append(columnChildren, &Text{Text: lines[-1], Style: themeData.textTheme.caption})
+	columnChildren = append(columnChildren, &glt.Text{Text: lines[-1], Style: themeData.textTheme.caption})
 
-	rowChildren := []Widget{
+	rowChildren := []glt.Widget{
 		&glt.Expanded{
-			Child: &Column{
-				CrossAxisAlignment: CrossAxisAlignment.start,
+			Child: &glt.Column{
+				CrossAxisAlignment: glt.CrossAxisAlignment.start,
 				Children:           columnChildren,
 			},
 		},
 	}
 
 	if icon != nil {
-		rowChildren = append(rowChildren, &SizedBox{
+		rowChildren = append(rowChildren, &glt.SizedBox{
 			Width: 72.0,
-			Child: &IconButton{
-				Icon:      &Icon{Icon: icon},
+			Child: &glt.IconButton{
+				Icon:      &glt.Icon{Icon: icon},
 				Color:     themeData.primaryColor,
 				OnPressed: onPressed,
 			},
 		})
 	}
-	return &MergeSemantics{
-		Child: &Padding{
-			Padding: &EdgeInsets{Vertical: 16.0},
-			Child: &Row{
-				MainAxisAlignment: MainAxisAlignment.spaceBetween,
+	return &glt.MergeSemantics{
+		Child: &glt.Padding{
+			Padding: &glt.EdgeInsets{Vertical: 16.0},
+			Child: &glt.Row{
+				MainAxisAlignment: glt.MainAxisAlignment.spaceBetween,
 				Children:          rowChildren,
 			},
 		},
 	}
 }
 
-var _ StatefulWidget = &ContactsDemo{}
+var _ glt.StatefulWidget = &ContactsDemo{}
 
 type ContactsDemo struct {
 }
 
-func (cd *ContactsDemo) CreateState() State {
+func (cd *ContactsDemo) CreateState() glt.State {
 	return &ContactsDemoState{}
 }
 
@@ -106,98 +106,98 @@ const (
 	AppBarBehaviorSnapping
 )
 
-var _ State = &ContactsDemoState{}
+var _ glt.State = &ContactsDemoState{}
 
 type ContactsDemoState struct {
-	scaffoldKey  GlobalKey
+	scaffoldKey  glt.GlobalKey
 	appBarHeight float32
 }
 
 // Use Init() in lue of a constructor
 func (cds *ContactsDemoState) Init() {
-	cds.scaffoldKey = NewGlobalKey()
+	cds.scaffoldKey = glt.NewGlobalKey()
 	cds.appBarHeight = 256.0
 }
 
-func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
+func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
 
-	return &Theme{
-		Data: &ThemeData{
-			Brightness:    Brightness.light,
-			PrimarySwatch: Colors.indigo,
-			Platform:      Theme.of(context).platform,
+	return &glt.Theme{
+		Data: &glt.ThemeData{
+			Brightness:    glt.Brightness.light,
+			PrimarySwatch: glt.Colors.indigo,
+			Platform:      glt.Theme.of(context).platform,
 		},
-		Child: &Scaffold{
+		Child: &glt.Scaffold{
 			Key: cds.scaffoldKey,
-			Body: &CustomScrollView{
-				Slivers: []Widget{
-					&SliverAppBar{
+			Body: &glt.CustomScrollView{
+				Slivers: []glt.Widget{
+					&glt.SliverAppBar{
 						ExpandedHeight: cds.appBarHeight,
 						Pinned:         appBarBehavior == AppBarBehaviorPinned,
 						Floating:       appBarBehavior == AppBarBehaviorFloating || appBarBehavior == AppBarBehaviorSnapping,
 						Snap:           appBarBehavior == AppBarBehaviorSnapping,
-						Actions: []Widget{
-							&IconButton{
-								Icon:    &Icon{Icon: IconsCreate},
+						Actions: []glt.Widget{
+							&glt.IconButton{
+								Icon:    &glt.Icon{Icon: glt.IconsCreate},
 								Tooltip: "Edit",
 								OnPressed: func() {
-									cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-										Content: &Text{"Editing isn't supported in this screen."},
+									cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+										Content: &glt.Text{"Editing isn't supported in this screen."},
 									})
 								},
 							},
-							&PopupMenuButton{
+							&glt.PopupMenuButton{
 								OnSelected: func(value AppBarBehavior) {
 									context.setState(func() {
 										appBarBehavior = value
 									})
 								},
 								ItemBuilder: func(context glt.BuildContext) {
-									return []PopupMenuItem{
-										&PopupMenuItem{
+									return []glt.PopupMenuItem{
+										&glt.PopupMenuItem{
 											Value: AppBarBehaviorNormal,
-											Child: &Text{"App bar scrolls away"},
+											Child: &glt.Text{"App bar scrolls away"},
 										},
-										&PopupMenuItem{
+										&glt.PopupMenuItem{
 											Value: AppBarBehaviorPinned,
-											Child: &Text{"App bar stays put"},
+											Child: &glt.Text{"App bar stays put"},
 										},
-										&PopupMenuItem{
+										&glt.PopupMenuItem{
 											Value: AppBarBehaviorFloating,
-											Child: &Text{"App bar floats"},
+											Child: &glt.Text{"App bar floats"},
 										},
-										&PopupMenuItem{
+										&glt.PopupMenuItem{
 											Value: AppBarBehaviorSnapping,
-											Child: &Text{"App bar snaps"},
+											Child: &glt.Text{"App bar snaps"},
 										},
 									}
 								},
 							},
 						},
-						FlexibleSpace: &FlexibleSpaceBar{
-							Title: &Text{"Ali Connors"},
-							Background: &Stack{
-								Fit: StackFitExpand,
-								Children: []Widget{
-									NewImageFromAsset(
-										Asset{
+						FlexibleSpace: &glt.FlexibleSpaceBar{
+							Title: &glt.Text{"Ali Connors"},
+							Background: &glt.Stack{
+								Fit: glt.StackFitExpand,
+								Children: []glt.Widget{
+									glt.NewImageFromAsset(
+										glt.Asset{
 											File:    "people/ali_landscape.png",
 											Package: "flutter_gallery_assets",
 										},
-										&Image{
-											Fit:    BoxFitCover,
+										&glt.Image{
+											Fit:    glt.BoxFitCover,
 											Height: cds.appBarHeight,
 										},
 									),
 									// This gradient ensures that the toolbar icons are distinct
 									// against the background image.
-									&DecoratedBox{
-										Decoration: &BoxDecoration{
-											Gradient: &LinearGradient{
-												Begin:  Alignment(0.0, -1.0),
-												End:    Alignment(0.0, -0.4),
-												Colors: []Color{Color{0x60000000}, Color{0x00000000}},
+									&glt.DecoratedBox{
+										Decoration: &glt.BoxDecoration{
+											Gradient: &glt.LinearGradient{
+												Begin:  glt.Alignment(0.0, -1.0),
+												End:    glt.Alignment(0.0, -0.4),
+												Colors: []glt.Color{glt.Color{0x60000000}, glt.Color{0x00000000}},
 											},
 										},
 									},
@@ -205,19 +205,19 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 							},
 						},
 					},
-					&SliverList{
-						Delegate: &SliverChildListDelegate{[]Widget{
-							&AnnotatedRegion{
-								Value: SystemUiOverlayStyleDark,
-								Child: &ContactCategory{
-									Icon: IconsCall,
-									Children: []Widget{
-										&ContactItem{
-											Icon:    IconsMessage,
+					&glt.SliverList{
+						Delegate: &glt.SliverChildListDelegate{[]glt.Widget{
+							&glt.AnnotatedRegion{
+								Value: glt.SystemUiOverlayStyleDark,
+								Child: &glt.ContactCategory{
+									Icon: glt.IconsCall,
+									Children: []glt.Widget{
+										&glt.ContactItem{
+											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												scaffoldKey.currentState.showSnackBar(&SnackBar{
-													Content: &Text{"Pretend that this opened your SMS application."},
+												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"Pretend that this opened your SMS application."},
 												})
 											},
 											Lines: []string{
@@ -226,11 +226,11 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 											},
 										},
 										&ContactItem{
-											Icon:    IconsMessage,
+											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												scaffoldKey.currentState.showSnackBar(&SnackBar{
-													Content: &Text{"A messaging app appears."},
+												scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"A messaging app appears."},
 												})
 											},
 											Lines: []string{
@@ -239,11 +239,11 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 											},
 										},
 										&ContactItem{
-											Icon:    IconsMessage,
+											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {
-												cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-													Content: &Text{"Imagine if you will, a messaging application."},
+												cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+													Content: &glt.Text{"Imagine if you will, a messaging application."},
 												})
 											},
 											Lines: []string{
@@ -255,14 +255,14 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 								},
 							},
 							&ContactCategory{
-								Icon: IconsContactMail,
-								Children: []Widget{
+								Icon: glt.IconsContactMail,
+								Children: []glt.Widget{
 									&ContactItem{
-										Icon:    IconsEmail,
+										Icon:    glt.IconsEmail,
 										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-												Content: &Text{"Here, your e-mail application would open."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"Here, your e-mail application would open."},
 											})
 										},
 										Lines: []string{
@@ -271,11 +271,11 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 										},
 									},
 									&ContactItem{
-										Icon:    IconsEmail,
+										Icon:    glt.IconsEmail,
 										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-												Content: &Text{"Summon your favorite e-mail application here."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"Summon your favorite e-mail application here."},
 											})
 										},
 										Lines: []string{
@@ -286,14 +286,14 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 								},
 							},
 							&ContactCategory{
-								Icon: IconsLocationOn,
-								Children: []Widget{
+								Icon: glt.IconsLocationOn,
+								Children: []glt.Widget{
 									&ContactItem{
-										Icon:    IconsMap,
+										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-												Content: &Text{"This would show a map of San Francisco."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"This would show a map of San Francisco."},
 											})
 										},
 										Lines: []string{
@@ -303,11 +303,11 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 										},
 									},
 									&ContactItem{
-										Icon:    IconsMap,
+										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-												Content: &Text{"This would show a map of Mountain View."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"This would show a map of Mountain View."},
 											})
 										},
 										Lines: []string{
@@ -317,11 +317,11 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 										},
 									},
 									&ContactItem{
-										Icon:    IconsMap,
+										Icon:    glt.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											cds.scaffoldKey.currentState.showSnackBar(&SnackBar{
-												Content: &Text{"This would also show a map, if this was not a demo."},
+											cds.scaffoldKey.currentState.showSnackBar(&glt.SnackBar{
+												Content: &glt.Text{"This would also show a map, if this was not a demo."},
 											})
 										},
 										Lines: []string{
@@ -333,8 +333,8 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (Widget, error) {
 								},
 							},
 							&ContactCategory{
-								Icon: IconsToday,
-								Children: []Widget{
+								Icon: glt.IconsToday,
+								Children: []glt.Widget{
 									&ContactItem{
 										Lines: []string{
 											"Birthday",
