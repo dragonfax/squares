@@ -14,7 +14,7 @@ type ContactCategory struct {
 }
 
 func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
-	var themeData glt.ThemeData = glt.Theme.of(context)
+	// var themeData glt.ThemeData = glt.Theme.of(context)
 	return &glt.Container{
 		Padding: glt.EdgeInsets{Vertical: 16.0},
 		Decoration: &glt.BoxDecoration{
@@ -38,12 +38,12 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 				},
 			},
 		},
-	}
+	}, nil
 }
 
 type VoidCallback func()
 
-var _ glt.StatelessWidget = &ContactItem
+var _ glt.StatelessWidget = &ContactItem{}
 
 type ContactItem struct {
 	Icon      glt.IconData

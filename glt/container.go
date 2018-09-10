@@ -1,7 +1,7 @@
 package glt
 
-var _ ElementWidget = &Container{}
-var _ HasChild = &Container{}
+// var _ ElementWidget = &Container{}
+// var _ HasChild = &Container{}
 
 type Container struct {
 }
