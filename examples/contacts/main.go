@@ -10,7 +10,7 @@ func main() {
 
 	glt.RunApp(&glt.MaterialApp{
 		Title: "Contacts App",
-		Color: Colors.grey,
+		Color: glt.ColorsGrey,
 		Child: &ContactsDemo{},
 	})
 }

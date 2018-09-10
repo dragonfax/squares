@@ -145,8 +145,8 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context glt.BuildContext) (glt.Widget, error) {
-								return []glt.PopupMenuItem{
+							ItemBuilder: func(context glt.BuildContext) ([]*glt.PopupMenuItem, error) {
+								return []*glt.PopupMenuItem{
 									&glt.PopupMenuItem{
 										Value: AppBarBehaviorNormal,
 										Child: &glt.Text{"App bar scrolls away"},
@@ -202,10 +202,10 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 						Children: []glt.Widget{
 							&glt.AnnotatedRegion{
 								Value: glt.SystemUiOverlayStyleDark,
-								Child: &glt.ContactCategory{
+								Child: &ContactCategory{
 									Icon: glt.IconsCall,
 									Children: []glt.Widget{
-										&glt.ContactItem{
+										&ContactItem{
 											Icon:    glt.IconsMessage,
 											Tooltip: "Send message",
 											OnPressed: func() {

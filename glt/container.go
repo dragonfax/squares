@@ -83,6 +83,7 @@ type SliverAppBar struct {
 	Floating       bool
 	Snap           bool
 	Actions        []Widget
+	FlexibleSpace  *FlexibleSpaceBar // Widget
 }
 
 type FlexibleSpaceBar struct {

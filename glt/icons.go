@@ -9,9 +9,6 @@ type Icon struct {
 	Icon *IconData
 }
 
-type Color struct {
-}
-
 type IconButton struct {
 	Icon      *Icon
 	Tooltip   string
@@ -27,3 +24,10 @@ const (
 )
 
 var IconsCreate = &IconData{}
+var IconsCall = &IconData{}
+var IconsMessage = &IconData{}
+var IconsContactMail = &IconData{}
+var IconsEmail = &IconData{}
+var IconsLocationOn = &IconData{}
+var IconsMap = &IconData{}
+var IconsToday = &IconData{}

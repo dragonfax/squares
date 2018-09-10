@@ -9,9 +9,11 @@ type SnackBar struct {
 	Content Widget
 }
 
+type PopupMenuItemBuilderFunc func(context BuildContext) ([]*PopupMenuItem, error)
+
 type PopupMenuButton struct {
 	OnSelected  func(interface{})
-	ItemBuilder BuildFunc
+	ItemBuilder PopupMenuItemBuilderFunc
 }
 
 type PopupMenuItem struct {
@@ -20,4 +22,7 @@ type PopupMenuItem struct {
 }
 
 type MaterialApp struct {
+	Title string
+	Color Color
+	Child Widget
 }
