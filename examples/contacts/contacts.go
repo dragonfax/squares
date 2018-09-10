@@ -42,7 +42,7 @@ type VoidCallback func()
 var _ glt.StatelessWidget = &ContactItem{}
 
 type ContactItem struct {
-	Icon      glt.IconData
+	Icon      *glt.IconData
 	Lines     []string
 	Tooltip   string
 	OnPressed VoidCallback
