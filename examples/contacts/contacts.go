@@ -17,7 +17,7 @@ type ContactCategory struct {
 
 func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 	return &glt.Container{
-		Padding: glt.EdgeInsets{Vertical: 16.0},
+		Padding: glt.EdgeInsetsSymmetric(16, 0),
 		Decoration: glt.BoxDecoration{
 			Border: glt.Border{Bottom: glt.BorderSide{}},
 		},
@@ -25,7 +25,7 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 			CrossAxisAlignment: glt.CrossAxisAlignmentStart,
 			Children: []glt.Widget{
 				&glt.Container{
-					Padding: glt.EdgeInsets{Vertical: 24.0},
+					Padding: glt.EdgeInsetsSymmetric(24, 0),
 					Width:   72.0,
 					Child:   &glt.Icon{Icon: cc.Icon},
 				},
@@ -70,7 +70,7 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 		})
 	}
 	return &glt.Padding{
-		Padding: glt.EdgeInsets{Vertical: 16.0},
+		Padding: glt.EdgeInsetsSymmetric(16, 0),
 		Child: &glt.Row{
 			MainAxisAlignment: glt.MainAxisAlignmentSpaceBetween,
 			Children:          rowChildren,

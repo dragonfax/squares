@@ -7,6 +7,21 @@ var _ Element = &PaddingElement{}
 var _ HasChild = &Padding{}
 var _ HasChildElement = &PaddingElement{}
 
+type EdgeInsets struct {
+	Left   uint16
+	Top    uint16
+	Right  uint16
+	Bottom uint16
+}
+
+func EdgeInsetsAll(all uint16) EdgeInsets {
+	return EdgeInsets{all, all, all, all}
+}
+
+func EdgeInsetsSymmetric(vertical, horizontal uint16) EdgeInsets {
+	return EdgeInsets{horizontal, vertical, horizontal, vertical}
+}
+
 type Padding struct {
 	Padding EdgeInsets
 	Child   Widget
@@ -25,19 +40,20 @@ type PaddingElement struct {
 
 func (element *PaddingElement) layout(c Constraints) error {
 
+	if element.child == nil {
+		panic("padding with no child")
+	}
+
 	widget := element.widget.(*Padding)
 
-	innerConstraints := c.addMargins(widget.Padding)
+	innerConstraints := c.deflate(widget.Padding)
 
 	element.child.layout(innerConstraints)
 
-	// multi child containers would read the sizes from the children, and position them accordingly.
 	childSize := element.child.getSize()
-	paddedSize := childSize.addMargin(widget.Padding)
-	element.size = paddedSize
+	element.size = c.constrain(childSize.addMargin(widget.Padding))
 
-	// offset for Padding is easy, just offset by the padding amount.
-	element.child.setOffset(Offset{widget.Padding.All, widget.Padding.All})
+	element.child.setOffset(Offset{widget.Padding.Left, widget.Padding.Top})
 
 	return nil
 }
