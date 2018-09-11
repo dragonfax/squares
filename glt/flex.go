@@ -3,13 +3,11 @@ package glt
 import "github.com/veandco/go-sdl2/sdl"
 
 var _ StatelessWidget = &Column{}
-var _ HasChildren = &Column{}
 var _ StatelessWidget = &Row{}
-var _ HasChildren = &Row{}
-var _ ElementWidget = &Expanded{}
-var _ HasChild = &Expanded{}
+
+// var _ ElementWidget = &Expanded{}
+// var _ HasChild = &Expanded{}
 var _ ElementWidget = &Flex{}
-var _ HasChildren = &Flex{}
 
 type CrossAxisAlignment uint8
 
@@ -31,7 +29,7 @@ const (
 )
 
 type Flex struct {
-	Axis               AxisDirection
+	AxisDirection      AxisDirection
 	CrossAxisAlignment CrossAxisAlignment
 	MainAxisAlignment  MainAxisAlignment
 	Children           []Widget
@@ -98,11 +96,31 @@ type Row struct {
 	Children           []Widget
 }
 
+func (c *Row) Build(context BuildContext) (Widget, error) {
+	return &Flex{
+		AxisDirection:      Horizontal,
+		CrossAxisAlignment: c.CrossAxisAlignment,
+		MainAxisAlignment:  c.MainAxisAlignment,
+		Children:           c.Children,
+	}, nil
+}
+
 type Column struct {
 	CrossAxisAlignment CrossAxisAlignment
 	MainAxisAlignment  MainAxisAlignment
 	Children           []Widget
 }
+
+func (c *Column) Build(context BuildContext) (Widget, error) {
+	return &Flex{
+		AxisDirection:      Vertical,
+		CrossAxisAlignment: c.CrossAxisAlignment,
+		MainAxisAlignment:  c.MainAxisAlignment,
+		Children:           c.Children,
+	}, nil
+}
+
+/* Expanded seems to do have no real implementation. All the magic is in Flex */
 type Expanded struct {
 	Child Widget
 	// FlexFit.tight

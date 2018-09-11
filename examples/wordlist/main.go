@@ -42,7 +42,7 @@ type RandomWordsState struct {
 
 func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error) {
 	return &listview.Builder{
-		Padding: glt.EdgeInsets{All: 16.0},
+		Padding: glt.EdgeInsetsAll(16),
 		ItemBuilder: func(i int) glt.Widget {
 			if isOdd(i) {
 				return &glt.Divider{}
