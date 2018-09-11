@@ -3,16 +3,12 @@ package glt
 var _ StatelessWidget = &Container{}
 var _ HasChild = &Container{}
 var _ StatelessWidget = &DecoratedBox{}
-var _ StatelessWidget = &SafeArea{}
-var _ HasChild = &SafeArea{}
 var _ StatelessWidget = &Row{}
 var _ HasChildren = &Row{}
 var _ StatelessWidget = &Expanded{}
 var _ HasChild = &Expanded{}
 var _ StatelessWidget = &SizedBox{}
 var _ HasChild = &SizedBox{}
-var _ StatelessWidget = &MergeSemantics{}
-var _ HasChild = &MergeSemantics{}
 var _ StatelessWidget = &CustomScrollView{}
 var _ HasChildren = &CustomScrollView{}
 var _ StatelessWidget = &SliverAppBar{}
@@ -21,10 +17,8 @@ var _ StatelessWidget = &FlexibleSpaceBar{}
 var _ HasChildren = &FlexibleSpaceBar{}
 var _ StatelessWidget = &Stack{}
 var _ HasChidlren = &Stack{}
-var _ StatefulWidget = &SliverAppBar{}
-var _ HasChildren = &SliverAppBar{}
-var _ StatelesWidget = &AnnotatedRegion{}
-var _ HasChild = &AnnotatedRegion{}
+var _ StatefulWidget = &SliverList{}
+var _ HasChildren = &SliverList{}
 
 type Container struct {
 	Child      Widget
@@ -59,12 +53,6 @@ type Border struct {
 type BorderSide struct {
 }
 
-type SafeArea struct {
-	Top    bool
-	Bottom bool
-	Child  Widget
-}
-
 type Row struct {
 	CrossAxisAlignment CrossAxisAlignment
 	MainAxisAlignment  MainAxisAlignment
@@ -89,10 +77,6 @@ type Expanded struct {
 
 type SizedBox struct {
 	Width uint16
-	Child Widget
-}
-
-type MergeSemantics struct {
 	Child Widget
 }
 
@@ -131,15 +115,4 @@ type SliverList struct {
 
 type SliverChildListDelegate struct {
 	Children []Widget
-}
-
-type SystemUiOverlayStyle uint8
-
-const (
-	SystemUiOverlayStyleDark SystemUiOverlayStyle = iota
-)
-
-type AnnotatedRegion struct {
-	Value SystemUiOverlayStyle
-	Child Widget
 }

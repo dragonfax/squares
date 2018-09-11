@@ -21,19 +21,15 @@ func (cc *ContactCategory) Build(context glt.BuildContext) (glt.Widget, error) {
 		Decoration: glt.BoxDecoration{
 			Border: glt.Border{Bottom: glt.BorderSide{}},
 		},
-		Child: &glt.SafeArea{
-			Top:    false,
-			Bottom: false,
-			Child: &glt.Row{
-				CrossAxisAlignment: glt.CrossAxisAlignmentStart,
-				Children: []glt.Widget{
-					&glt.Container{
-						Padding: glt.EdgeInsets{Vertical: 24.0},
-						Width:   72.0,
-						Child:   &glt.Icon{Icon: cc.Icon},
-					},
-					&glt.Expanded{Child: &glt.Column{Children: cc.Children}},
+		Child: &glt.Row{
+			CrossAxisAlignment: glt.CrossAxisAlignmentStart,
+			Children: []glt.Widget{
+				&glt.Container{
+					Padding: glt.EdgeInsets{Vertical: 24.0},
+					Width:   72.0,
+					Child:   &glt.Icon{Icon: cc.Icon},
 				},
+				&glt.Expanded{Child: &glt.Column{Children: cc.Children}},
 			},
 		},
 	}, nil
@@ -73,13 +69,11 @@ func (ci *ContactItem) Build(context glt.BuildContext) (glt.Widget, error) {
 			},
 		})
 	}
-	return &glt.MergeSemantics{
-		Child: &glt.Padding{
-			Padding: glt.EdgeInsets{Vertical: 16.0},
-			Child: &glt.Row{
-				MainAxisAlignment: glt.MainAxisAlignmentSpaceBetween,
-				Children:          rowChildren,
-			},
+	return &glt.Padding{
+		Padding: glt.EdgeInsets{Vertical: 16.0},
+		Child: &glt.Row{
+			MainAxisAlignment: glt.MainAxisAlignmentSpaceBetween,
+			Children:          rowChildren,
 		},
 	}, nil
 }
@@ -195,49 +189,46 @@ func (cds *ContactsDemoState) Build(context glt.BuildContext) (glt.Widget, error
 				&glt.SliverList{
 					Delegate: &glt.SliverChildListDelegate{
 						Children: []glt.Widget{
-							&glt.AnnotatedRegion{
-								Value: glt.SystemUiOverlayStyleDark,
-								Child: &ContactCategory{
-									Icon: glt.IconsCall,
-									Children: []glt.Widget{
-										&ContactItem{
-											Icon:    glt.IconsMessage,
-											Tooltip: "Send message",
-											OnPressed: func() {
-												showSnackBar(context, &glt.SnackBar{
-													Content: &glt.Text{"Pretend that this opened your SMS application."},
-												})
-											},
-											Lines: []string{
-												"(650) 555-1234",
-												"Mobile",
-											},
+							&ContactCategory{
+								Icon: glt.IconsCall,
+								Children: []glt.Widget{
+									&ContactItem{
+										Icon:    glt.IconsMessage,
+										Tooltip: "Send message",
+										OnPressed: func() {
+											showSnackBar(context, &glt.SnackBar{
+												Content: &glt.Text{"Pretend that this opened your SMS application."},
+											})
 										},
-										&ContactItem{
-											Icon:    glt.IconsMessage,
-											Tooltip: "Send message",
-											OnPressed: func() {
-												showSnackBar(context, &glt.SnackBar{
-													Content: &glt.Text{"A messaging app appears."},
-												})
-											},
-											Lines: []string{
-												"(323) 555-6789",
-												"Work",
-											},
+										Lines: []string{
+											"(650) 555-1234",
+											"Mobile",
 										},
-										&ContactItem{
-											Icon:    glt.IconsMessage,
-											Tooltip: "Send message",
-											OnPressed: func() {
-												showSnackBar(context, &glt.SnackBar{
-													Content: &glt.Text{"Imagine if you will, a messaging application."},
-												})
-											},
-											Lines: []string{
-												"(650) 555-6789",
-												"Home",
-											},
+									},
+									&ContactItem{
+										Icon:    glt.IconsMessage,
+										Tooltip: "Send message",
+										OnPressed: func() {
+											showSnackBar(context, &glt.SnackBar{
+												Content: &glt.Text{"A messaging app appears."},
+											})
+										},
+										Lines: []string{
+											"(323) 555-6789",
+											"Work",
+										},
+									},
+									&ContactItem{
+										Icon:    glt.IconsMessage,
+										Tooltip: "Send message",
+										OnPressed: func() {
+											showSnackBar(context, &glt.SnackBar{
+												Content: &glt.Text{"Imagine if you will, a messaging application."},
+											})
+										},
+										Lines: []string{
+											"(650) 555-6789",
+											"Home",
 										},
 									},
 								},
