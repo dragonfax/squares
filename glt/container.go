@@ -3,10 +3,6 @@ package glt
 var _ StatelessWidget = &Container{}
 var _ HasChild = &Container{}
 var _ StatelessWidget = &DecoratedBox{}
-var _ StatelessWidget = &Row{}
-var _ HasChildren = &Row{}
-var _ StatelessWidget = &Expanded{}
-var _ HasChild = &Expanded{}
 var _ StatelessWidget = &SizedBox{}
 var _ HasChild = &SizedBox{}
 var _ StatelessWidget = &CustomScrollView{}
@@ -51,28 +47,6 @@ type Border struct {
 }
 
 type BorderSide struct {
-}
-
-type Row struct {
-	CrossAxisAlignment CrossAxisAlignment
-	MainAxisAlignment  MainAxisAlignment
-	Children           []Widget
-}
-
-type CrossAxisAlignment uint8
-
-const (
-	CrossAxisAlignmentStart CrossAxisAlignment = iota
-)
-
-type MainAxisAlignment uint8
-
-const (
-	MainAxisAlignmentSpaceBetween MainAxisAlignment = iota
-)
-
-type Expanded struct {
-	Child Widget
 }
 
 type SizedBox struct {
