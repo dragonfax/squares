@@ -1,6 +1,10 @@
 package glt
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"math"
+
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 var _ ElementWidget = &Center{}
 var _ Element = &CenterElement{}
@@ -24,17 +28,32 @@ func (ce *Center) createElement() Element {
 
 func (ce *CenterElement) layout(c Constraints) error {
 
-	ce.child.layout(c)
+	if child == nil {
+		panic("center with no child element")
+	}
 
-	ce.size = Size{width: c.maxWidth, height: c.maxHeight}
+	ce.child.layout(c.loosen())
 
 	childSize := ce.child.getSize()
+	ce.size = c.constrain(Size{
+		width:  constraintCenterDimension(c.maxWidth, childSize.width),
+		height: constraintCenterDimension(c.maxheight, childSize.height),
+	})
+
 	ce.child.setOffset(Offset{
 		x: (ce.size.width - childSize.width) / 2,
 		y: (ce.size.height - childSize.height) / 2,
 	})
 
 	return nil
+}
+
+// Golang needs the ternary operator
+func constraintCenterdimension(constraint, child uint16) uint16 {
+	if constraint == math.MaxUint16 {
+		return child
+	}
+	return math.MaxUint16
 }
 
 func (element *CenterElement) render(offset Offset, renderer *sdl.Renderer) {

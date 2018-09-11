@@ -22,6 +22,17 @@ type Constraints struct {
 	minWidth, minHeight, maxWidth, maxHeight uint16
 }
 
+func (c Constraints) loosen() Constraints {
+	return Constraints{minWidth: 0, minHeight: 0, maxWidth: c.maxWidth, maxHeight: c.maxHeight}
+}
+
+func (c Constraints) constrain(size Size) Size {
+	return Size{
+		width:  clampUint32(c.minWidth, c.maxWidth, size.width),
+		height: clampUint32(c.minHeight, c.maxHeight, size.height),
+	}
+}
+
 func (s Size) addMargin(in EdgeInsets) Size {
 	return Size{width: s.width + in.All, height: s.height + in.All}
 }
