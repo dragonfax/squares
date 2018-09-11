@@ -1,5 +1,9 @@
 package glt
 
+var _ StatelessWidget = &Icon{}
+var _ StatelessWidget = &IconButton{}
+var _ HasChild = &IconButton{}
+
 type VoidCallback func()
 
 type IconData struct {

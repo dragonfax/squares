@@ -11,6 +11,8 @@ const (
 	BoxFitCover BoxFit = iota
 )
 
+var _ StatelessWidget = &Image{}
+
 type Image struct {
 	Fit    BoxFit
 	Height uint16
