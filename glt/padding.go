@@ -47,7 +47,6 @@ func (element *PaddingElement) layout(c Constraints) error {
 	widget := element.widget.(*Padding)
 
 	innerConstraints := c.deflate(widget.Padding)
-
 	element.child.layout(innerConstraints)
 
 	childSize := element.child.getSize()
