@@ -22,7 +22,7 @@ type DividerElement struct {
 
 func (ce *DividerElement) layout(c Constraints) error {
 
-	ce.size = Size{width: c.maxWidth, height: 5}
+	ce.size = Size{width: c.maxWidth, height: 16}
 
 	return nil
 }
@@ -31,6 +31,6 @@ func (ce *DividerElement) render(offset Offset, renderer *sdl.Renderer) {
 
 	renderer.SetDrawColor(0x80, 0x80, 0x80, 255)
 	ux := int32(offset.x)
-	uy := int32(offset.y)
-	renderer.DrawLine(ux+0, uy+3, ux+int32(ce.size.width), uy+3)
+	uy := int32(offset.y + ce.height/2)
+	renderer.DrawLine(ux+0, uy, ux+int32(ce.size.width), uy)
 }
