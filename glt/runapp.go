@@ -254,10 +254,10 @@ func setElementChildren(e Element, ec []Element) {
 			panic("unhandleable")
 		}
 		if len(ec) == 1 {
-			parent.setChildElement(ec[0])
+			parent.setChildElement(e, ec[0])
 		}
 	} else if parent, ok := e.(HasChildrenElements); ok {
-		parent.setChildrenElements(ec)
+		parent.setChildrenElements(e, ec)
 	}
 }
 
@@ -328,4 +328,15 @@ func buildElementTree(w Widget, oldElement Element) (Element, error) {
 	} else {
 		return nil, errors.New(fmt.Sprintf("unknown widget type in tree, type %T, value %v", w, w))
 	}
+}
+
+func ContextOf(context BuildContext, typeOf interface{}) BuildContext {
+	element := context.(Element)
+	for parentContext := element.getParentElement(); parentContext != nil; parentContext = element.getParentElement() {
+		widget := parentContext.GetWidget()
+		if sameType(widget, typeOf) {
+			return parentContext
+		}
+	}
+	return nil
 }

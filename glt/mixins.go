@@ -10,6 +10,16 @@ type elementData struct {
 	widget Widget
 	size   Size
 	offset Offset
+	parent Element
+}
+
+func (ce *elementData) getParentElement() Element {
+	return ce.parent
+}
+
+func (ce *elementData) setParentElement(parent Element) {
+	// Watchout, this doesn't update the parents list of children
+	ce.parent = parent
 }
 
 func (ce *elementData) GetWidget() Widget {
@@ -40,8 +50,12 @@ func (ce childElementData) getChildElement() Element {
 	return ce.child
 }
 
-func (ce *childElementData) setChildElement(child Element) {
+func (ce *childElementData) setChildElement(parent Element, child Element) {
+	if ce.child != nil {
+		ce.child.setParentElement(nil)
+	}
 	ce.child = child
+	ce.child.setParentElement(parent)
 }
 
 type childrenElementsData struct {
@@ -52,6 +66,14 @@ func (ce childrenElementsData) getChildrenElements() []Element {
 	return ce.children
 }
 
-func (ce *childrenElementsData) setChildrenElements(children []Element) {
+func (ce *childrenElementsData) setChildrenElements(parent Element, children []Element) {
+	for _, child := range ce.children {
+		if child != nil {
+			child.setParentElement(nil)
+		}
+	}
 	ce.children = children
+	for _, child := range children {
+		child.setParentElement(parent)
+	}
 }

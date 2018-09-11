@@ -48,16 +48,18 @@ type Element interface {
 	render(Offset, *sdl.Renderer)
 	updateWidget(Widget)
 	BuildContext
+	getParentElement() Element
+	setParentElement(Element)
 }
 
 type HasChildElement interface {
-	setChildElement(Element)
+	setChildElement(Element, Element)
 	getChildElement() Element
 }
 
 type HasChildrenElements interface {
 	getChildrenElements() []Element
-	setChildrenElements([]Element)
+	setChildrenElements(Element, []Element)
 }
 
 /* A widget that has a special Element just for it

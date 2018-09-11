@@ -5,6 +5,10 @@ type Scaffold struct {
 	Body Widget
 }
 
+func (s *Scaffold) ShowSnackBar(snackBar *SnackBar) {
+
+}
+
 type SnackBar struct {
 	Content Widget
 }
