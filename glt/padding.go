@@ -14,6 +14,13 @@ type EdgeInsets struct {
 	Bottom uint16
 }
 
+func (c EdgeInsets) horizontal() uint16 {
+	return c.Left + c.Right
+}
+
+func (c EdgeInsets) vertical() uint16 {
+	return c.Top + c.Bottom
+}
 func EdgeInsetsAll(all uint16) EdgeInsets {
 	return EdgeInsets{all, all, all, all}
 }

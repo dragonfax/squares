@@ -28,7 +28,7 @@ func (ce *Center) createElement() Element {
 
 func (ce *CenterElement) layout(c Constraints) error {
 
-	if child == nil {
+	if ce.child == nil {
 		panic("center with no child element")
 	}
 
@@ -37,7 +37,7 @@ func (ce *CenterElement) layout(c Constraints) error {
 	childSize := ce.child.getSize()
 	ce.size = c.constrain(Size{
 		width:  constraintCenterDimension(c.maxWidth, childSize.width),
-		height: constraintCenterDimension(c.maxheight, childSize.height),
+		height: constraintCenterDimension(c.maxHeight, childSize.height),
 	})
 
 	ce.child.setOffset(Offset{
@@ -49,7 +49,7 @@ func (ce *CenterElement) layout(c Constraints) error {
 }
 
 // Golang needs the ternary operator
-func constraintCenterdimension(constraint, child uint16) uint16 {
+func constraintCenterDimension(constraint, child uint16) uint16 {
 	if constraint == math.MaxUint16 {
 		return child
 	}

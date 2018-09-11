@@ -31,6 +31,6 @@ func (ce *DividerElement) render(offset Offset, renderer *sdl.Renderer) {
 
 	renderer.SetDrawColor(0x80, 0x80, 0x80, 255)
 	ux := int32(offset.x)
-	uy := int32(offset.y + ce.height/2)
+	uy := int32(offset.y + ce.size.height/2)
 	renderer.DrawLine(ux+0, uy, ux+int32(ce.size.width), uy)
 }
