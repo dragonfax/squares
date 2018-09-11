@@ -18,14 +18,6 @@ func (p *Padding) createElement() Element {
 	return pe
 }
 
-func (p *Padding) getChild() Widget {
-	return p.Child
-}
-
-func (p *Padding) setChild(child Widget) {
-	p.Child = child
-}
-
 type PaddingElement struct {
 	elementData
 	childElementData

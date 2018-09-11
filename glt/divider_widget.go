@@ -20,10 +20,6 @@ type DividerElement struct {
 	elementData
 }
 
-func (de *DividerElement) GetWidget() Widget {
-	return de.widget
-}
-
 func (ce *DividerElement) layout(c Constraints) error {
 
 	ce.size = Size{width: c.maxWidth, height: 5}

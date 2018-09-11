@@ -16,10 +16,6 @@ type CenterElement struct {
 	childElementData
 }
 
-func (ce *Center) getChild() Widget {
-	return ce.Child
-}
-
 func (ce *Center) createElement() Element {
 	element := &CenterElement{}
 	element.widget = ce

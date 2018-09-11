@@ -12,10 +12,6 @@ type Column struct {
 	Children           []Widget
 }
 
-func (c *Column) getChildren() []Widget {
-	return c.Children
-}
-
 func (c *Column) createElement() Element {
 	ce := &ColumnElement{}
 	ce.widget = c
