@@ -102,7 +102,7 @@ type Row struct {
 
 func (c *Row) Build(context BuildContext) (Widget, error) {
 	return &Flex{
-		AxisDirection:      Horizontal,
+		Direction:          Horizontal,
 		CrossAxisAlignment: c.CrossAxisAlignment,
 		MainAxisAlignment:  c.MainAxisAlignment,
 		Children:           c.Children,
@@ -117,7 +117,7 @@ type Column struct {
 
 func (c *Column) Build(context BuildContext) (Widget, error) {
 	return &Flex{
-		AxisDirection:      Vertical,
+		Direction:          Vertical,
 		CrossAxisAlignment: c.CrossAxisAlignment,
 		MainAxisAlignment:  c.MainAxisAlignment,
 		Children:           c.Children,
