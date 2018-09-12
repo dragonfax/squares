@@ -45,11 +45,9 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 
 	if !se.rendered {
 		// create a new composite
-		println("new composite")
 
 		if se.renderedSize != size {
 			// reclaim the texture and create a new one of the right size
-			println("reclaiming texture")
 			if se.renderedTexture != nil {
 				se.renderedTexture.Destroy()
 			}

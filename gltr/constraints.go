@@ -4,6 +4,10 @@ type Offset struct {
 	x, y uint16
 }
 
+func (o Offset) Add(o2 Offset) Offset {
+	return Offset{x: o.x + o2.x, y: o.y + o2.y}
+}
+
 type Size struct {
 	width, height uint16
 }

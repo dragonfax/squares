@@ -1,6 +1,10 @@
 package gltr
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"math"
+
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 var _ StatelessWidget = &Expanded{}
 var _ StatelessWidget = &Column{}
@@ -52,45 +56,121 @@ type FlexElement struct {
 	childrenElementsData
 }
 
-func (ce *FlexElement) layout(c Constraints) error {
+func (ce *FlexElement) getChildCrossSize(child Element) uint16 {
+	switch ce.widget.(*Flex).Direction {
+	case Horizontal:
+		return child.getSize().height
+	case Vertical:
+		return child.getSize().width
+	}
+	return 0
+}
 
-	ce.size = Size{0, 0}
+func (ce *FlexElement) getChildMainSize(child Element) uint16 {
+	switch ce.widget.(*Flex).Direction {
+	case Horizontal:
+		return child.getSize().width
+	case Vertical:
+		return child.getSize().height
+	}
+	return 0
+}
 
-	numChildren := uint16(len(ce.children))
+func (ce *FlexElement) layout(constraints Constraints) error {
+	widget := ce.widget.(*Flex)
 
+	var innerConstraints Constraints
+	switch widget.Direction {
+	case Horizontal:
+		innerConstraints = Constraints{
+			maxHeight: constraints.maxHeight,
+			minHeight: 0,
+			maxWidth:  math.MaxInt16,
+			minWidth:  0,
+		}
+	case Vertical:
+		innerConstraints = Constraints{
+			maxWidth:  constraints.maxWidth,
+			minWidth:  0,
+			maxHeight: math.MaxInt16,
+			minHeight: 0,
+		}
+	}
+
+	var maxChildCrossSize uint16
+	var allocatedMainSize uint16
 	for _, child := range ce.children {
 
-		// TODO not sure about this.
-		// might need to do them one at a time. and see whats left for the others.
-		con := Constraints{
-			minWidth:  c.maxWidth,
-			minHeight: c.minHeight / numChildren,
-			maxWidth:  c.maxWidth,
-			maxHeight: c.maxHeight / numChildren,
+		child.layout(innerConstraints)
+
+		maxChildCrossSize = MaxUint16(maxChildCrossSize, ce.getChildCrossSize(child))
+		allocatedMainSize += ce.getChildMainSize(child)
+	}
+
+	idealSize := allocatedMainSize
+	var actualSize uint16
+	var crossSize uint16
+	switch widget.Direction {
+	case Horizontal:
+		size := constraints.constrain(Size{idealSize, maxChildCrossSize})
+		actualSize = size.width
+		crossSize = size.height
+	case Vertical:
+		size := constraints.constrain(Size{maxChildCrossSize, idealSize})
+		actualSize = size.height
+		crossSize = size.width
+	}
+
+	var actualSizeDelta int32 = int32(actualSize) - int32(idealSize)
+	remainingSpace := MaxInt32(0, actualSizeDelta)
+
+	var leadingSpace uint16
+	var betweenSpace uint16
+	totalChildren := len(ce.children)
+
+	switch widget.MainAxisAlignment {
+	case MainAxisAlignmentSpaceBetween:
+		leadingSpace = 0
+		betweenSpace = 0
+		if totalChildren > 1 {
+			betweenSpace = uint16(remainingSpace / (int32(totalChildren) - 1))
+		}
+	default:
+		panic("unimplemented")
+	}
+
+	childMainPosition := leadingSpace
+	for _, child := range ce.children {
+
+		var childCrossPosition uint16
+
+		switch widget.CrossAxisAlignment {
+		case CrossAxisAlignmentStart:
+			childCrossPosition = crossSize - ce.getChildCrossSize(child)
+		default:
+			panic("unimplemented")
 		}
 
-		child.layout(con)
+		var childOffset Offset
+		switch widget.Direction {
+		case Horizontal:
+			childOffset = Offset{x: childMainPosition, y: childCrossPosition}
+		case Vertical:
+			childOffset = Offset{x: childCrossPosition, y: childMainPosition}
+		}
 
-		childSize := child.getSize()
-		ce.size.width = MaxUint16(childSize.width, ce.size.width)
-		offsetHeight := ce.size.height
-		ce.size.height += childSize.height
+		childMainPosition += ce.getChildMainSize(child) + betweenSpace
 
-		child.setOffset(Offset{
-			x: 0,
-			y: offsetHeight,
-		})
-
+		child.setOffset(childOffset)
 	}
 
 	return nil
 }
 
 func (c *FlexElement) render(offset Offset, renderer *sdl.Renderer) {
-
 	for _, child := range c.children {
-		child.render(offset, renderer)
-		offset.y += child.getSize().height
+		childOffset := child.getOffset()
+		child.render(offset.Add(childOffset), renderer)
 	}
 }
 
