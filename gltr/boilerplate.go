@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 /* Some biolerplate code duplicated for various structs.
  * A results of certain intential missing features in golang.

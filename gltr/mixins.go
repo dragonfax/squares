@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 /* A lazy way to do mixins, using embedded structs
  *

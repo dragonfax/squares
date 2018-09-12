@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 func MaxUint16(a, b uint16) uint16 {
 	if a > b {

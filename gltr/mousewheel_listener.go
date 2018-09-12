@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 var _ StatefulWidget = &MouseWheelListener{}
 var _ State = &MouseWheelListenerState{}

@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 type Color struct {
 	RBBA uint32

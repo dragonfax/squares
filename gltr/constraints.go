@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 type Offset struct {
 	x, y uint16
