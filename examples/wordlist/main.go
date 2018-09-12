@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/dragonfax/gltr/examples/wordlist/wordpairs"
+	"github.com/dragonfax/gltr/gltr"
 	"github.com/dragonfax/gltr/gltr/listview"
 )
 

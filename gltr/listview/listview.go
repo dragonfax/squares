@@ -1,6 +1,8 @@
 package listview
 
-import _ "github.com/dragonfax/gltr/gltr"
+import (
+	"github.com/dragonfax/gltr/gltr"
+)
 
 var _ gltr.StatefulWidget = &Builder{}
 var _ gltr.State = &BuilderState{}
