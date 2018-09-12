@@ -2,12 +2,12 @@ package glt
 
 import "github.com/veandco/go-sdl2/sdl"
 
+var _ StatelessWidget = &Expanded{}
 var _ StatelessWidget = &Column{}
 var _ StatelessWidget = &Row{}
-
-// var _ ElementWidget = &Expanded{}
-// var _ HasChild = &Expanded{}
 var _ ElementWidget = &Flex{}
+var _ HasChildren = &Flex{}
+var _ HasChildrenElements = &FlexElement{}
 
 type CrossAxisAlignment uint8
 
@@ -35,6 +35,10 @@ type Flex struct {
 	Children           []Widget
 	// MainAxisSize.max
 	// VerticalDirection.down
+}
+
+func (f *Flex) getChildren() []Widget {
+	return f.Children
 }
 
 func (c *Flex) createElement() Element {
@@ -124,4 +128,8 @@ func (c *Column) Build(context BuildContext) (Widget, error) {
 type Expanded struct {
 	Child Widget
 	// FlexFit.tight
+}
+
+func (e *Expanded) Build(context BuildContext) (Widget, error) {
+	return e.Child, nil
 }
