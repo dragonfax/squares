@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/dragonfax/glitter/examples/wordlist/wordpairs"
-	"github.com/dragonfax/glitter/glt"
-	"github.com/dragonfax/glitter/glt/listview"
+	"github.com/dragonfax/gltr/examples/wordlist/wordpairs"
+	"github.com/dragonfax/gltr/glt"
+	"github.com/dragonfax/gltr/glt/listview"
 )
 
 var _ glt.StatelessWidget = &MyApp{}

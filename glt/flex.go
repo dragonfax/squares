@@ -21,15 +21,15 @@ const (
 	MainAxisAlignmentSpaceBetween MainAxisAlignment = iota
 )
 
-type AxisDirection uint8
+type Axis uint8
 
 const (
-	Vertical AxisDirection = iota
+	Vertical Axis = iota
 	Horizontal
 )
 
 type Flex struct {
-	AxisDirection      AxisDirection
+	Direction          Axis
 	CrossAxisAlignment CrossAxisAlignment
 	MainAxisAlignment  MainAxisAlignment
 	Children           []Widget
