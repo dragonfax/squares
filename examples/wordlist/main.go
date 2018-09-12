@@ -2,16 +2,15 @@ package main
 
 import (
 	"github.com/dragonfax/gltr/examples/wordlist/wordpairs"
-	"github.com/dragonfax/gltr/glt"
-	"github.com/dragonfax/gltr/glt/listview"
+	"github.com/dragonfax/gltr/gltr/listview"
 )
 
-var _ glt.StatelessWidget = &MyApp{}
-var _ glt.StatefulWidget = &RandomWords{}
-var _ glt.State = &RandomWordsState{}
+var _ gltr.StatelessWidget = &MyApp{}
+var _ gltr.StatefulWidget = &RandomWords{}
+var _ gltr.State = &RandomWordsState{}
 
 func main() {
-	err := glt.RunApp(&MyApp{})
+	err := gltr.RunApp(&MyApp{})
 	if err != nil {
 		panic(err)
 	}
@@ -20,9 +19,9 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context glt.BuildContext) (glt.Widget, error) {
+func (ma *MyApp) Build(context gltr.BuildContext) (gltr.Widget, error) {
 
-	return &glt.Center{Child: &RandomWords{}}, nil
+	return &gltr.Center{Child: &RandomWords{}}, nil
 }
 
 func isOdd(i int) bool {
@@ -32,7 +31,7 @@ func isOdd(i int) bool {
 type RandomWords struct {
 }
 
-func (*RandomWords) CreateState() glt.State {
+func (*RandomWords) CreateState() gltr.State {
 	return &RandomWordsState{suggestions: make([]wordpairs.WordPair, 0, 10)}
 }
 
@@ -40,12 +39,12 @@ type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error) {
-	return &glt.Composite{Child: &listview.Builder{
-		Padding: glt.EdgeInsetsAll(16),
-		ItemBuilder: func(i int) glt.Widget {
+func (rws *RandomWordsState) Build(context gltr.BuildContext) (gltr.Widget, error) {
+	return &gltr.Composite{Child: &listview.Builder{
+		Padding: gltr.EdgeInsetsAll(16),
+		ItemBuilder: func(i int) gltr.Widget {
 			if isOdd(i) {
-				return &glt.Divider{}
+				return &gltr.Divider{}
 			}
 
 			r := i / 2
@@ -61,9 +60,9 @@ func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error)
 	}}, nil
 }
 
-func BuildRow(wp wordpairs.WordPair) glt.Widget {
+func BuildRow(wp wordpairs.WordPair) gltr.Widget {
 	return &listview.ListTile{
-		Title: &glt.Text{
+		Title: &gltr.Text{
 			Text: wp.AsPascalCase(),
 		},
 	}
