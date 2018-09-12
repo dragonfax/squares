@@ -16,3 +16,7 @@ func (p *Padding) getChild() Widget {
 func (c *Column) getChildren() []Widget {
 	return c.Children
 }
+
+func (cw *Composite) getChild() Widget {
+	return cw.Child
+}

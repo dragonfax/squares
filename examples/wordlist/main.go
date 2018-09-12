@@ -41,7 +41,7 @@ type RandomWordsState struct {
 }
 
 func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error) {
-	return &listview.Builder{
+	return &glt.Composite{Child: &listview.Builder{
 		Padding: glt.EdgeInsetsAll(16),
 		ItemBuilder: func(i int) glt.Widget {
 			if isOdd(i) {
@@ -58,7 +58,7 @@ func (rws *RandomWordsState) Build(context glt.BuildContext) (glt.Widget, error)
 			wp := rws.suggestions[r]
 			return BuildRow(wp)
 		},
-	}, nil
+	}}, nil
 }
 
 func BuildRow(wp wordpairs.WordPair) glt.Widget {

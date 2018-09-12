@@ -149,22 +149,31 @@ func rebuildDirty(element Element) error {
 }
 
 func floatUpRendered(element Element) bool {
-	statefulElement, ok := element.(*StatefulElement)
-	if ok && !statefulElement.rendered {
+	compositeElement, ok := element.(*CompositeElement)
+
+	var children = getElementChildren(element)
+	var rendered = true
+	for _, child := range children {
+		r := floatUpRendered(child)
+		if !r {
+			if ok {
+				compositeElement.rendered = false
+			}
+			rendered = false
+		}
+	}
+	if rendered == false {
+		return rendered
+	}
+
+	statefulElement, ok2 := element.(*StatefulElement)
+	if ok && !compositeElement.rendered {
+		return false
+	} else if ok2 && !statefulElement.rendered {
+		statefulElement.rendered = true
 		return false
 	} else {
-		var children = getElementChildren(element)
-		var rendered = true
-		for _, child := range children {
-			r := floatUpRendered(child)
-			if !r {
-				if ok {
-					statefulElement.rendered = false
-				}
-				rendered = false
-			}
-		}
-		return rendered
+		return true
 	}
 }
 
