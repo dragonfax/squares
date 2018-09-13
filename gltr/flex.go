@@ -16,19 +16,21 @@ var _ HasChildrenElements = &FlexElement{}
 type CrossAxisAlignment uint8
 
 const (
-	CrossAxisAlignmentStart CrossAxisAlignment = iota
+	CrossAxisAlignmentCenter CrossAxisAlignment = iota // default
+	CrossAxisAlignmentStart
 )
 
 type MainAxisAlignment uint8
 
 const (
-	MainAxisAlignmentSpaceBetween MainAxisAlignment = iota
+	MainAxisAlignmentStart MainAxisAlignment = iota // default
+	MainAxisAlignmentSpaceBetween
 )
 
 type Axis uint8
 
 const (
-	Vertical Axis = iota
+	Vertical Axis = iota // default
 	Horizontal
 )
 
@@ -137,6 +139,9 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		if totalChildren > 1 {
 			betweenSpace = remainingSpace / float64(totalChildren-1)
 		}
+	case MainAxisAlignmentStart:
+		leadingSpace = 0
+		betweenSpace = 0
 	default:
 		panic("unimplemented")
 	}
@@ -149,6 +154,8 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		switch widget.CrossAxisAlignment {
 		case CrossAxisAlignmentStart:
 			childCrossPosition = crossSize - ce.getChildCrossSize(child)
+		case CrossAxisAlignmentCenter:
+			childCrossPosition = crossSize/2 - ce.getChildCrossSize(child)/2
 		default:
 			panic("unimplemented")
 		}
