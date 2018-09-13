@@ -115,10 +115,12 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		size := constraints.constrain(Size{idealSize, maxChildCrossSize})
 		actualSize = size.width
 		crossSize = size.height
+		ce.size = size
 	case Vertical:
 		size := constraints.constrain(Size{maxChildCrossSize, idealSize})
 		actualSize = size.height
 		crossSize = size.width
+		ce.size = size
 	}
 
 	var actualSizeDelta int32 = int32(actualSize) - int32(idealSize)

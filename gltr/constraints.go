@@ -1,5 +1,9 @@
 package gltr
 
+import (
+	"math"
+)
+
 type Offset struct {
 	x, y uint16
 }
@@ -35,10 +39,18 @@ func (s Size) addMargin(in EdgeInsets) Size {
 func (c Constraints) deflate(in EdgeInsets) Constraints {
 	deflatedMinWidth := MaxUint16(0.0, c.minWidth-in.horizontal())
 	deflatedMinHeight := MaxUint16(0.0, c.minHeight-in.vertical())
+	deflatedMaxWidth := MaxUint16(deflatedMinWidth, c.maxWidth-in.horizontal())
+	if c.maxWidth == math.MaxUint16 {
+		deflatedMaxWidth = math.MaxUint16
+	}
+	deflatedMaxHeight := MaxUint16(deflatedMinHeight, c.maxHeight-in.vertical())
+	if c.maxHeight == math.MaxUint16 {
+		deflatedMaxHeight = math.MaxUint16
+	}
 	return Constraints{
 		minWidth:  deflatedMinWidth,
-		maxWidth:  MaxUint16(deflatedMinWidth, c.maxWidth-in.horizontal()),
+		maxWidth:  deflatedMaxWidth,
 		minHeight: deflatedMinHeight,
-		maxHeight: MaxUint16(deflatedMinHeight, c.maxHeight-in.vertical()),
+		maxHeight: deflatedMaxHeight,
 	}
 }

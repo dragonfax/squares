@@ -43,6 +43,10 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 
 	size := se.child.getSize()
 
+	if size.height == 0 || size.width == 0 {
+		panic("can't composite a zero size child")
+	}
+
 	if !se.rendered {
 		// create a new composite
 
