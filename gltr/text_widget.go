@@ -1,6 +1,10 @@
 package gltr
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"math"
+
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 var _ ElementWidget = &Text{}
 var _ Element = &TextElement{}
@@ -23,10 +27,10 @@ type TextElement struct {
 }
 
 func (t *TextElement) layout(c Constraints) error {
-	cWidth := len(t.widget.(*Text).Text) * CHARACTER_WIDTH
-	cHeight := 1 * CHARACTER_HEIGHT
+	cWidth := float64(len(t.widget.(*Text).Text) * CHARACTER_WIDTH)
+	cHeight := 1.0 * CHARACTER_HEIGHT
 
-	t.size = Size{width: MaxUint16(uint16(cWidth), c.minWidth), height: MaxUint16(uint16(cHeight), c.minHeight)}
+	t.size = Size{width: math.Max(cWidth, c.minWidth), height: math.Max(cHeight, c.minHeight)}
 
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 )
 
 type Offset struct {
-	x, y uint16
+	x, y float64
 }
 
 func (o Offset) Add(o2 Offset) Offset {
@@ -13,12 +13,11 @@ func (o Offset) Add(o2 Offset) Offset {
 }
 
 type Size struct {
-	width, height uint16
+	width, height float64
 }
 
-// use MaxUint32 for +Inf during layout
 type Constraints struct {
-	minWidth, minHeight, maxWidth, maxHeight uint16
+	minWidth, minHeight, maxWidth, maxHeight float64
 }
 
 func (c Constraints) loosen() Constraints {
@@ -27,8 +26,8 @@ func (c Constraints) loosen() Constraints {
 
 func (c Constraints) constrain(size Size) Size {
 	return Size{
-		width:  clampUint16(c.minWidth, c.maxWidth, size.width),
-		height: clampUint16(c.minHeight, c.maxHeight, size.height),
+		width:  clamp(c.minWidth, c.maxWidth, size.width),
+		height: clamp(c.minHeight, c.maxHeight, size.height),
 	}
 }
 
@@ -37,15 +36,15 @@ func (s Size) addMargin(in EdgeInsets) Size {
 }
 
 func (c Constraints) deflate(in EdgeInsets) Constraints {
-	deflatedMinWidth := MaxUint16(0.0, c.minWidth-in.horizontal())
-	deflatedMinHeight := MaxUint16(0.0, c.minHeight-in.vertical())
-	deflatedMaxWidth := MaxUint16(deflatedMinWidth, c.maxWidth-in.horizontal())
-	if c.maxWidth == math.MaxUint16 {
-		deflatedMaxWidth = math.MaxUint16
+	deflatedMinWidth := math.Max(0.0, c.minWidth-in.horizontal())
+	deflatedMinHeight := math.Max(0.0, c.minHeight-in.vertical())
+	deflatedMaxWidth := math.Max(deflatedMinWidth, c.maxWidth-in.horizontal())
+	if c.maxWidth == math.MaxFloat64 {
+		deflatedMaxWidth = math.MaxFloat64
 	}
-	deflatedMaxHeight := MaxUint16(deflatedMinHeight, c.maxHeight-in.vertical())
-	if c.maxHeight == math.MaxUint16 {
-		deflatedMaxHeight = math.MaxUint16
+	deflatedMaxHeight := math.Max(deflatedMinHeight, c.maxHeight-in.vertical())
+	if c.maxHeight == math.MaxFloat64 {
+		deflatedMaxHeight = math.MaxFloat64
 	}
 	return Constraints{
 		minWidth:  deflatedMinWidth,

@@ -8,24 +8,24 @@ var _ HasChild = &Padding{}
 var _ HasChildElement = &PaddingElement{}
 
 type EdgeInsets struct {
-	Left   uint16
-	Top    uint16
-	Right  uint16
-	Bottom uint16
+	Left   float64
+	Top    float64
+	Right  float64
+	Bottom float64
 }
 
-func (c EdgeInsets) horizontal() uint16 {
+func (c EdgeInsets) horizontal() float64 {
 	return c.Left + c.Right
 }
 
-func (c EdgeInsets) vertical() uint16 {
+func (c EdgeInsets) vertical() float64 {
 	return c.Top + c.Bottom
 }
-func EdgeInsetsAll(all uint16) EdgeInsets {
+func EdgeInsetsAll(all float64) EdgeInsets {
 	return EdgeInsets{all, all, all, all}
 }
 
-func EdgeInsetsSymmetric(vertical, horizontal uint16) EdgeInsets {
+func EdgeInsetsSymmetric(vertical, horizontal float64) EdgeInsets {
 	return EdgeInsets{horizontal, vertical, horizontal, vertical}
 }
 

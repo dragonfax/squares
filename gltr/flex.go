@@ -56,7 +56,7 @@ type FlexElement struct {
 	childrenElementsData
 }
 
-func (ce *FlexElement) getChildCrossSize(child Element) uint16 {
+func (ce *FlexElement) getChildCrossSize(child Element) float64 {
 	switch ce.widget.(*Flex).Direction {
 	case Horizontal:
 		return child.getSize().height
@@ -66,7 +66,7 @@ func (ce *FlexElement) getChildCrossSize(child Element) uint16 {
 	return 0
 }
 
-func (ce *FlexElement) getChildMainSize(child Element) uint16 {
+func (ce *FlexElement) getChildMainSize(child Element) float64 {
 	switch ce.widget.(*Flex).Direction {
 	case Horizontal:
 		return child.getSize().width
@@ -97,19 +97,19 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		}
 	}
 
-	var maxChildCrossSize uint16
-	var allocatedMainSize uint16
+	var maxChildCrossSize float64
+	var allocatedMainSize float64
 	for _, child := range ce.children {
 
 		child.layout(innerConstraints)
 
-		maxChildCrossSize = MaxUint16(maxChildCrossSize, ce.getChildCrossSize(child))
+		maxChildCrossSize = math.Max(maxChildCrossSize, ce.getChildCrossSize(child))
 		allocatedMainSize += ce.getChildMainSize(child)
 	}
 
 	idealSize := allocatedMainSize
-	var actualSize uint16
-	var crossSize uint16
+	var actualSize float64
+	var crossSize float64
 	switch widget.Direction {
 	case Horizontal:
 		size := constraints.constrain(Size{idealSize, maxChildCrossSize})
@@ -123,11 +123,11 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		ce.size = size
 	}
 
-	var actualSizeDelta int32 = int32(actualSize) - int32(idealSize)
-	remainingSpace := MaxInt32(0, actualSizeDelta)
+	actualSizeDelta := actualSize - idealSize
+	remainingSpace := math.Max(0, actualSizeDelta)
 
-	var leadingSpace uint16
-	var betweenSpace uint16
+	var leadingSpace float64
+	var betweenSpace float64
 	totalChildren := len(ce.children)
 
 	switch widget.MainAxisAlignment {
@@ -135,7 +135,7 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		leadingSpace = 0
 		betweenSpace = 0
 		if totalChildren > 1 {
-			betweenSpace = uint16(remainingSpace / (int32(totalChildren) - 1))
+			betweenSpace = remainingSpace / float64(totalChildren-1)
 		}
 	default:
 		panic("unimplemented")
@@ -144,7 +144,7 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 	childMainPosition := leadingSpace
 	for _, child := range ce.children {
 
-		var childCrossPosition uint16
+		var childCrossPosition float64
 
 		switch widget.CrossAxisAlignment {
 		case CrossAxisAlignmentStart:

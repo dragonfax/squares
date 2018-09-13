@@ -49,11 +49,11 @@ func (ce *CenterElement) layout(c Constraints) error {
 }
 
 // Golang needs the ternary operator
-func constraintCenterDimension(constraint, child uint16) uint16 {
-	if constraint == math.MaxUint16 {
+func constraintCenterDimension(constraint, child float64) float64 {
+	if constraint == math.MaxFloat64 {
 		return child
 	}
-	return math.MaxUint16
+	return math.MaxFloat64
 }
 
 func (element *CenterElement) render(offset Offset, renderer *sdl.Renderer) {

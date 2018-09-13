@@ -49,7 +49,7 @@ func TestConstraintsConstrain(t *testing.T) {
 	t.Run("constrain size with +Inf", func(t *testing.T) {
 		c := Constraints{
 			minHeight: 0,
-			maxHeight: math.MaxUint16,
+			maxHeight: math.MaxFloat64,
 			minWidth:  0,
 			maxWidth:  15,
 		}
