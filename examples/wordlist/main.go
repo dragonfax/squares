@@ -1,17 +1,17 @@
 package main
 
 import (
-	"github.com/dragonfax/gltr/examples/wordlist/wordpairs"
-	"github.com/dragonfax/gltr/gltr"
-	"github.com/dragonfax/gltr/gltr/listview"
+	"github.com/dragonfax/squares/examples/wordlist/wordpairs"
+	"github.com/dragonfax/squares/squares"
+	"github.com/dragonfax/squares/squares/listview"
 )
 
-var _ gltr.StatelessWidget = &MyApp{}
-var _ gltr.StatefulWidget = &RandomWords{}
-var _ gltr.State = &RandomWordsState{}
+var _ squares.StatelessWidget = &MyApp{}
+var _ squares.StatefulWidget = &RandomWords{}
+var _ squares.State = &RandomWordsState{}
 
 func main() {
-	err := gltr.RunApp(&MyApp{})
+	err := squares.RunApp(&MyApp{})
 	if err != nil {
 		panic(err)
 	}
@@ -20,9 +20,9 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context gltr.BuildContext) (gltr.Widget, error) {
+func (ma *MyApp) Build(context squares.BuildContext) (squares.Widget, error) {
 
-	return &gltr.Center{Child: &RandomWords{}}, nil
+	return &squares.Center{Child: &RandomWords{}}, nil
 }
 
 func isOdd(i int) bool {
@@ -32,7 +32,7 @@ func isOdd(i int) bool {
 type RandomWords struct {
 }
 
-func (*RandomWords) CreateState() gltr.State {
+func (*RandomWords) CreateState() squares.State {
 	return &RandomWordsState{suggestions: make([]wordpairs.WordPair, 0, 10)}
 }
 
@@ -40,12 +40,12 @@ type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build(context gltr.BuildContext) (gltr.Widget, error) {
-	return &gltr.Composite{Child: &listview.Builder{
-		Padding: gltr.EdgeInsetsAll(16),
-		ItemBuilder: func(i int) gltr.Widget {
+func (rws *RandomWordsState) Build(context squares.BuildContext) (squares.Widget, error) {
+	return &squares.Composite{Child: &listview.Builder{
+		Padding: squares.EdgeInsetsAll(16),
+		ItemBuilder: func(i int) squares.Widget {
 			if isOdd(i) {
-				return &gltr.Divider{}
+				return &squares.Divider{}
 			}
 
 			r := i / 2
@@ -61,9 +61,9 @@ func (rws *RandomWordsState) Build(context gltr.BuildContext) (gltr.Widget, erro
 	}}, nil
 }
 
-func BuildRow(wp wordpairs.WordPair) gltr.Widget {
+func BuildRow(wp wordpairs.WordPair) squares.Widget {
 	return &listview.ListTile{
-		Title: &gltr.Text{
+		Title: &squares.Text{
 			Text: wp.AsPascalCase(),
 		},
 	}

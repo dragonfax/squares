@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 var _ StatelessWidget = &Icon{}
 var _ StatelessWidget = &IconButton{}

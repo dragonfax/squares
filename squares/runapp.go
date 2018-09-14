@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 import (
 	"errors"

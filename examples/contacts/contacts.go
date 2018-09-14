@@ -5,85 +5,85 @@ package main
 // found in the LICENSE file.
 
 import (
-	"github.com/dragonfax/gltr/gltr"
+	"github.com/dragonfax/squares/squares"
 )
 
-var _ gltr.StatelessWidget = &ContactCategory{}
+var _ squares.StatelessWidget = &ContactCategory{}
 
 type ContactCategory struct {
-	Icon     *gltr.IconData
-	Children []gltr.Widget
+	Icon     *squares.IconData
+	Children []squares.Widget
 }
 
-func (cc *ContactCategory) Build(context gltr.BuildContext) (gltr.Widget, error) {
-	return &gltr.Container{
-		Padding: gltr.EdgeInsetsSymmetric(16, 0),
-		Decoration: gltr.BoxDecoration{
-			Border: gltr.Border{Bottom: gltr.BorderSide{}},
+func (cc *ContactCategory) Build(context squares.BuildContext) (squares.Widget, error) {
+	return &squares.Container{
+		Padding: squares.EdgeInsetsSymmetric(16, 0),
+		Decoration: squares.BoxDecoration{
+			Border: squares.Border{Bottom: squares.BorderSide{}},
 		},
-		Child: &gltr.Row{
-			CrossAxisAlignment: gltr.CrossAxisAlignmentStart,
-			Children: []gltr.Widget{
-				&gltr.Container{
-					Padding: gltr.EdgeInsetsSymmetric(24, 0),
+		Child: &squares.Row{
+			CrossAxisAlignment: squares.CrossAxisAlignmentStart,
+			Children: []squares.Widget{
+				&squares.Container{
+					Padding: squares.EdgeInsetsSymmetric(24, 0),
 					Width:   72.0,
-					Child:   &gltr.Icon{Icon: cc.Icon},
+					Child:   &squares.Icon{Icon: cc.Icon},
 				},
-				&gltr.Expanded{Child: &gltr.Column{Children: cc.Children}},
+				&squares.Expanded{Child: &squares.Column{Children: cc.Children}},
 			},
 		},
 	}, nil
 }
 
-var _ gltr.StatelessWidget = &ContactItem{}
+var _ squares.StatelessWidget = &ContactItem{}
 
 type ContactItem struct {
-	Icon      *gltr.IconData
+	Icon      *squares.IconData
 	Lines     []string
 	Tooltip   string
 	OnPressed func()
 }
 
-func (ci *ContactItem) Build(context gltr.BuildContext) (gltr.Widget, error) {
-	var columnChildren []gltr.Widget = make([]gltr.Widget, 0, len(ci.Lines))
+func (ci *ContactItem) Build(context squares.BuildContext) (squares.Widget, error) {
+	var columnChildren []squares.Widget = make([]squares.Widget, 0, len(ci.Lines))
 	for _, line := range ci.Lines[0 : len(ci.Lines)-1] {
-		columnChildren = append(columnChildren, &gltr.Text{Text: line})
+		columnChildren = append(columnChildren, &squares.Text{Text: line})
 	}
-	columnChildren = append(columnChildren, &gltr.Text{Text: ci.Lines[len(ci.Lines)-1]})
+	columnChildren = append(columnChildren, &squares.Text{Text: ci.Lines[len(ci.Lines)-1]})
 
-	rowChildren := []gltr.Widget{
-		&gltr.Expanded{
-			Child: &gltr.Column{
-				CrossAxisAlignment: gltr.CrossAxisAlignmentStart,
+	rowChildren := []squares.Widget{
+		&squares.Expanded{
+			Child: &squares.Column{
+				CrossAxisAlignment: squares.CrossAxisAlignmentStart,
 				Children:           columnChildren,
 			},
 		},
 	}
 
 	if ci.Icon != nil {
-		rowChildren = append(rowChildren, &gltr.SizedBox{
+		rowChildren = append(rowChildren, &squares.SizedBox{
 			Width: 72.0,
-			Child: &gltr.IconButton{
-				Icon:      &gltr.Icon{Icon: ci.Icon},
+			Child: &squares.IconButton{
+				Icon:      &squares.Icon{Icon: ci.Icon},
 				OnPressed: ci.OnPressed,
 			},
 		})
 	}
-	return &gltr.Padding{
-		Padding: gltr.EdgeInsetsSymmetric(16, 0),
-		Child: &gltr.Row{
-			MainAxisAlignment: gltr.MainAxisAlignmentSpaceBetween,
+	return &squares.Padding{
+		Padding: squares.EdgeInsetsSymmetric(16, 0),
+		Child: &squares.Row{
+			MainAxisAlignment: squares.MainAxisAlignmentSpaceBetween,
 			Children:          rowChildren,
 		},
 	}, nil
 }
 
-var _ gltr.StatefulWidget = &ContactsDemo{}
+var _ squares.StatefulWidget = &ContactsDemo{}
 
 type ContactsDemo struct {
 }
 
-func (cd *ContactsDemo) CreateState() gltr.State {
+func (cd *ContactsDemo) CreateState() squares.State {
 	return &ContactsDemoState{}
 }
 
@@ -96,7 +96,7 @@ const (
 	AppBarBehaviorSnapping
 )
 
-var _ gltr.State = &ContactsDemoState{}
+var _ squares.State = &ContactsDemoState{}
 
 type ContactsDemoState struct {
 	appBarHeight uint16
@@ -107,78 +107,78 @@ func (cds *ContactsDemoState) Init() {
 	cds.appBarHeight = 256.0
 }
 
-func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, error) {
+func (cds *ContactsDemoState) Build(context squares.BuildContext) (squares.Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
 
-	return &gltr.Scaffold{
-		Body: &gltr.CustomScrollView{
-			Slivers: []gltr.Widget{
-				&gltr.SliverAppBar{
+	return &squares.Scaffold{
+		Body: &squares.CustomScrollView{
+			Slivers: []squares.Widget{
+				&squares.SliverAppBar{
 					ExpandedHeight: cds.appBarHeight,
 					Pinned:         appBarBehavior == AppBarBehaviorPinned,
 					Floating:       appBarBehavior == AppBarBehaviorFloating || appBarBehavior == AppBarBehaviorSnapping,
 					Snap:           appBarBehavior == AppBarBehaviorSnapping,
-					Actions: []gltr.Widget{
-						&gltr.IconButton{
-							Icon:    &gltr.Icon{Icon: gltr.IconsCreate},
+					Actions: []squares.Widget{
+						&squares.IconButton{
+							Icon:    &squares.Icon{Icon: squares.IconsCreate},
 							Tooltip: "Edit",
 							OnPressed: func() {
-								showSnackBar(context, &gltr.SnackBar{
-									Content: &gltr.Text{"Editing isn't supported in this screen."},
+								showSnackBar(context, &squares.SnackBar{
+									Content: &squares.Text{"Editing isn't supported in this screen."},
 								})
 							},
 						},
-						&gltr.PopupMenuButton{
+						&squares.PopupMenuButton{
 							OnSelected: func(value interface{}) {
-								context.(gltr.StatefulContext).SetState(func() {
+								context.(squares.StatefulContext).SetState(func() {
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context gltr.BuildContext) ([]*gltr.PopupMenuItem, error) {
-								return []*gltr.PopupMenuItem{
-									&gltr.PopupMenuItem{
+							ItemBuilder: func(context squares.BuildContext) ([]*squares.PopupMenuItem, error) {
+								return []*squares.PopupMenuItem{
+									&squares.PopupMenuItem{
 										Value: AppBarBehaviorNormal,
-										Child: &gltr.Text{"App bar scrolls away"},
+										Child: &squares.Text{"App bar scrolls away"},
 									},
-									&gltr.PopupMenuItem{
+									&squares.PopupMenuItem{
 										Value: AppBarBehaviorPinned,
-										Child: &gltr.Text{"App bar stays put"},
+										Child: &squares.Text{"App bar stays put"},
 									},
-									&gltr.PopupMenuItem{
+									&squares.PopupMenuItem{
 										Value: AppBarBehaviorFloating,
-										Child: &gltr.Text{"App bar floats"},
+										Child: &squares.Text{"App bar floats"},
 									},
-									&gltr.PopupMenuItem{
+									&squares.PopupMenuItem{
 										Value: AppBarBehaviorSnapping,
-										Child: &gltr.Text{"App bar snaps"},
+										Child: &squares.Text{"App bar snaps"},
 									},
 								}, nil
 							},
 						},
 					},
-					FlexibleSpace: &gltr.FlexibleSpaceBar{
-						Title: &gltr.Text{"Ali Connors"},
-						Background: &gltr.Stack{
-							Fit: gltr.StackFitExpand,
-							Children: []gltr.Widget{
-								gltr.NewImageFromAsset(
-									gltr.Asset{
+					FlexibleSpace: &squares.FlexibleSpaceBar{
+						Title: &squares.Text{"Ali Connors"},
+						Background: &squares.Stack{
+							Fit: squares.StackFitExpand,
+							Children: []squares.Widget{
+								squares.NewImageFromAsset(
+									squares.Asset{
 										File:    "people/ali_landscape.png",
 										Package: "flutter_gallery_assets",
 									},
-									&gltr.Image{
-										Fit:    gltr.BoxFitCover,
+									&squares.Image{
+										Fit:    squares.BoxFitCover,
 										Height: cds.appBarHeight,
 									},
 								),
 								// This gradient ensures that the toolbar icons are distinct
 								// against the background image.
-								&gltr.DecoratedBox{
-									Decoration: gltr.BoxDecoration{
-										Gradient: gltr.LinearGradient{
-											Begin:  gltr.Alignment{0.0, -1.0},
-											End:    gltr.Alignment{0.0, -0.4},
-											Colors: []gltr.Color{gltr.Color{0x60000000}, gltr.Color{0x00000000}},
+								&squares.DecoratedBox{
+									Decoration: squares.BoxDecoration{
+										Gradient: squares.LinearGradient{
+											Begin:  squares.Alignment{0.0, -1.0},
+											End:    squares.Alignment{0.0, -0.4},
+											Colors: []squares.Color{squares.Color{0x60000000}, squares.Color{0x00000000}},
 										},
 									},
 								},
@@ -186,18 +186,18 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 						},
 					},
 				},
-				&gltr.SliverList{
-					Delegate: &gltr.SliverChildListDelegate{
-						Children: []gltr.Widget{
+				&squares.SliverList{
+					Delegate: &squares.SliverChildListDelegate{
+						Children: []squares.Widget{
 							&ContactCategory{
-								Icon: gltr.IconsCall,
-								Children: []gltr.Widget{
+								Icon: squares.IconsCall,
+								Children: []squares.Widget{
 									&ContactItem{
-										Icon:    gltr.IconsMessage,
+										Icon:    squares.IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"Pretend that this opened your SMS application."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"Pretend that this opened your SMS application."},
 											})
 										},
 										Lines: []string{
@@ -206,11 +206,11 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 										},
 									},
 									&ContactItem{
-										Icon:    gltr.IconsMessage,
+										Icon:    squares.IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"A messaging app appears."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"A messaging app appears."},
 											})
 										},
 										Lines: []string{
@@ -219,11 +219,11 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 										},
 									},
 									&ContactItem{
-										Icon:    gltr.IconsMessage,
+										Icon:    squares.IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"Imagine if you will, a messaging application."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"Imagine if you will, a messaging application."},
 											})
 										},
 										Lines: []string{
@@ -234,14 +234,14 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 								},
 							},
 							&ContactCategory{
-								Icon: gltr.IconsContactMail,
-								Children: []gltr.Widget{
+								Icon: squares.IconsContactMail,
+								Children: []squares.Widget{
 									&ContactItem{
-										Icon:    gltr.IconsEmail,
+										Icon:    squares.IconsEmail,
 										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"Here, your e-mail application would open."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"Here, your e-mail application would open."},
 											})
 										},
 										Lines: []string{
@@ -250,11 +250,11 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 										},
 									},
 									&ContactItem{
-										Icon:    gltr.IconsEmail,
+										Icon:    squares.IconsEmail,
 										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"Summon your favorite e-mail application here."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"Summon your favorite e-mail application here."},
 											})
 										},
 										Lines: []string{
@@ -265,14 +265,14 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 								},
 							},
 							&ContactCategory{
-								Icon: gltr.IconsLocationOn,
-								Children: []gltr.Widget{
+								Icon: squares.IconsLocationOn,
+								Children: []squares.Widget{
 									&ContactItem{
-										Icon:    gltr.IconsMap,
+										Icon:    squares.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"This would show a map of San Francisco."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"This would show a map of San Francisco."},
 											})
 										},
 										Lines: []string{
@@ -282,11 +282,11 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 										},
 									},
 									&ContactItem{
-										Icon:    gltr.IconsMap,
+										Icon:    squares.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"This would show a map of Mountain View."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"This would show a map of Mountain View."},
 											})
 										},
 										Lines: []string{
@@ -296,11 +296,11 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 										},
 									},
 									&ContactItem{
-										Icon:    gltr.IconsMap,
+										Icon:    squares.IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &gltr.SnackBar{
-												Content: &gltr.Text{"This would also show a map, if this was not a demo."},
+											showSnackBar(context, &squares.SnackBar{
+												Content: &squares.Text{"This would also show a map, if this was not a demo."},
 											})
 										},
 										Lines: []string{
@@ -312,8 +312,8 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 								},
 							},
 							&ContactCategory{
-								Icon: gltr.IconsToday,
-								Children: []gltr.Widget{
+								Icon: squares.IconsToday,
+								Children: []squares.Widget{
 									&ContactItem{
 										Lines: []string{
 											"Birthday",
@@ -347,6 +347,6 @@ func (cds *ContactsDemoState) Build(context gltr.BuildContext) (gltr.Widget, err
 	}, nil
 }
 
-func showSnackBar(context gltr.BuildContext, snackBar *gltr.SnackBar) {
-	gltr.ContextOf(context, &gltr.Scaffold{}).GetWidget().(*gltr.Scaffold).ShowSnackBar(snackBar)
+func showSnackBar(context squares.BuildContext, snackBar *squares.SnackBar) {
+	squares.ContextOf(context, &squares.Scaffold{}).GetWidget().(*squares.Scaffold).ShowSnackBar(snackBar)
 }

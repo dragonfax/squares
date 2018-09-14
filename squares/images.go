@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 type Asset struct {
 	File    string

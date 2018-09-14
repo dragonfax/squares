@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 func clamp(lowerLimit, upperLimit, number float64) float64 {
 	if number < lowerLimit {

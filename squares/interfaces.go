@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 import "github.com/veandco/go-sdl2/sdl"
 

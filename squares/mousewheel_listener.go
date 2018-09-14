@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 var _ StatefulWidget = &MouseWheelListener{}
 var _ State = &MouseWheelListenerState{}

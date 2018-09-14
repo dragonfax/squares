@@ -1,4 +1,4 @@
-package gltr
+package squares
 
 var _ StatelessWidget = &Scaffold{}
 var _ HasChild = &Scaffold{}
