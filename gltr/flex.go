@@ -357,6 +357,7 @@ func (c *Column) Build(context BuildContext) (Widget, error) {
 
 var _ StatelessWidget = &Expanded{}
 var _ ElementWidget = &Flexible{}
+var _ HasChild = &Flexible{}
 var _ Element = &FlexibleElement{}
 var _ HasChildElement = &FlexibleElement{}
 
@@ -374,6 +375,10 @@ type Flexible struct {
 	Child Widget
 	Fit   FlexFit
 	Flex  int
+}
+
+func (f *Flexible) getChild() Widget {
+	return f.Child
 }
 
 func (f *Flexible) createElement() Element {
