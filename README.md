@@ -1,6 +1,6 @@
 # Squares
 
-_Any UI is just a collection of overlapping colored squares_
+_Any UI is really just a collection of overlapping colored squares_
 
 
 Rewrite of Flutter in Golang.
