@@ -34,6 +34,13 @@ const (
 	Horizontal
 )
 
+type FlexFit uint8
+
+const (
+	FlexFitTight FlexFit = iota // default
+	FlexFitLoose
+)
+
 type Flex struct {
 	Direction          Axis
 	CrossAxisAlignment CrossAxisAlignment
@@ -213,12 +220,49 @@ func (c *Column) Build(context BuildContext) (Widget, error) {
 	}, nil
 }
 
+var _ StatelessWidget = &Expanded{}
+var _ ElementWidget = &Flexible{}
+var _ Element = &FlexibleElement{}
+var _ HasChildElement = &FlexibleElement{}
+
 /* Expanded seems to do have no real implementation. All the magic is in Flex */
 type Expanded struct {
 	Child Widget
-	// FlexFit.tight
 }
 
 func (e *Expanded) Build(context BuildContext) (Widget, error) {
-	return e.Child, nil
+	return &Flexible{Fit: FlexFitTight, Child: e.Child}, nil
+}
+
+type Flexible struct {
+	Child Widget
+	Fit   FlexFit
+}
+
+func (f *Flexible) createElement() Element {
+	fe := &FlexibleElement{}
+	fe.widget = f
+	return fe
+}
+
+/* FlexibleElement exists just to hold onto and respond to Flex's request for child Fit parameter */
+type FlexibleElement struct {
+	elementData
+	childElementData
+}
+
+func (fe *FlexibleElement) getFit() FlexFit {
+	return fe.widget.(*Flexible).Fit
+}
+
+func (ce *FlexibleElement) layout(constraints Constraints) error {
+	return ce.getChildElement().layout(constraints)
+}
+
+func (fe *FlexibleElement) getSize() Size {
+	return fe.getChildElement().getSize()
+}
+
+func (c *FlexibleElement) render(offset Offset, renderer *sdl.Renderer) {
+	c.getChildElement().render(offset, renderer)
 }
