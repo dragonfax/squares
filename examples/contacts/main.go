@@ -4,13 +4,13 @@ package main
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import "github.com/dragonfax/glitter/glt"
+import "github.com/dragonfax/gltr/gltr"
 
 func main() {
 
-	glt.RunApp(&glt.MaterialApp{
+	glt.RunApp(&gltr.MaterialApp{
 		Title: "Contacts App",
-		Color: glt.ColorsGrey,
+		Color: gltr.ColorsGrey,
 		Child: &ContactsDemo{},
 	})
 }

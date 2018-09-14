@@ -1,4 +1,4 @@
-package glt
+package gltr
 
 var _ StatelessWidget = &Icon{}
 var _ StatelessWidget = &IconButton{}
