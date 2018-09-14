@@ -100,7 +100,7 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 	if widget.Direction == Horizontal {
 		maxMainSize = constraints.maxWidth
 	}
-	canFlex := maxMainSize < math.MaxFloat64
+	canFlex := !math.IsInf(maxMainSize, 1)
 
 	crossSize := 0.0
 	allocatedSize := 0.0

@@ -39,12 +39,12 @@ func (c Constraints) deflate(in EdgeInsets) Constraints {
 	deflatedMinWidth := math.Max(0.0, c.minWidth-in.horizontal())
 	deflatedMinHeight := math.Max(0.0, c.minHeight-in.vertical())
 	deflatedMaxWidth := math.Max(deflatedMinWidth, c.maxWidth-in.horizontal())
-	if c.maxWidth == math.MaxFloat64 {
-		deflatedMaxWidth = math.MaxFloat64
+	if math.IsInf(c.maxWidth, 1) {
+		deflatedMaxWidth = math.Inf(1)
 	}
 	deflatedMaxHeight := math.Max(deflatedMinHeight, c.maxHeight-in.vertical())
-	if c.maxHeight == math.MaxFloat64 {
-		deflatedMaxHeight = math.MaxFloat64
+	if math.IsInf(c.maxHeight, 1) {
+		deflatedMaxHeight = math.Inf(1)
 	}
 	return Constraints{
 		minWidth:  deflatedMinWidth,
