@@ -18,6 +18,8 @@ type CrossAxisAlignment uint8
 const (
 	CrossAxisAlignmentCenter CrossAxisAlignment = iota // default
 	CrossAxisAlignmentStart
+	CrossAxisAlignmentEnd
+	CrossAxisAlignmentStretch
 )
 
 type MainAxisAlignment uint8
@@ -25,6 +27,10 @@ type MainAxisAlignment uint8
 const (
 	MainAxisAlignmentStart MainAxisAlignment = iota // default
 	MainAxisAlignmentSpaceBetween
+	MainAxisAlignmentEnd
+	MainAxisAlignmentCenter
+	MainAxisAlignmentSpaceAround
+	MainAxisAlignmentSpaceEvenly
 )
 
 type Axis uint8
@@ -88,6 +94,17 @@ func (ce *FlexElement) getChildMainSize(child Element) float64 {
 func (ce *FlexElement) layout(constraints Constraints) error {
 	widget := ce.widget.(*Flex)
 
+	var totalFlex int
+	var totalChildren int
+	maxMainSize := constraints.maxHeight
+	if widget.Direction == Horizontal {
+		maxMainSize = constraints.maxWidth
+	}
+	canFlex := maxMainSize < math.MaxFloat64
+
+	crossSize := 0.0
+	allocatedSize := 0.0
+
 	var innerConstraints Constraints
 	switch widget.Direction {
 	case Horizontal:
@@ -108,17 +125,114 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 
 	var maxChildCrossSize float64
 	var allocatedMainSize float64
+	var lastFlexChild *FlexibleElement
 	for _, child := range ce.children {
+		flexChild, ok := child.(*FlexibleElement)
 
-		child.layout(innerConstraints)
+		totalChildren++
 
-		maxChildCrossSize = math.Max(maxChildCrossSize, ce.getChildCrossSize(child))
-		allocatedMainSize += ce.getChildMainSize(child)
+		flex := 0
+		if ok {
+			flex = flexChild.getFlex()
+		}
+
+		if flex > 0 {
+			totalFlex += flex
+			lastFlexChild = flexChild
+		} else {
+			child.layout(innerConstraints)
+			maxChildCrossSize = math.Max(maxChildCrossSize, ce.getChildCrossSize(child))
+			allocatedMainSize += ce.getChildMainSize(child)
+		}
+	}
+
+	t := 0.0
+	if canFlex {
+		t = maxMainSize
+	}
+	freeSpace := math.Max(0.0, t-allocatedSize)
+	allocatedFlexSpace := 0.0
+	if totalFlex > 0 {
+
+		spacePerFlex := math.NaN()
+		if canFlex && totalFlex > 0 {
+			spacePerFlex = freeSpace / float64(totalFlex)
+		}
+
+		for _, child := range ce.children {
+			flexChild, ok := child.(*FlexibleElement)
+
+			flex := 0
+			if ok {
+				flex = flexChild.getFlex()
+			}
+
+			if flex > 0 {
+
+				var maxChildExtent = math.Inf(1)
+				if canFlex {
+					if child == lastFlexChild {
+						maxChildExtent = freeSpace - allocatedFlexSpace
+					} else {
+						maxChildExtent = spacePerFlex * float64(flex)
+					}
+				}
+
+				var minChildExtent float64
+				switch flexChild.getFit() {
+				case FlexFitTight:
+					minChildExtent = maxChildExtent
+				case FlexFitLoose:
+					minChildExtent = 0.0
+				}
+
+				if widget.CrossAxisAlignment == CrossAxisAlignmentStretch {
+					switch widget.Direction {
+					case Horizontal:
+						innerConstraints = Constraints{
+							minWidth:  minChildExtent,
+							maxWidth:  maxChildExtent,
+							minHeight: constraints.maxHeight,
+							maxHeight: constraints.maxHeight,
+						}
+					case Vertical:
+						innerConstraints = Constraints{
+							minWidth:  constraints.maxWidth,
+							maxWidth:  constraints.maxWidth,
+							minHeight: minChildExtent,
+							maxHeight: maxChildExtent,
+						}
+					}
+				} else {
+					switch widget.Direction {
+					case Horizontal:
+						innerConstraints = Constraints{
+							minWidth:  minChildExtent,
+							maxWidth:  maxChildExtent,
+							maxHeight: constraints.maxHeight,
+							minHeight: 0,
+						}
+					case Vertical:
+						innerConstraints = Constraints{
+							maxWidth:  constraints.maxWidth,
+							minHeight: minChildExtent,
+							maxHeight: maxChildExtent,
+							minWidth:  0,
+						}
+					}
+				}
+
+				child.layout(innerConstraints)
+				childSize := ce.getChildMainSize(child)
+				allocatedSize += childSize
+				allocatedFlexSpace += maxChildExtent
+				crossSize = math.Max(crossSize, ce.getChildCrossSize(child))
+			}
+		}
 	}
 
 	idealSize := allocatedMainSize
 	var actualSize float64
-	var crossSize float64
 	switch widget.Direction {
 	case Horizontal:
 		size := constraints.constrain(Size{idealSize, maxChildCrossSize})
@@ -133,11 +247,10 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 	}
 
 	actualSizeDelta := actualSize - idealSize
-	remainingSpace := math.Max(0, actualSizeDelta)
 
+	remainingSpace := math.Max(0, actualSizeDelta)
 	var leadingSpace float64
 	var betweenSpace float64
-	totalChildren := len(ce.children)
 
 	switch widget.MainAxisAlignment {
 	case MainAxisAlignmentSpaceBetween:
@@ -146,9 +259,27 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		if totalChildren > 1 {
 			betweenSpace = remainingSpace / float64(totalChildren-1)
 		}
+	case MainAxisAlignmentEnd:
+		leadingSpace = remainingSpace
+		betweenSpace = 0
+	case MainAxisAlignmentCenter:
+		leadingSpace = remainingSpace / 2
+		betweenSpace = 0
 	case MainAxisAlignmentStart:
 		leadingSpace = 0
 		betweenSpace = 0
+	case MainAxisAlignmentSpaceAround:
+		betweenSpace = 0
+		if totalChildren > 0 {
+			betweenSpace = remainingSpace / float64(totalChildren)
+		}
+		leadingSpace = betweenSpace / 2
+	case MainAxisAlignmentSpaceEvenly:
+		betweenSpace = 0
+		if totalChildren > 0 {
+			betweenSpace = remainingSpace / (float64(totalChildren) + 1)
+		}
+		leadingSpace = betweenSpace
 	default:
 		panic("unimplemented")
 	}
@@ -159,10 +290,14 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		var childCrossPosition float64
 
 		switch widget.CrossAxisAlignment {
-		case CrossAxisAlignmentStart:
+		case CrossAxisAlignmentEnd:
 			childCrossPosition = crossSize - ce.getChildCrossSize(child)
+		case CrossAxisAlignmentStart:
+			childCrossPosition = 0
 		case CrossAxisAlignmentCenter:
 			childCrossPosition = crossSize/2 - ce.getChildCrossSize(child)/2
+		case CrossAxisAlignmentStretch:
+			childCrossPosition = 0
 		default:
 			panic("unimplemented")
 		}
@@ -231,12 +366,14 @@ type Expanded struct {
 }
 
 func (e *Expanded) Build(context BuildContext) (Widget, error) {
-	return &Flexible{Fit: FlexFitTight, Child: e.Child}, nil
+	return &Flexible{Fit: FlexFitTight, Flex: 1, Child: e.Child}, nil
 }
 
+/* TODO you should set a flex of at lest 1, since there is no constructor here */
 type Flexible struct {
 	Child Widget
 	Fit   FlexFit
+	Flex  int
 }
 
 func (f *Flexible) createElement() Element {
@@ -253,6 +390,10 @@ type FlexibleElement struct {
 
 func (fe *FlexibleElement) getFit() FlexFit {
 	return fe.widget.(*Flexible).Fit
+}
+
+func (fe *FlexibleElement) getFlex() int {
+	return fe.widget.(*Flexible).Flex
 }
 
 func (ce *FlexibleElement) layout(constraints Constraints) error {
