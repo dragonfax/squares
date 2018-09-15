@@ -1,5 +1,12 @@
 package squares
 
+/* TODO
+ * Forces the child to match its size specification, even if they are 0.
+ *
+ * * needs to be implemented to allow for unspecified constraint dimensions.
+ * * needs to reimplemented based on a ConstrainedBox class
+ */
+
 import "github.com/veandco/go-sdl2/sdl"
 
 var _ ElementWidget = &SizedBox{}

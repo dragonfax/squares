@@ -20,7 +20,7 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context squares.BuildContext) (squares.Widget, error) {
+func (ma *MyApp) Build(context squares.StatelessContext) (squares.Widget, error) {
 
 	return &squares.Center{Child: &RandomWords{}}, nil
 }
@@ -40,7 +40,7 @@ type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build(context squares.BuildContext) (squares.Widget, error) {
+func (rws *RandomWordsState) Build(context squares.StatefulContext) (squares.Widget, error) {
 	return &squares.Composite{Child: &listview.Builder{
 		Padding: squares.EdgeInsetsAll(16),
 		ItemBuilder: func(i int) squares.Widget {

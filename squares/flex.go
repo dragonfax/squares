@@ -362,6 +362,7 @@ var _ Element = &FlexibleElement{}
 var _ HasChildElement = &FlexibleElement{}
 
 /* Expanded seems to do have no real implementation. All the magic is in Flex */
+/* TODO widget behavior broken */
 type Expanded struct {
 	Child Widget
 }
@@ -371,6 +372,7 @@ func (e *Expanded) Build(context StatelessContext) (Widget, error) {
 }
 
 /* TODO you should set a flex of at lest 1, since there is no constructor here */
+/* TODO widget behavior broken */
 type Flexible struct {
 	Child Widget
 	Fit   FlexFit
