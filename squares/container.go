@@ -3,6 +3,7 @@ package squares
 var _ StatelessWidget = &Container{}
 var _ HasChild = &Container{}
 var _ StatelessWidget = &DecoratedBox{}
+var _ HasChild = &DecoratedBox{}
 var _ StatelessWidget = &SizedBox{}
 var _ HasChild = &SizedBox{}
 var _ StatelessWidget = &CustomScrollView{}
@@ -12,8 +13,9 @@ var _ HasChildren = &SliverAppBar{}
 var _ StatelessWidget = &FlexibleSpaceBar{}
 var _ HasChildren = &FlexibleSpaceBar{}
 var _ StatelessWidget = &Stack{}
-var _ HasChidlren = &Stack{}
-var _ StatefulWidget = &SliverList{}
+var _ HasChildren = &Stack{}
+
+// TODO var _ StatefulWidget = &SliverList{}
 var _ HasChildren = &SliverList{}
 
 type Container struct {
@@ -30,6 +32,7 @@ type BoxDecoration struct {
 
 type DecoratedBox struct {
 	Decoration BoxDecoration
+	Child      Widget
 }
 
 type LinearGradient struct {

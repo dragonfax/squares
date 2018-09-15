@@ -8,7 +8,7 @@ import "github.com/dragonfax/squares/squares"
 
 func main() {
 
-	glt.RunApp(&squares.MaterialApp{
+	squares.RunApp(&squares.MaterialApp{
 		Title: "Contacts App",
 		Color: squares.ColorsGrey,
 		Child: &ContactsDemo{},
