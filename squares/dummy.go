@@ -36,7 +36,7 @@ func (d *Stack) getChildren() []Widget {
 }
 
 func (d *FlexibleSpaceBar) Build(context BuildContext) (Widget, error) {
-	return &Row{Children: d.getChildren()}, nil
+	return &Column{Children: d.getChildren()}, nil
 }
 
 func (d *FlexibleSpaceBar) getChildren() []Widget {
@@ -68,7 +68,7 @@ func (d *SnackBar) getChild() Widget {
 }
 
 func (d *CustomScrollView) Build(context BuildContext) (Widget, error) {
-	return &Row{Children: d.getChildren()}, nil
+	return &Column{Children: d.getChildren()}, nil
 }
 
 func (d *CustomScrollView) getChildren() []Widget {
@@ -76,7 +76,7 @@ func (d *CustomScrollView) getChildren() []Widget {
 }
 
 func (d *SliverAppBar) Build(context BuildContext) (Widget, error) {
-	return &Row{Children: d.getChildren()}, nil
+	return &Column{Children: d.getChildren()}, nil
 }
 
 func (d *SliverAppBar) getChildren() []Widget {
@@ -84,7 +84,7 @@ func (d *SliverAppBar) getChildren() []Widget {
 }
 
 func (d *SliverList) Build(context BuildContext) (Widget, error) {
-	return &Row{Children: d.getChildren()}, nil
+	return &Column{Children: d.getChildren()}, nil
 }
 
 func (d *SliverList) getChildren() []Widget {

@@ -21,12 +21,19 @@ func NewStatefulElement(widget Widget, state State) *StatefulElement {
 }
 
 func (se *StatefulElement) getSize() Size {
-	return se.child.getSize()
+	if se.child != nil {
+		return se.child.getSize()
+	} else {
+		return Size{}
+	}
 }
 
 func (se *StatefulElement) layout(c Constraints) error {
-	err := se.child.layout(c)
-	return err
+	if se.child != nil {
+		return se.child.layout(c)
+	} else {
+		return nil
+	}
 }
 
 func (se *StatefulElement) updateWidget(widget Widget) {
@@ -34,7 +41,9 @@ func (se *StatefulElement) updateWidget(widget Widget) {
 }
 
 func (se *StatefulElement) render(o Offset, r *sdl.Renderer) {
-	se.child.render(o, r)
+	if se.child != nil {
+		se.child.render(o, r)
+	}
 }
 
 func (se *StatefulElement) SetState(callback SetStateFunc) {
