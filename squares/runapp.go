@@ -18,14 +18,14 @@ const DEFAULT_WINDOW_HEIGHT = 600
 var renderer *sdl.Renderer
 var font *ttf.Font
 
-func initRender() {
+func initRender(title string) {
 
 	if err := sdl.Init(sdl.INIT_VIDEO | sdl.INIT_EVENTS | sdl.INIT_TIMER); err != nil {
 		panic(err)
 	}
 	// defer sdl.Quit()
 
-	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+	window, err := sdl.CreateWindow(title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
 	if err != nil {
 		panic(err)
@@ -58,9 +58,37 @@ func render(windowElement Element) {
 	renderer.Present()
 }
 
+func findWidget(typeW Widget, searchW Widget) Widget {
+	if searchW == nil {
+		return nil
+	} else if sameType(typeW, searchW) {
+		return searchW
+	} else if pw, ok := searchW.(HasChild); ok {
+		return findWidget(typeW, pw.getChild())
+	} else if pw, ok := searchW.(HasChildren); ok {
+		for _, child := range pw.getChildren() {
+			r := findWidget(typeW, child)
+			if r != nil {
+				return r
+			}
+		}
+		return nil
+	}
+	return nil
+}
+
 func RunApp(app Widget) error {
 
-	initRender()
+	title := "NO TITLE"
+	widget := findWidget(&MaterialApp{}, app)
+	if widget != nil {
+		widgetTitle := widget.(*MaterialApp).Title
+		if widgetTitle != "" {
+			title = widgetTitle
+		}
+	}
+
+	initRender(title)
 
 	fps := &gfx.FPSmanager{}
 	gfx.InitFramerate(fps)
