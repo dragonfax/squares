@@ -12,18 +12,11 @@ import (
 	"github.com/veandco/go-sdl2/ttf"
 )
 
-const WINDOW_WIDTH = 800
-const WINDOW_HEIGHT = 600
+const DEFAULT_WINDOW_WIDTH = 800
+const DEFAULT_WINDOW_HEIGHT = 600
 
 var renderer *sdl.Renderer
 var font *ttf.Font
-
-var windowConstraints = Constraints{
-	minWidth:  WINDOW_WIDTH,
-	minHeight: WINDOW_HEIGHT,
-	maxWidth:  WINDOW_WIDTH,
-	maxHeight: WINDOW_HEIGHT,
-}
 
 func initRender() {
 
@@ -33,7 +26,7 @@ func initRender() {
 	// defer sdl.Quit()
 
 	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		WINDOW_WIDTH, WINDOW_HEIGHT, sdl.WINDOW_SHOWN)
+		DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
 	if err != nil {
 		panic(err)
 	}
@@ -55,12 +48,12 @@ func initRender() {
 	}
 }
 
-func render(rootElement Element) {
+func render(windowElement Element) {
 
 	renderer.SetDrawColor(0, 0, 0, 255)
 	renderer.Clear()
 
-	rootElement.render(Offset{0, 0}, renderer)
+	windowElement.render(Offset{0, 0}, renderer)
 
 	renderer.Present()
 }
@@ -73,32 +66,43 @@ func RunApp(app Widget) error {
 	gfx.InitFramerate(fps)
 	gfx.SetFramerate(fps, 60)
 
-	rootElement, err := buildElementTree(app, nil)
+	windowWidget := &Window{
+		Child: app,
+	}
+	windowElement, err := buildElementTree(windowWidget, nil)
 	if err != nil {
 		return err
 	}
-	if rootElement == nil {
-		panic("no widgets built")
+
+	updateWindowSize := func(width, height float64) {
+		windowElement.(*StatefulElement).SetState(func() {
+			windowElement.(*StatefulElement).GetState().(*WindowState).Size = Size{
+				Width:  float64(width),
+				Height: float64(height),
+			}
+		})
 	}
+
+	updateWindowSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)
 
 	running := true
 	for running {
 
-		err = rebuildDirty(rootElement)
+		err = rebuildDirty(windowElement)
 		if err != nil {
 			return err
 		}
 
-		err = rootElement.layout(windowConstraints)
+		err = windowElement.layout(Constraints{})
 		if err != nil {
 			return err
 		}
 
-		floatUpRendered(rootElement)
+		floatUpRendered(windowElement)
 
 		gfx.FramerateDelay(fps)
 
-		render(rootElement)
+		render(windowElement)
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch event := event.(type) {
@@ -117,6 +121,10 @@ func RunApp(app Widget) error {
 					} else if event.Y < 0 {
 						mouseWheelCallback(MOUSEWHEEL_DOWN)
 					}
+				}
+			case *sdl.WindowEvent:
+				if event.Event == sdl.WINDOWEVENT_RESIZED {
+					updateWindowSize(float64(event.Data1), float64(event.Data2))
 				}
 			}
 		}

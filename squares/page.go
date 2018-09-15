@@ -22,7 +22,7 @@ type SnackBar struct {
 	Content Widget
 }
 
-type PopupMenuItemBuilderFunc func(context BuildContext) ([]*PopupMenuItem, error)
+type PopupMenuItemBuilderFunc func(context StatelessContext) ([]*PopupMenuItem, error)
 
 type PopupMenuButton struct {
 	OnSelected  func(interface{})

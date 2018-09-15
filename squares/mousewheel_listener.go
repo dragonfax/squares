@@ -31,7 +31,7 @@ func (mwl *MouseWheelListener) CreateState() State {
 type MouseWheelListenerState struct {
 }
 
-func (mwls *MouseWheelListenerState) Build(context BuildContext) (Widget, error) {
+func (mwls *MouseWheelListenerState) Build(context StatefulContext) (Widget, error) {
 	widget := context.GetWidget().(*MouseWheelListener)
 	mouseWheelCallback = widget.Callback
 	return widget.Child, nil

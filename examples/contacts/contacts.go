@@ -15,7 +15,7 @@ type ContactCategory struct {
 	Children []squares.Widget
 }
 
-func (cc *ContactCategory) Build(context squares.BuildContext) (squares.Widget, error) {
+func (cc *ContactCategory) Build(context squares.StatelessContext) (squares.Widget, error) {
 	return &squares.Container{
 		Padding: squares.EdgeInsetsSymmetric(16, 0),
 		Decoration: squares.BoxDecoration{
@@ -44,7 +44,7 @@ type ContactItem struct {
 	OnPressed func()
 }
 
-func (ci *ContactItem) Build(context squares.BuildContext) (squares.Widget, error) {
+func (ci *ContactItem) Build(context squares.StatelessContext) (squares.Widget, error) {
 	var columnChildren []squares.Widget = make([]squares.Widget, 0, len(ci.Lines))
 	for _, line := range ci.Lines[0 : len(ci.Lines)-1] {
 		columnChildren = append(columnChildren, &squares.Text{Text: line})
@@ -62,7 +62,10 @@ func (ci *ContactItem) Build(context squares.BuildContext) (squares.Widget, erro
 
 	if ci.Icon != nil {
 		rowChildren = append(rowChildren, &squares.SizedBox{
-			Width: 72.0,
+			Size: squares.Size{
+				Width:  72.0,
+				Height: 0,
+			},
 			Child: &squares.IconButton{
 				Icon:      &squares.Icon{Icon: ci.Icon},
 				OnPressed: ci.OnPressed,
@@ -107,7 +110,7 @@ func (cds *ContactsDemoState) Init() {
 	cds.appBarHeight = 256.0
 }
 
-func (cds *ContactsDemoState) Build(context squares.BuildContext) (squares.Widget, error) {
+func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
 
 	return &squares.Scaffold{
@@ -134,7 +137,7 @@ func (cds *ContactsDemoState) Build(context squares.BuildContext) (squares.Widge
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context squares.BuildContext) ([]*squares.PopupMenuItem, error) {
+							ItemBuilder: func(context squares.StatelessContext) ([]*squares.PopupMenuItem, error) {
 								return []*squares.PopupMenuItem{
 									&squares.PopupMenuItem{
 										Value: AppBarBehaviorNormal,

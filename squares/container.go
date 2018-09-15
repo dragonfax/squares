@@ -4,8 +4,6 @@ var _ StatelessWidget = &Container{}
 var _ HasChild = &Container{}
 var _ StatelessWidget = &DecoratedBox{}
 var _ HasChild = &DecoratedBox{}
-var _ StatelessWidget = &SizedBox{}
-var _ HasChild = &SizedBox{}
 var _ StatelessWidget = &CustomScrollView{}
 var _ HasChildren = &CustomScrollView{}
 var _ StatelessWidget = &SliverAppBar{}
@@ -50,11 +48,6 @@ type Border struct {
 }
 
 type BorderSide struct {
-}
-
-type SizedBox struct {
-	Width uint16
-	Child Widget
 }
 
 type CustomScrollView struct {

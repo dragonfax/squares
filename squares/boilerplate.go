@@ -20,3 +20,7 @@ func (c *Column) getChildren() []Widget {
 func (cw *Composite) getChild() Widget {
 	return cw.Child
 }
+
+func (sb *SizedBox) getChild() Widget {
+	return sb.Child
+}

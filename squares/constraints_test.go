@@ -38,11 +38,11 @@ func TestConstraintsConstrain(t *testing.T) {
 
 		size := c.constrain(Size{20, 20})
 
-		if size.width != 15 {
-			t.Fatal("wrong width, expected 20, got ", size.width)
+		if size.Width != 15 {
+			t.Fatal("wrong width, expected 20, got ", size.Width)
 		}
-		if size.height != 15 {
-			t.Fatal("wrong height, expected 20, got ", size.width)
+		if size.Height != 15 {
+			t.Fatal("wrong height, expected 20, got ", size.Width)
 		}
 	})
 
@@ -56,11 +56,11 @@ func TestConstraintsConstrain(t *testing.T) {
 
 		size := c.constrain(Size{20, 20})
 
-		if size.width != 15 {
-			t.Fatal("wrong width, expected 20, got ", size.width)
+		if size.Width != 15 {
+			t.Fatal("wrong width, expected 20, got ", size.Width)
 		}
-		if size.height != 20 {
-			t.Fatal("wrong height, expected 20, got ", size.width)
+		if size.Height != 20 {
+			t.Fatal("wrong height, expected 20, got ", size.Width)
 		}
 	})
 
@@ -74,11 +74,11 @@ func TestConstraintsConstrain(t *testing.T) {
 
 		size := c.constrain(Size{2, 2})
 
-		if size.width != 2 {
-			t.Fatal("wrong width, expected 20, got ", size.width)
+		if size.Width != 2 {
+			t.Fatal("wrong width, expected 20, got ", size.Width)
 		}
-		if size.height != 5 {
-			t.Fatal("wrong height, expected 20, got ", size.width)
+		if size.Height != 5 {
+			t.Fatal("wrong height, expected 20, got ", size.Width)
 		}
 	})
 

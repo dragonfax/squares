@@ -50,3 +50,7 @@ func (se *StatefulElement) SetState(callback SetStateFunc) {
 	callback()
 	se.built = false
 }
+
+func (se *StatefulElement) GetState() State {
+	return se.state
+}

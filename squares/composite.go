@@ -43,7 +43,7 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 
 	size := se.child.getSize()
 
-	if size.height == 0 || size.width == 0 {
+	if size.Height == 0 || size.Width == 0 {
 		panic("can't composite a zero size child")
 	}
 
@@ -55,7 +55,7 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 			if se.renderedTexture != nil {
 				se.renderedTexture.Destroy()
 			}
-			t, err := r.CreateTexture(sdl.PIXELFORMAT_RGBA8888, sdl.TEXTUREACCESS_TARGET, int32(size.width), int32(size.height))
+			t, err := r.CreateTexture(sdl.PIXELFORMAT_RGBA8888, sdl.TEXTUREACCESS_TARGET, int32(size.Width), int32(size.Height))
 			if err != nil {
 				panic(err)
 			}
@@ -76,7 +76,7 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 	}
 
 	// use the composite
-	srcRect := &sdl.Rect{X: 0, Y: 0, W: int32(size.width), H: int32(size.height)}
-	dstRect := &sdl.Rect{X: int32(o.x), Y: int32(o.y), W: int32(size.width), H: int32(size.height)}
+	srcRect := &sdl.Rect{X: 0, Y: 0, W: int32(size.Width), H: int32(size.Height)}
+	dstRect := &sdl.Rect{X: int32(o.x), Y: int32(o.y), W: int32(size.Width), H: int32(size.Height)}
 	r.Copy(se.renderedTexture, srcRect, dstRect)
 }

@@ -36,13 +36,13 @@ func (ce *CenterElement) layout(c Constraints) error {
 
 	childSize := ce.child.getSize()
 	ce.size = c.constrain(Size{
-		width:  constraintCenterDimension(c.maxWidth, childSize.width),
-		height: constraintCenterDimension(c.maxHeight, childSize.height),
+		Width:  constraintCenterDimension(c.maxWidth, childSize.Width),
+		Height: constraintCenterDimension(c.maxHeight, childSize.Height),
 	})
 
 	ce.child.setOffset(Offset{
-		x: (ce.size.width - childSize.width) / 2,
-		y: (ce.size.height - childSize.height) / 2,
+		x: (ce.size.Width - childSize.Width) / 2,
+		y: (ce.size.Height - childSize.Height) / 2,
 	})
 
 	return nil

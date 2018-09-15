@@ -30,7 +30,7 @@ func (t *TextElement) layout(c Constraints) error {
 	cWidth := float64(len(t.widget.(*Text).Text) * CHARACTER_WIDTH)
 	cHeight := 1.0 * CHARACTER_HEIGHT
 
-	t.size = Size{width: math.Max(cWidth, c.minWidth), height: math.Max(cHeight, c.minHeight)}
+	t.size = Size{Width: math.Max(cWidth, c.minWidth), Height: math.Max(cHeight, c.minHeight)}
 
 	return nil
 }

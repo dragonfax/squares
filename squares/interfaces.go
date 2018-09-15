@@ -11,13 +11,18 @@ type BuildContext interface {
 	GetWidget() Widget
 }
 
+type StatelessContext interface {
+	// not sure what goes here yet.
+}
+
 type StatefulContext interface {
 	SetState(SetStateFunc)
+	GetWidget() Widget
 }
 
 type StatelessWidget interface {
 	// Can't embed function types as interface methods, so we'll just copy the definition of BuildFunc
-	Build(context BuildContext) (Widget, error)
+	Build(context StatelessContext) (Widget, error)
 }
 
 type HasChild interface {
@@ -33,11 +38,7 @@ type StatefulWidget interface {
 }
 
 type State interface {
-	/* StatlessWidget interface is included here only so that we get the same signature
-	 * for the Build() method. If we add more methods to the StatelessWidget interface,
-	 * we may not want them for State, so in that case remove this embedded interface.
-	 */
-	StatelessWidget
+	Build(context StatefulContext) (Widget, error)
 }
 
 type Element interface {

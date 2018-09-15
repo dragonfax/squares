@@ -13,7 +13,7 @@ func (o Offset) Add(o2 Offset) Offset {
 }
 
 type Size struct {
-	width, height float64
+	Width, Height float64
 }
 
 type Constraints struct {
@@ -24,15 +24,19 @@ func (c Constraints) loosen() Constraints {
 	return Constraints{minWidth: 0, minHeight: 0, maxWidth: c.maxWidth, maxHeight: c.maxHeight}
 }
 
+func ConstraintsAbsolute(width, height float64) Constraints {
+	return Constraints{minWidth: width, maxWidth: width, minHeight: height, maxHeight: height}
+}
+
 func (c Constraints) constrain(size Size) Size {
 	return Size{
-		width:  clamp(c.minWidth, c.maxWidth, size.width),
-		height: clamp(c.minHeight, c.maxHeight, size.height),
+		Width:  clamp(c.minWidth, c.maxWidth, size.Width),
+		Height: clamp(c.minHeight, c.maxHeight, size.Height),
 	}
 }
 
 func (s Size) addMargin(in EdgeInsets) Size {
-	return Size{width: in.Left + s.width + in.Right, height: in.Top + s.height + in.Bottom}
+	return Size{Width: in.Left + s.Width + in.Right, Height: in.Top + s.Height + in.Bottom}
 }
 
 func (c Constraints) deflate(in EdgeInsets) Constraints {

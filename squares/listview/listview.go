@@ -23,7 +23,7 @@ type BuilderState struct {
 	firstItem int
 }
 
-func (bs *BuilderState) Build(context squares.BuildContext) (squares.Widget, error) {
+func (bs *BuilderState) Build(context squares.StatefulContext) (squares.Widget, error) {
 	widget := context.GetWidget().(*Builder)
 	children := make([]squares.Widget, 10)
 	for i := 0; i < 10; i++ {
@@ -49,6 +49,6 @@ type ListTile struct {
 	Title squares.Widget
 }
 
-func (w ListTile) Build(context squares.BuildContext) (squares.Widget, error) {
+func (w ListTile) Build(context squares.StatelessContext) (squares.Widget, error) {
 	return w.Title, nil
 }

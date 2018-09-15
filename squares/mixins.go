@@ -1,7 +1,5 @@
 package squares
 
-import "fmt"
-
 /* A lazy way to do mixins, using embedded structs
  *
  * Not good enough for adding optional user parameters like Child to a literal struct,
@@ -33,10 +31,6 @@ func (ce *elementData) updateWidget(widget Widget) {
 }
 
 func (sd elementData) getSize() Size {
-	if sd.size.height == 0 || sd.size.width == 0 {
-		panic(fmt.Sprintf("element had 0 size, %v", sd.size))
-	} else if sd.size.width == 0 {
-	}
 	return sd.size
 }
 

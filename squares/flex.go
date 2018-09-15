@@ -74,9 +74,9 @@ type FlexElement struct {
 func (ce *FlexElement) getChildCrossSize(child Element) float64 {
 	switch ce.widget.(*Flex).Direction {
 	case Horizontal:
-		return child.getSize().height
+		return child.getSize().Height
 	case Vertical:
-		return child.getSize().width
+		return child.getSize().Width
 	}
 	return 0
 }
@@ -84,9 +84,9 @@ func (ce *FlexElement) getChildCrossSize(child Element) float64 {
 func (ce *FlexElement) getChildMainSize(child Element) float64 {
 	switch ce.widget.(*Flex).Direction {
 	case Horizontal:
-		return child.getSize().width
+		return child.getSize().Width
 	case Vertical:
-		return child.getSize().height
+		return child.getSize().Height
 	}
 	return 0
 }
@@ -236,13 +236,13 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 	switch widget.Direction {
 	case Horizontal:
 		size := constraints.constrain(Size{idealSize, maxChildCrossSize})
-		actualSize = size.width
-		crossSize = size.height
+		actualSize = size.Width
+		crossSize = size.Height
 		ce.size = size
 	case Vertical:
 		size := constraints.constrain(Size{maxChildCrossSize, idealSize})
-		actualSize = size.height
-		crossSize = size.width
+		actualSize = size.Height
+		crossSize = size.Width
 		ce.size = size
 	}
 
@@ -331,7 +331,7 @@ type Row struct {
 	Children           []Widget
 }
 
-func (c *Row) Build(context BuildContext) (Widget, error) {
+func (c *Row) Build(context StatelessContext) (Widget, error) {
 	return &Flex{
 		Direction:          Horizontal,
 		CrossAxisAlignment: c.CrossAxisAlignment,
@@ -346,7 +346,7 @@ type Column struct {
 	Children           []Widget
 }
 
-func (c *Column) Build(context BuildContext) (Widget, error) {
+func (c *Column) Build(context StatelessContext) (Widget, error) {
 	return &Flex{
 		Direction:          Vertical,
 		CrossAxisAlignment: c.CrossAxisAlignment,
@@ -366,7 +366,7 @@ type Expanded struct {
 	Child Widget
 }
 
-func (e *Expanded) Build(context BuildContext) (Widget, error) {
+func (e *Expanded) Build(context StatelessContext) (Widget, error) {
 	return &Flexible{Fit: FlexFitTight, Flex: 1, Child: e.Child}, nil
 }
 
