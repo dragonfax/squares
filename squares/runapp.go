@@ -77,6 +77,9 @@ func RunApp(app Widget) error {
 	if err != nil {
 		return err
 	}
+	if rootElement == nil {
+		panic("no widgets built")
+	}
 
 	running := true
 	for running {
@@ -250,7 +253,12 @@ func sameType(a, b interface{}) bool {
 
 func getWidgetChildren(ew ElementWidget) []Widget {
 	if parent, ok := ew.(HasChild); ok {
-		return []Widget{parent.getChild()}
+		child := parent.getChild()
+		if child == nil {
+			return []Widget{}
+		} else {
+			return []Widget{parent.getChild()}
+		}
 	} else if parent, ok := ew.(HasChildren); ok {
 		return parent.getChildren()
 	}
@@ -272,7 +280,12 @@ func setElementChildren(e Element, ec []Element) {
 
 func getElementChildren(e Element) []Element {
 	if parent, ok := e.(HasChildElement); ok {
-		return []Element{parent.getChildElement()}
+		child := parent.getChildElement()
+		if child == nil {
+			return []Element{}
+		} else {
+			return []Element{child}
+		}
 	} else if parent, ok := e.(HasChildrenElements); ok {
 		return parent.getChildrenElements()
 	}
@@ -282,10 +295,11 @@ func getElementChildren(e Element) []Element {
 func processElementChildren(widget ElementWidget, newElement Element, oldElement Element) error {
 
 	widgetChildren := getWidgetChildren(widget)
-	newElementChildren := make([]Element, len(widgetChildren))
+	newElementChildren := make([]Element, 0, len(widgetChildren))
 	oldElementChildren := getElementChildren(oldElement)
 
-	for i, widgetChild := range widgetChildren {
+	var i int
+	for _, widgetChild := range widgetChildren {
 
 		// check if we have an old element to reuse (for keeping state)
 		var oldChildElement Element
@@ -297,7 +311,11 @@ func processElementChildren(widget ElementWidget, newElement Element, oldElement
 		if err != nil {
 			return err
 		}
-		newElementChildren[i] = newChildElement
+		if newChildElement != nil {
+			newElementChildren = append(newElementChildren, newChildElement)
+		}
+
+		i++
 	}
 	setElementChildren(newElement, newElementChildren)
 	return nil
@@ -321,7 +339,7 @@ func elementFromElementWidget(ew ElementWidget, oldElement Element) (Element, er
 func buildElementTree(w Widget, oldElement Element) (Element, error) {
 
 	if w == nil {
-		return nil, errors.New("widget was nil.")
+		return nil, nil
 	}
 
 	if reflect.ValueOf(w).Kind() != reflect.Ptr {

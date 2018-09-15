@@ -16,13 +16,23 @@ func NewStatelessElement(widget Widget) *StatelessElement {
 }
 
 func (se StatelessElement) getSize() Size {
-	return se.child.getSize()
+	if se.child != nil {
+		return se.child.getSize()
+	} else {
+		return Size{}
+	}
 }
 
 func (se StatelessElement) layout(c Constraints) error {
-	return se.child.layout(c)
+	if se.child != nil {
+		return se.child.layout(c)
+	} else {
+		return nil
+	}
 }
 
 func (se StatelessElement) render(o Offset, r *sdl.Renderer) {
-	se.child.render(o, r)
+	if se.child != nil {
+		se.child.render(o, r)
+	}
 }
