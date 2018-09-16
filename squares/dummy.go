@@ -52,7 +52,14 @@ func (d CustomScrollView) getChildren() []Widget {
 }
 
 func (d SliverAppBar) Build(context StatelessContext) (Widget, error) {
-	return &Column{Children: d.getChildren()}, nil
+	return Column{
+		Children: []Widget{
+			Row{
+				Children: d.Actions,
+			},
+			d.FlexibleSpace,
+		},
+	}, nil
 }
 
 func (d SliverAppBar) getChildren() []Widget {
@@ -91,14 +98,18 @@ func (d PopupMenuItem) getChild() Widget {
 	return d.Child
 }
 
+/* menu items are hidden, just shows a settings menu */
 func (d PopupMenuButton) Build(context StatelessContext) (Widget, error) {
-	children, err := d.ItemBuilder(context)
-	if err != nil {
-		return nil, err
-	}
-	c := make([]Widget, len(children))
-	for i, child := range children {
-		c[i] = child
-	}
-	return &Column{Children: c}, nil
+	return Icon{Icon: IconsSettings}, nil
+	/*
+		children, err := d.ItemBuilder(context)
+		if err != nil {
+			return nil, err
+		}
+		c := make([]Widget, len(children))
+		for i, child := range children {
+			c[i] = child
+		}
+		return &Column{Children: c}, nil
+	*/
 }
