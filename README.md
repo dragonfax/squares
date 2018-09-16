@@ -7,11 +7,11 @@ Rewrite of Flutter in Golang.
 
 ## Goal
 
-Golang needs a UI. Its own UI, written in golang. Not just some swig-style auto-generated API that wraps an existing widget set already written in C/C++. You should be able to write the UI and widgets themselves in Go, and create new widgets without leaving the Go language.
+Go needs a UI. Its own UI, written in Go. Not a swig-style auto-generated API that wraps some native widgets written in C and accessed over CGO. You should be able to write the UI and widgets themselves in Go, and create new widgets without leaving the Go language.
 
 ## Solution
 
-I enjoy developing mobile apps with Flutter and Dart. I enjoy Flutter's API design, the declarative syntax and the React-style of building widgets and UIs. I also appreciate Flutters internal performant design and common sense approach to optimziation, reflow, layout, and rendering. As a result I don't see a need to design a new UI system from scratch, when there is one that already matched the needs.
+I enjoy developing mobile apps with Flutter and Dart. I enjoy Flutter's API design, the declarative syntax and the React-style of building widgets and UIs. I also appreciate Flutters internal performant design and common sense approach to optimziation, reflow, layout, and rendering. As a result I don't see a need to design a new UI system from scratch, when there is one that already matches my needs.
 
 I also enjoy programming with Go. While Dart is a fine language, I prefer Go over Dart. And I would like to use Flutter with Go.
 
@@ -59,21 +59,17 @@ Rather than trying to copy the L&F of native widgets on any platform, I plan to 
 
 ### Constructors and Default Values
 
-The lack of constructors for widgets shouldn't be an issue as you can provide an Init() method for the widget that the framework can call before the widget is used for the first time.
-
-But one problem does arise with this scenario. Using default values can't be auto-detected. Leaving out a propertie in a struct just results in its Zero-value. And for some properties, the Zero-value might be a valid value for that property.
+Using default values can't be auto-detected. Leaving out a properties in a struct just results in its Zero-value. And for some properties, the Zero-value might be a valid value for that property. Pointers to such properties could be used, but I think a pointer to an int or float is just bad form.
 
 Within the code I've tried to keep Zero-values matching the standard default values used for each Widget, but thats not always possible. An example is the Flexible widget which defaults its Flex property to 1. A 0 Flex value makes no sense for this widget, so Init() could detect that and return an error when the user leaves this property out. But some widgets have properties where their zero-value is not the default, but at the same time, still a valid value for the property.
 
-### Pointers to Widgets
+Size uses -1 to replicate flutter's use of null for Size dimensions. Constraints can still flow naturally fron 0 to +Inf.
 
-I might remove the need for pointers to widgets in the widget tree. They are an eyesore in the declarative style. And nesting the widgets by value might help inforce some of the **Immutable** nature that widgets are supposed to have in Flutter. The framekwork could still use pointers to widgets internally, rather than passing the whole widget tree by value.
-
+Some widgets take optional Size or Padding arguments for convenience and just create the appropriate widgets on your behalf. I don't replicate that and instead require you to add any SizedBox or Padding widgets yourself. Verbosity is just a fact of life with Go.
 
 ## TODO
 
 * SetState should work concurrently via a work-queue
-* Init() not implemented for widgets.
 * bugs in Flex so that Expanded and Flexible widgets don't layout correctly
 * more widgets and features from Flutter.
 
@@ -81,7 +77,8 @@ I might remove the need for pointers to widgets in the widget tree. They are an 
 ## Requirements
 
 * SDL: 
-`go get github.com/veandco/go-sdl2/sdl`
+  * `go get github.com/veandco/go-sdl2/sdl`
+  * `go get github.com/veandco/go-sdl2/img`
 
 ## Screenshot
 ![Screenshot](examples/wordlist/Screenshot.png)
