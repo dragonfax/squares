@@ -5,88 +5,88 @@ package main
 // found in the LICENSE file.
 
 import (
-	"github.com/dragonfax/squares/squares"
+	. "github.com/dragonfax/squares/squares"
 )
 
-var _ squares.StatelessWidget = &ContactCategory{}
+var _ StatelessWidget = &ContactCategory{}
 
 type ContactCategory struct {
-	Icon     *squares.IconData
-	Children []squares.Widget
+	Icon     *IconData
+	Children []Widget
 }
 
-func (cc *ContactCategory) Build(context squares.StatelessContext) (squares.Widget, error) {
-	return &squares.Container{
-		Padding: squares.EdgeInsetsSymmetric(16, 0),
-		Decoration: squares.BoxDecoration{
-			Border: squares.Border{Bottom: squares.BorderSide{}},
+func (cc *ContactCategory) Build(context StatelessContext) (Widget, error) {
+	return &Container{
+		Padding: EdgeInsetsSymmetric(16, 0),
+		Decoration: BoxDecoration{
+			Border: Border{Bottom: BorderSide{}},
 		},
-		Child: &squares.Row{
-			CrossAxisAlignment: squares.CrossAxisAlignmentStart,
-			Children: []squares.Widget{
-				&squares.Container{
-					Padding: squares.EdgeInsetsSymmetric(24, 0),
+		Child: &Row{
+			CrossAxisAlignment: CrossAxisAlignmentStart,
+			Children: []Widget{
+				&Container{
+					Padding: EdgeInsetsSymmetric(24, 0),
 					Width:   72.0,
-					Child:   &squares.Icon{Icon: cc.Icon},
+					Child:   &Icon{Icon: cc.Icon},
 				},
-				&squares.Expanded{Child: &squares.Column{Children: cc.Children}},
+				&Expanded{Child: &Column{Children: cc.Children}},
 			},
 		},
 	}, nil
 }
 
-var _ squares.StatelessWidget = &ContactItem{}
+var _ StatelessWidget = &ContactItem{}
 
 type ContactItem struct {
-	Icon      *squares.IconData
+	Icon      *IconData
 	Lines     []string
 	Tooltip   string
 	OnPressed func()
 }
 
-func (ci *ContactItem) Build(context squares.StatelessContext) (squares.Widget, error) {
-	var columnChildren []squares.Widget = make([]squares.Widget, 0, len(ci.Lines))
+func (ci *ContactItem) Build(context StatelessContext) (Widget, error) {
+	var columnChildren []Widget = make([]Widget, 0, len(ci.Lines))
 	for _, line := range ci.Lines[0 : len(ci.Lines)-1] {
-		columnChildren = append(columnChildren, &squares.Text{Text: line})
+		columnChildren = append(columnChildren, &Text{Text: line})
 	}
-	columnChildren = append(columnChildren, &squares.Text{Text: ci.Lines[len(ci.Lines)-1]})
+	columnChildren = append(columnChildren, &Text{Text: ci.Lines[len(ci.Lines)-1]})
 
-	rowChildren := []squares.Widget{
-		&squares.Expanded{
-			Child: &squares.Column{
-				CrossAxisAlignment: squares.CrossAxisAlignmentStart,
+	rowChildren := []Widget{
+		&Expanded{
+			Child: &Column{
+				CrossAxisAlignment: CrossAxisAlignmentStart,
 				Children:           columnChildren,
 			},
 		},
 	}
 
 	if ci.Icon != nil {
-		rowChildren = append(rowChildren, &squares.SizedBox{
-			Size: squares.Size{
+		rowChildren = append(rowChildren, &SizedBox{
+			Size: Size{
 				Width:  72.0,
 				Height: 0,
 			},
-			Child: &squares.IconButton{
-				Icon:      &squares.Icon{Icon: ci.Icon},
+			Child: &IconButton{
+				Icon:      &Icon{Icon: ci.Icon},
 				OnPressed: ci.OnPressed,
 			},
 		})
 	}
-	return &squares.Padding{
-		Padding: squares.EdgeInsetsSymmetric(16, 0),
-		Child: &squares.Row{
-			MainAxisAlignment: squares.MainAxisAlignmentSpaceBetween,
+	return &Padding{
+		Padding: EdgeInsetsSymmetric(16, 0),
+		Child: &Row{
+			MainAxisAlignment: MainAxisAlignmentSpaceBetween,
 			Children:          rowChildren,
 		},
 	}, nil
 }
 
-var _ squares.StatefulWidget = &ContactsDemo{}
+var _ StatefulWidget = &ContactsDemo{}
 
 type ContactsDemo struct {
 }
 
-func (cd *ContactsDemo) CreateState() squares.State {
+func (cd *ContactsDemo) CreateState() State {
 	return &ContactsDemoState{}
 }
 
@@ -99,7 +99,7 @@ const (
 	AppBarBehaviorSnapping
 )
 
-var _ squares.State = &ContactsDemoState{}
+var _ State = &ContactsDemoState{}
 
 type ContactsDemoState struct {
 	appBarHeight uint16
@@ -110,78 +110,78 @@ func (cds *ContactsDemoState) Init() {
 	cds.appBarHeight = 256.0
 }
 
-func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Widget, error) {
+func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
 
-	return &squares.Scaffold{
-		Body: &squares.CustomScrollView{
-			Slivers: []squares.Widget{
-				&squares.SliverAppBar{
+	return &Scaffold{
+		Body: &CustomScrollView{
+			Slivers: []Widget{
+				&SliverAppBar{
 					ExpandedHeight: cds.appBarHeight,
 					Pinned:         appBarBehavior == AppBarBehaviorPinned,
 					Floating:       appBarBehavior == AppBarBehaviorFloating || appBarBehavior == AppBarBehaviorSnapping,
 					Snap:           appBarBehavior == AppBarBehaviorSnapping,
-					Actions: []squares.Widget{
-						&squares.IconButton{
-							Icon:    &squares.Icon{Icon: squares.IconsCreate},
+					Actions: []Widget{
+						&IconButton{
+							Icon:    &Icon{Icon: IconsCreate},
 							Tooltip: "Edit",
 							OnPressed: func() {
-								showSnackBar(context, &squares.SnackBar{
-									Content: &squares.Text{"Editing isn't supported in this screen."},
+								showSnackBar(context, &SnackBar{
+									Content: &Text{"Editing isn't supported in this screen."},
 								})
 							},
 						},
-						&squares.PopupMenuButton{
+						&PopupMenuButton{
 							OnSelected: func(value interface{}) {
-								context.(squares.StatefulContext).SetState(func() {
+								context.(StatefulContext).SetState(func() {
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context squares.StatelessContext) ([]*squares.PopupMenuItem, error) {
-								return []*squares.PopupMenuItem{
-									&squares.PopupMenuItem{
+							ItemBuilder: func(context StatelessContext) ([]*PopupMenuItem, error) {
+								return []*PopupMenuItem{
+									&PopupMenuItem{
 										Value: AppBarBehaviorNormal,
-										Child: &squares.Text{"App bar scrolls away"},
+										Child: &Text{"App bar scrolls away"},
 									},
-									&squares.PopupMenuItem{
+									&PopupMenuItem{
 										Value: AppBarBehaviorPinned,
-										Child: &squares.Text{"App bar stays put"},
+										Child: &Text{"App bar stays put"},
 									},
-									&squares.PopupMenuItem{
+									&PopupMenuItem{
 										Value: AppBarBehaviorFloating,
-										Child: &squares.Text{"App bar floats"},
+										Child: &Text{"App bar floats"},
 									},
-									&squares.PopupMenuItem{
+									&PopupMenuItem{
 										Value: AppBarBehaviorSnapping,
-										Child: &squares.Text{"App bar snaps"},
+										Child: &Text{"App bar snaps"},
 									},
 								}, nil
 							},
 						},
 					},
-					FlexibleSpace: &squares.FlexibleSpaceBar{
-						Title: &squares.Text{"Ali Connors"},
-						Background: &squares.Stack{
-							Fit: squares.StackFitExpand,
-							Children: []squares.Widget{
-								squares.NewImageFromAsset(
-									squares.Asset{
+					FlexibleSpace: &FlexibleSpaceBar{
+						Title: &Text{"Ali Connors"},
+						Background: &Stack{
+							Fit: StackFitExpand,
+							Children: []Widget{
+								NewImageFromAsset(
+									Asset{
 										File:    "people/ali_landscape.png",
 										Package: "flutter_gallery_assets",
 									},
-									&squares.Image{
-										Fit:    squares.BoxFitCover,
+									&Image{
+										Fit:    BoxFitCover,
 										Height: cds.appBarHeight,
 									},
 								),
 								// This gradient ensures that the toolbar icons are distinct
 								// against the background image.
-								&squares.DecoratedBox{
-									Decoration: squares.BoxDecoration{
-										Gradient: squares.LinearGradient{
-											Begin:  squares.Alignment{0.0, -1.0},
-											End:    squares.Alignment{0.0, -0.4},
-											Colors: []squares.Color{squares.Color{0x60000000}, squares.Color{0x00000000}},
+								&DecoratedBox{
+									Decoration: BoxDecoration{
+										Gradient: LinearGradient{
+											Begin:  Alignment{0.0, -1.0},
+											End:    Alignment{0.0, -0.4},
+											Colors: []Color{Color{0x60000000}, Color{0x00000000}},
 										},
 									},
 								},
@@ -189,18 +189,18 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 						},
 					},
 				},
-				&squares.SliverList{
-					Delegate: &squares.SliverChildListDelegate{
-						Children: []squares.Widget{
+				&SliverList{
+					Delegate: &SliverChildListDelegate{
+						Children: []Widget{
 							&ContactCategory{
-								Icon: squares.IconsCall,
-								Children: []squares.Widget{
+								Icon: IconsCall,
+								Children: []Widget{
 									&ContactItem{
-										Icon:    squares.IconsMessage,
+										Icon:    IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"Pretend that this opened your SMS application."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"Pretend that this opened your SMS application."},
 											})
 										},
 										Lines: []string{
@@ -209,11 +209,11 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 										},
 									},
 									&ContactItem{
-										Icon:    squares.IconsMessage,
+										Icon:    IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"A messaging app appears."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"A messaging app appears."},
 											})
 										},
 										Lines: []string{
@@ -222,11 +222,11 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 										},
 									},
 									&ContactItem{
-										Icon:    squares.IconsMessage,
+										Icon:    IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"Imagine if you will, a messaging application."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"Imagine if you will, a messaging application."},
 											})
 										},
 										Lines: []string{
@@ -237,14 +237,14 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 								},
 							},
 							&ContactCategory{
-								Icon: squares.IconsContactMail,
-								Children: []squares.Widget{
+								Icon: IconsContactMail,
+								Children: []Widget{
 									&ContactItem{
-										Icon:    squares.IconsEmail,
+										Icon:    IconsEmail,
 										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"Here, your e-mail application would open."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"Here, your e-mail application would open."},
 											})
 										},
 										Lines: []string{
@@ -253,11 +253,11 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 										},
 									},
 									&ContactItem{
-										Icon:    squares.IconsEmail,
+										Icon:    IconsEmail,
 										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"Summon your favorite e-mail application here."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"Summon your favorite e-mail application here."},
 											})
 										},
 										Lines: []string{
@@ -268,14 +268,14 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 								},
 							},
 							&ContactCategory{
-								Icon: squares.IconsLocationOn,
-								Children: []squares.Widget{
+								Icon: IconsLocationOn,
+								Children: []Widget{
 									&ContactItem{
-										Icon:    squares.IconsMap,
+										Icon:    IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"This would show a map of San Francisco."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"This would show a map of San Francisco."},
 											})
 										},
 										Lines: []string{
@@ -285,11 +285,11 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 										},
 									},
 									&ContactItem{
-										Icon:    squares.IconsMap,
+										Icon:    IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"This would show a map of Mountain View."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"This would show a map of Mountain View."},
 											})
 										},
 										Lines: []string{
@@ -299,11 +299,11 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 										},
 									},
 									&ContactItem{
-										Icon:    squares.IconsMap,
+										Icon:    IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &squares.SnackBar{
-												Content: &squares.Text{"This would also show a map, if this was not a demo."},
+											showSnackBar(context, &SnackBar{
+												Content: &Text{"This would also show a map, if this was not a demo."},
 											})
 										},
 										Lines: []string{
@@ -315,8 +315,8 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 								},
 							},
 							&ContactCategory{
-								Icon: squares.IconsToday,
-								Children: []squares.Widget{
+								Icon: IconsToday,
+								Children: []Widget{
 									&ContactItem{
 										Lines: []string{
 											"Birthday",
@@ -350,6 +350,6 @@ func (cds *ContactsDemoState) Build(context squares.StatefulContext) (squares.Wi
 	}, nil
 }
 
-func showSnackBar(context squares.BuildContext, snackBar *squares.SnackBar) {
-	squares.ContextOf(context, &squares.Scaffold{}).GetWidget().(*squares.Scaffold).ShowSnackBar(snackBar)
+func showSnackBar(context BuildContext, snackBar *SnackBar) {
+	ContextOf(context, &Scaffold{}).GetWidget().(*Scaffold).ShowSnackBar(snackBar)
 }

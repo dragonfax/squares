@@ -2,16 +2,16 @@ package main
 
 import (
 	"github.com/dragonfax/squares/examples/wordlist/wordpairs"
-	"github.com/dragonfax/squares/squares"
+	. "github.com/dragonfax/squares/squares"
 	"github.com/dragonfax/squares/squares/listview"
 )
 
-var _ squares.StatelessWidget = &MyApp{}
-var _ squares.StatefulWidget = &RandomWords{}
-var _ squares.State = &RandomWordsState{}
+var _ StatelessWidget = &MyApp{}
+var _ StatefulWidget = &RandomWords{}
+var _ State = &RandomWordsState{}
 
 func main() {
-	err := squares.RunApp(&MyApp{})
+	err := RunApp(&MyApp{})
 	if err != nil {
 		panic(err)
 	}
@@ -20,9 +20,9 @@ func main() {
 type MyApp struct {
 }
 
-func (ma *MyApp) Build(context squares.StatelessContext) (squares.Widget, error) {
+func (ma *MyApp) Build(context StatelessContext) (Widget, error) {
 
-	return &squares.Center{Child: &RandomWords{}}, nil
+	return &Center{Child: &RandomWords{}}, nil
 }
 
 func isOdd(i int) bool {
@@ -32,7 +32,7 @@ func isOdd(i int) bool {
 type RandomWords struct {
 }
 
-func (*RandomWords) CreateState() squares.State {
+func (*RandomWords) CreateState() State {
 	return &RandomWordsState{suggestions: make([]wordpairs.WordPair, 0, 10)}
 }
 
@@ -40,12 +40,12 @@ type RandomWordsState struct {
 	suggestions []wordpairs.WordPair
 }
 
-func (rws *RandomWordsState) Build(context squares.StatefulContext) (squares.Widget, error) {
-	return &squares.Composite{Child: &listview.Builder{
-		Padding: squares.EdgeInsetsAll(16),
-		ItemBuilder: func(i int) squares.Widget {
+func (rws *RandomWordsState) Build(context StatefulContext) (Widget, error) {
+	return &Composite{Child: &listview.Builder{
+		Padding: EdgeInsetsAll(16),
+		ItemBuilder: func(i int) Widget {
 			if isOdd(i) {
-				return &squares.Divider{}
+				return &Divider{}
 			}
 
 			r := i / 2
@@ -61,9 +61,9 @@ func (rws *RandomWordsState) Build(context squares.StatefulContext) (squares.Wid
 	}}, nil
 }
 
-func BuildRow(wp wordpairs.WordPair) squares.Widget {
+func BuildRow(wp wordpairs.WordPair) Widget {
 	return &listview.ListTile{
-		Title: &squares.Text{
+		Title: &Text{
 			Text: wp.AsPascalCase(),
 		},
 	}
