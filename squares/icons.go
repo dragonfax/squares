@@ -43,6 +43,7 @@ type Icon struct {
 func (i *Icon) createElement() Element {
 	ie := &IconElement{}
 	ie.widget = i
+	ie.size = Size{24, 24}
 	return ie
 }
 
@@ -61,15 +62,13 @@ func (t *IconElement) render(offset Offset, renderer *sdl.Renderer) {
 	if err != nil {
 		panic(err)
 	}
+	defer surface.Free()
 	texture, err := renderer.CreateTextureFromSurface(surface)
 	if err != nil {
 		panic(err)
 	}
+	defer texture.Destroy()
 	renderer.Copy(texture, nil, &sdl.Rect{X: ux, Y: uy, W: surface.W, H: surface.H})
-}
-
-func (ie *IconElement) getSize() Size {
-	return Size{24, 24}
 }
 
 type IconButton struct {

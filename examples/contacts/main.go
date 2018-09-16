@@ -4,9 +4,21 @@ package main
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import "github.com/dragonfax/squares/squares"
+import (
+	"github.com/dragonfax/squares/squares"
+)
 
 func main() {
+
+	/*
+		w, err := os.Create("contacts.trace")
+		if err != nil {
+			panic(err)
+		}
+
+		trace.Start(w)
+		defer trace.Stop()
+	*/
 
 	squares.RunApp(&squares.MaterialApp{
 		Title: "Contacts App",

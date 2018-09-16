@@ -42,9 +42,11 @@ func (t *TextElement) render(offset Offset, renderer *sdl.Renderer) {
 	if err != nil {
 		panic(err)
 	}
+	defer surface.Free()
 	texture, err := renderer.CreateTextureFromSurface(surface)
 	if err != nil {
 		panic(err)
 	}
+	defer texture.Destroy()
 	renderer.Copy(texture, nil, &sdl.Rect{X: ux, Y: uy, W: surface.W, H: surface.H})
 }
