@@ -19,10 +19,10 @@ func initIcons() {
 	}
 }
 
-var _ ElementWidget = &Icon{}
+var _ ElementWidget = Icon{}
 var _ Element = &IconElement{}
-var _ StatelessWidget = &IconButton{}
-var _ HasChild = &IconButton{}
+var _ StatelessWidget = IconButton{}
+var _ HasChild = IconButton{}
 
 type VoidCallback func()
 
@@ -31,10 +31,10 @@ type IconData struct {
 }
 
 type Icon struct {
-	Icon *IconData
+	Icon IconData
 }
 
-func (i *Icon) createElement() Element {
+func (i Icon) createElement() Element {
 	ie := &IconElement{}
 	ie.widget = i
 	ie.size = Size{24, 24}
@@ -52,7 +52,7 @@ func (ie *IconElement) layout(c Constraints) error {
 func (t *IconElement) render(offset Offset, renderer *sdl.Renderer) {
 	ux := int32(offset.x)
 	uy := int32(offset.y)
-	surface, err := iconFont.RenderUTF8Blended(string(t.widget.(*Icon).Icon.CodePoint), sdl.Color{R: 200, G: 200, B: 200, A: 255})
+	surface, err := iconFont.RenderUTF8Blended(string(t.widget.(Icon).Icon.CodePoint), sdl.Color{R: 200, G: 200, B: 200, A: 255})
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func (t *IconElement) render(offset Offset, renderer *sdl.Renderer) {
 }
 
 type IconButton struct {
-	Icon      *Icon
+	Icon      Icon
 	Tooltip   string
 	OnPressed VoidCallback
 }

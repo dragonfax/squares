@@ -8,34 +8,34 @@ import (
 	. "github.com/dragonfax/squares/squares"
 )
 
-var _ StatelessWidget = &ContactCategory{}
+var _ StatelessWidget = ContactCategory{}
 
 type ContactCategory struct {
 	Icon     *IconData
 	Children []Widget
 }
 
-func (cc *ContactCategory) Build(context StatelessContext) (Widget, error) {
-	return &Container{
+func (cc ContactCategory) Build(context StatelessContext) (Widget, error) {
+	return Container{
 		Padding: EdgeInsetsSymmetric(16, 0),
 		Decoration: BoxDecoration{
 			Border: Border{Bottom: BorderSide{}},
 		},
-		Child: &Row{
+		Child: Row{
 			CrossAxisAlignment: CrossAxisAlignmentStart,
 			Children: []Widget{
-				&Container{
+				Container{
 					Padding: EdgeInsetsSymmetric(24, 0),
 					Width:   72.0,
-					Child:   &Icon{Icon: cc.Icon},
+					Child:   Icon{Icon: *cc.Icon},
 				},
-				&Expanded{Child: &Column{Children: cc.Children}},
+				Expanded{Child: Column{Children: cc.Children}},
 			},
 		},
 	}, nil
 }
 
-var _ StatelessWidget = &ContactItem{}
+var _ StatelessWidget = ContactItem{}
 
 type ContactItem struct {
 	Icon      *IconData
@@ -44,16 +44,16 @@ type ContactItem struct {
 	OnPressed func()
 }
 
-func (ci *ContactItem) Build(context StatelessContext) (Widget, error) {
+func (ci ContactItem) Build(context StatelessContext) (Widget, error) {
 	var columnChildren []Widget = make([]Widget, 0, len(ci.Lines))
 	for _, line := range ci.Lines[0 : len(ci.Lines)-1] {
-		columnChildren = append(columnChildren, &Text{Text: line})
+		columnChildren = append(columnChildren, Text{Text: line})
 	}
-	columnChildren = append(columnChildren, &Text{Text: ci.Lines[len(ci.Lines)-1]})
+	columnChildren = append(columnChildren, Text{Text: ci.Lines[len(ci.Lines)-1]})
 
 	rowChildren := []Widget{
-		&Expanded{
-			Child: &Column{
+		Expanded{
+			Child: Column{
 				CrossAxisAlignment: CrossAxisAlignmentStart,
 				Children:           columnChildren,
 			},
@@ -61,32 +61,32 @@ func (ci *ContactItem) Build(context StatelessContext) (Widget, error) {
 	}
 
 	if ci.Icon != nil {
-		rowChildren = append(rowChildren, &SizedBox{
+		rowChildren = append(rowChildren, SizedBox{
 			Size: Size{
 				Width:  72.0,
 				Height: 0,
 			},
-			Child: &IconButton{
-				Icon:      &Icon{Icon: ci.Icon},
+			Child: IconButton{
+				Icon:      Icon{Icon: *ci.Icon},
 				OnPressed: ci.OnPressed,
 			},
 		})
 	}
-	return &Padding{
+	return Padding{
 		Padding: EdgeInsetsSymmetric(16, 0),
-		Child: &Row{
+		Child: Row{
 			MainAxisAlignment: MainAxisAlignmentSpaceBetween,
 			Children:          rowChildren,
 		},
 	}, nil
 }
 
-var _ StatefulWidget = &ContactsDemo{}
+var _ StatefulWidget = ContactsDemo{}
 
 type ContactsDemo struct {
 }
 
-func (cd *ContactsDemo) CreateState() State {
+func (cd ContactsDemo) CreateState() State {
 	return &ContactsDemoState{}
 }
 
@@ -113,55 +113,55 @@ func (cds *ContactsDemoState) Init() {
 func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
 
-	return &Scaffold{
-		Body: &CustomScrollView{
+	return Scaffold{
+		Body: CustomScrollView{
 			Slivers: []Widget{
-				&SliverAppBar{
+				SliverAppBar{
 					ExpandedHeight: cds.appBarHeight,
 					Pinned:         appBarBehavior == AppBarBehaviorPinned,
 					Floating:       appBarBehavior == AppBarBehaviorFloating || appBarBehavior == AppBarBehaviorSnapping,
 					Snap:           appBarBehavior == AppBarBehaviorSnapping,
 					Actions: []Widget{
-						&IconButton{
-							Icon:    &Icon{Icon: IconsCreate},
+						IconButton{
+							Icon:    Icon{Icon: IconsCreate},
 							Tooltip: "Edit",
 							OnPressed: func() {
-								showSnackBar(context, &SnackBar{
-									Content: &Text{"Editing isn't supported in this screen."},
+								showSnackBar(context, SnackBar{
+									Content: Text{"Editing isn't supported in this screen."},
 								})
 							},
 						},
-						&PopupMenuButton{
+						PopupMenuButton{
 							OnSelected: func(value interface{}) {
 								context.(StatefulContext).SetState(func() {
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},
-							ItemBuilder: func(context StatelessContext) ([]*PopupMenuItem, error) {
-								return []*PopupMenuItem{
-									&PopupMenuItem{
+							ItemBuilder: func(context StatelessContext) ([]PopupMenuItem, error) {
+								return []PopupMenuItem{
+									PopupMenuItem{
 										Value: AppBarBehaviorNormal,
-										Child: &Text{"App bar scrolls away"},
+										Child: Text{"App bar scrolls away"},
 									},
-									&PopupMenuItem{
+									PopupMenuItem{
 										Value: AppBarBehaviorPinned,
-										Child: &Text{"App bar stays put"},
+										Child: Text{"App bar stays put"},
 									},
-									&PopupMenuItem{
+									PopupMenuItem{
 										Value: AppBarBehaviorFloating,
-										Child: &Text{"App bar floats"},
+										Child: Text{"App bar floats"},
 									},
-									&PopupMenuItem{
+									PopupMenuItem{
 										Value: AppBarBehaviorSnapping,
-										Child: &Text{"App bar snaps"},
+										Child: Text{"App bar snaps"},
 									},
 								}, nil
 							},
 						},
 					},
-					FlexibleSpace: &FlexibleSpaceBar{
-						Title: &Text{"Ali Connors"},
-						Background: &Stack{
+					FlexibleSpace: FlexibleSpaceBar{
+						Title: Text{"Ali Connors"},
+						Background: Stack{
 							Fit: StackFitExpand,
 							Children: []Widget{
 								NewImageFromAsset(
@@ -169,14 +169,14 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 										File:    "people/ali_landscape.png",
 										Package: "flutter_gallery_assets",
 									},
-									&Image{
+									Image{
 										Fit:    BoxFitCover,
 										Height: cds.appBarHeight,
 									},
 								),
 								// This gradient ensures that the toolbar icons are distinct
 								// against the background image.
-								&DecoratedBox{
+								DecoratedBox{
 									Decoration: BoxDecoration{
 										Gradient: LinearGradient{
 											Begin:  Alignment{0.0, -1.0},
@@ -189,18 +189,18 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 						},
 					},
 				},
-				&SliverList{
-					Delegate: &SliverChildListDelegate{
+				SliverList{
+					Delegate: SliverChildListDelegate{
 						Children: []Widget{
-							&ContactCategory{
-								Icon: IconsCall,
+							ContactCategory{
+								Icon: &IconsCall,
 								Children: []Widget{
-									&ContactItem{
-										Icon:    IconsMessage,
+									ContactItem{
+										Icon:    &IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"Pretend that this opened your SMS application."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"Pretend that this opened your SMS application."},
 											})
 										},
 										Lines: []string{
@@ -208,12 +208,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 											"Mobile",
 										},
 									},
-									&ContactItem{
-										Icon:    IconsMessage,
+									ContactItem{
+										Icon:    &IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"A messaging app appears."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"A messaging app appears."},
 											})
 										},
 										Lines: []string{
@@ -221,12 +221,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 											"Work",
 										},
 									},
-									&ContactItem{
-										Icon:    IconsMessage,
+									ContactItem{
+										Icon:    &IconsMessage,
 										Tooltip: "Send message",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"Imagine if you will, a messaging application."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"Imagine if you will, a messaging application."},
 											})
 										},
 										Lines: []string{
@@ -236,15 +236,15 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 									},
 								},
 							},
-							&ContactCategory{
-								Icon: IconsContactMail,
+							ContactCategory{
+								Icon: &IconsContactMail,
 								Children: []Widget{
-									&ContactItem{
-										Icon:    IconsEmail,
+									ContactItem{
+										Icon:    &IconsEmail,
 										Tooltip: "Send personal e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"Here, your e-mail application would open."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"Here, your e-mail application would open."},
 											})
 										},
 										Lines: []string{
@@ -252,12 +252,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 											"Personal",
 										},
 									},
-									&ContactItem{
-										Icon:    IconsEmail,
+									ContactItem{
+										Icon:    &IconsEmail,
 										Tooltip: "Send work e-mail",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"Summon your favorite e-mail application here."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"Summon your favorite e-mail application here."},
 											})
 										},
 										Lines: []string{
@@ -267,15 +267,15 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 									},
 								},
 							},
-							&ContactCategory{
-								Icon: IconsLocationOn,
+							ContactCategory{
+								Icon: &IconsLocationOn,
 								Children: []Widget{
-									&ContactItem{
-										Icon:    IconsMap,
+									ContactItem{
+										Icon:    &IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"This would show a map of San Francisco."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"This would show a map of San Francisco."},
 											})
 										},
 										Lines: []string{
@@ -284,12 +284,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 											"Home",
 										},
 									},
-									&ContactItem{
-										Icon:    IconsMap,
+									ContactItem{
+										Icon:    &IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"This would show a map of Mountain View."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"This would show a map of Mountain View."},
 											})
 										},
 										Lines: []string{
@@ -298,12 +298,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 											"Work",
 										},
 									},
-									&ContactItem{
-										Icon:    IconsMap,
+									ContactItem{
+										Icon:    &IconsMap,
 										Tooltip: "Open map",
 										OnPressed: func() {
-											showSnackBar(context, &SnackBar{
-												Content: &Text{"This would also show a map, if this was not a demo."},
+											showSnackBar(context, SnackBar{
+												Content: Text{"This would also show a map, if this was not a demo."},
 											})
 										},
 										Lines: []string{
@@ -314,28 +314,28 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 									},
 								},
 							},
-							&ContactCategory{
-								Icon: IconsToday,
+							ContactCategory{
+								Icon: &IconsToday,
 								Children: []Widget{
-									&ContactItem{
+									ContactItem{
 										Lines: []string{
 											"Birthday",
 											"January 9th, 1989",
 										},
 									},
-									&ContactItem{
+									ContactItem{
 										Lines: []string{
 											"Wedding anniversary",
 											"June 21st, 2014",
 										},
 									},
-									&ContactItem{
+									ContactItem{
 										Lines: []string{
 											"First day in office",
 											"January 20th, 2015",
 										},
 									},
-									&ContactItem{
+									ContactItem{
 										Lines: []string{
 											"Last day in office",
 											"August 9th, 2018",
@@ -350,6 +350,6 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 	}, nil
 }
 
-func showSnackBar(context BuildContext, snackBar *SnackBar) {
-	ContextOf(context, &Scaffold{}).GetWidget().(*Scaffold).ShowSnackBar(snackBar)
+func showSnackBar(context BuildContext, snackBar SnackBar) {
+	ContextOf(context, Scaffold{}).GetWidget().(Scaffold).ShowSnackBar(snackBar)
 }

@@ -6,11 +6,11 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-var _ StatelessWidget = &Expanded{}
-var _ StatelessWidget = &Column{}
-var _ StatelessWidget = &Row{}
-var _ ElementWidget = &Flex{}
-var _ HasChildren = &Flex{}
+var _ StatelessWidget = Expanded{}
+var _ StatelessWidget = Column{}
+var _ StatelessWidget = Row{}
+var _ ElementWidget = Flex{}
+var _ HasChildren = Flex{}
 var _ HasChildrenElements = &FlexElement{}
 
 type CrossAxisAlignment uint8
@@ -56,11 +56,11 @@ type Flex struct {
 	// VerticalDirection.down
 }
 
-func (f *Flex) getChildren() []Widget {
+func (f Flex) getChildren() []Widget {
 	return f.Children
 }
 
-func (c *Flex) createElement() Element {
+func (c Flex) createElement() Element {
 	ce := &FlexElement{}
 	ce.widget = c
 	return ce
@@ -72,7 +72,7 @@ type FlexElement struct {
 }
 
 func (ce *FlexElement) getChildCrossSize(child Element) float64 {
-	switch ce.widget.(*Flex).Direction {
+	switch ce.widget.(Flex).Direction {
 	case Horizontal:
 		return child.getSize().Height
 	case Vertical:
@@ -82,7 +82,7 @@ func (ce *FlexElement) getChildCrossSize(child Element) float64 {
 }
 
 func (ce *FlexElement) getChildMainSize(child Element) float64 {
-	switch ce.widget.(*Flex).Direction {
+	switch ce.widget.(Flex).Direction {
 	case Horizontal:
 		return child.getSize().Width
 	case Vertical:
@@ -92,7 +92,7 @@ func (ce *FlexElement) getChildMainSize(child Element) float64 {
 }
 
 func (ce *FlexElement) layout(constraints Constraints) error {
-	widget := ce.widget.(*Flex)
+	widget := ce.widget.(Flex)
 
 	var totalFlex int
 	var totalChildren int
@@ -331,7 +331,7 @@ type Row struct {
 	Children           []Widget
 }
 
-func (c *Row) Build(context StatelessContext) (Widget, error) {
+func (c Row) Build(context StatelessContext) (Widget, error) {
 	return &Flex{
 		Direction:          Horizontal,
 		CrossAxisAlignment: c.CrossAxisAlignment,
@@ -346,7 +346,7 @@ type Column struct {
 	Children           []Widget
 }
 
-func (c *Column) Build(context StatelessContext) (Widget, error) {
+func (c Column) Build(context StatelessContext) (Widget, error) {
 	return &Flex{
 		Direction:          Vertical,
 		CrossAxisAlignment: c.CrossAxisAlignment,
@@ -355,9 +355,9 @@ func (c *Column) Build(context StatelessContext) (Widget, error) {
 	}, nil
 }
 
-var _ StatelessWidget = &Expanded{}
-var _ ElementWidget = &Flexible{}
-var _ HasChild = &Flexible{}
+var _ StatelessWidget = Expanded{}
+var _ ElementWidget = Flexible{}
+var _ HasChild = Flexible{}
 var _ Element = &FlexibleElement{}
 var _ HasChildElement = &FlexibleElement{}
 
@@ -367,8 +367,8 @@ type Expanded struct {
 	Child Widget
 }
 
-func (e *Expanded) Build(context StatelessContext) (Widget, error) {
-	return &Flexible{Fit: FlexFitTight, Flex: 1, Child: e.Child}, nil
+func (e Expanded) Build(context StatelessContext) (Widget, error) {
+	return Flexible{Fit: FlexFitTight, Flex: 1, Child: e.Child}, nil
 }
 
 /* TODO you should set a flex of at lest 1, since there is no constructor here */
@@ -379,11 +379,11 @@ type Flexible struct {
 	Flex  int
 }
 
-func (f *Flexible) getChild() Widget {
+func (f Flexible) getChild() Widget {
 	return f.Child
 }
 
-func (f *Flexible) createElement() Element {
+func (f Flexible) createElement() Element {
 	fe := &FlexibleElement{}
 	fe.widget = f
 	return fe
@@ -396,11 +396,11 @@ type FlexibleElement struct {
 }
 
 func (fe *FlexibleElement) getFit() FlexFit {
-	return fe.widget.(*Flexible).Fit
+	return fe.widget.(Flexible).Fit
 }
 
 func (fe *FlexibleElement) getFlex() int {
-	return fe.widget.(*Flexible).Flex
+	return fe.widget.(Flexible).Flex
 }
 
 func (ce *FlexibleElement) layout(constraints Constraints) error {

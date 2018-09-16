@@ -2,8 +2,8 @@ package squares
 
 import "github.com/veandco/go-sdl2/sdl"
 
-var _ HasChild = &Composite{}
-var _ ElementWidget = &Composite{}
+var _ HasChild = Composite{}
+var _ ElementWidget = Composite{}
 var _ Element = &CompositeElement{}
 var _ HasChildElement = &CompositeElement{}
 
@@ -12,7 +12,7 @@ type Composite struct {
 	Child Widget
 }
 
-func (cw *Composite) createElement() Element {
+func (cw Composite) createElement() Element {
 	e := &CompositeElement{}
 	e.widget = cw
 	return e

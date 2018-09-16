@@ -9,8 +9,8 @@ package squares
 
 import "github.com/veandco/go-sdl2/sdl"
 
-var _ ElementWidget = &SizedBox{}
-var _ HasChild = &SizedBox{}
+var _ ElementWidget = SizedBox{}
+var _ HasChild = SizedBox{}
 var _ Element = &SizedBoxElement{}
 var _ HasChildElement = &SizedBoxElement{}
 
@@ -19,7 +19,7 @@ type SizedBox struct {
 	Child Widget
 }
 
-func (sb *SizedBox) createElement() Element {
+func (sb SizedBox) createElement() Element {
 	sbe := &SizedBoxElement{}
 	sbe.widget = sb
 	return sbe
@@ -32,7 +32,7 @@ type SizedBoxElement struct {
 }
 
 func (sbe *SizedBoxElement) layout(constraints Constraints) error {
-	widget := sbe.widget.(*SizedBox)
+	widget := sbe.widget.(SizedBox)
 
 	if sbe.child != nil {
 		sbe.child.layout(ConstraintsAbsolute(widget.Size.Width, widget.Size.Height))

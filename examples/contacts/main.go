@@ -20,9 +20,13 @@ func main() {
 		defer trace.Stop()
 	*/
 
-	squares.RunApp(&squares.MaterialApp{
+	err := squares.RunApp(&squares.MaterialApp{
 		Title: "Contacts App",
 		Color: squares.ColorsGrey,
 		Child: &ContactsDemo{},
 	})
+
+	if err != nil {
+		panic(err)
+	}
 }

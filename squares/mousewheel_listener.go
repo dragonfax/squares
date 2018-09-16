@@ -1,8 +1,8 @@
 package squares
 
-var _ StatefulWidget = &MouseWheelListener{}
+var _ StatefulWidget = MouseWheelListener{}
 var _ State = &MouseWheelListenerState{}
-var _ HasChild = &MouseWheelListener{}
+var _ HasChild = MouseWheelListener{}
 
 var mouseWheelCallback MouseWheelFunc
 
@@ -20,11 +20,11 @@ type MouseWheelListener struct {
 	Callback MouseWheelFunc
 }
 
-func (mwl *MouseWheelListener) getChild() Widget {
+func (mwl MouseWheelListener) getChild() Widget {
 	return mwl.Child
 }
 
-func (mwl *MouseWheelListener) CreateState() State {
+func (mwl MouseWheelListener) CreateState() State {
 	return &MouseWheelListenerState{}
 }
 
@@ -32,7 +32,7 @@ type MouseWheelListenerState struct {
 }
 
 func (mwls *MouseWheelListenerState) Build(context StatefulContext) (Widget, error) {
-	widget := context.GetWidget().(*MouseWheelListener)
+	widget := context.GetWidget().(MouseWheelListener)
 	mouseWheelCallback = widget.Callback
 	return widget.Child, nil
 }

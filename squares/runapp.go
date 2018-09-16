@@ -95,7 +95,7 @@ func RunApp(app Widget) error {
 	gfx.InitFramerate(fps)
 	gfx.SetFramerate(fps, 60)
 
-	windowWidget := &Window{
+	windowWidget := Window{
 		Child: app,
 	}
 	windowElement, err := buildElementTree(windowWidget, nil)
@@ -379,9 +379,9 @@ func buildElementTree(w Widget, oldElement Element) (Element, error) {
 		return nil, nil
 	}
 
-	if reflect.ValueOf(w).Kind() != reflect.Ptr {
+	/* if reflect.ValueOf(w).Kind() != reflect.Ptr {
 		return nil, errors.New(fmt.Sprintf("widget in tree is not a pointer, type %T, value %v", w, w))
-	}
+	} */
 
 	if b, ok := w.(StatelessWidget); ok {
 		return elementFromStatelessWidget(b, oldElement)

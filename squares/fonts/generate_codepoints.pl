@@ -17,4 +17,4 @@ BEGIN {
         return $name;
     }
 
-s{([a-z0-9_]+) ([a-f0-9]+)}{"var Icons" . camelize($1) . " = &IconData{'\\u$2'}"}e;
+s{([a-z0-9_]+) ([a-f0-9]+)}{"var Icons" . camelize($1) . " = IconData{'\\u$2'}"}e;

@@ -1,17 +1,17 @@
 package squares
 
-var _ StatelessWidget = &Container{}
-var _ HasChild = &Container{}
-var _ StatelessWidget = &DecoratedBox{}
-var _ HasChild = &DecoratedBox{}
-var _ StatelessWidget = &CustomScrollView{}
-var _ HasChildren = &CustomScrollView{}
-var _ StatelessWidget = &SliverAppBar{}
-var _ HasChildren = &SliverAppBar{}
-var _ StatelessWidget = &FlexibleSpaceBar{}
-var _ HasChildren = &FlexibleSpaceBar{}
-var _ StatelessWidget = &Stack{}
-var _ HasChildren = &Stack{}
+var _ StatelessWidget = Container{}
+var _ HasChild = Container{}
+var _ StatelessWidget = DecoratedBox{}
+var _ HasChild = DecoratedBox{}
+var _ StatelessWidget = CustomScrollView{}
+var _ HasChildren = CustomScrollView{}
+var _ StatelessWidget = SliverAppBar{}
+var _ HasChildren = SliverAppBar{}
+var _ StatelessWidget = FlexibleSpaceBar{}
+var _ HasChildren = FlexibleSpaceBar{}
+var _ StatelessWidget = Stack{}
+var _ HasChildren = Stack{}
 
 // TODO var _ StatefulWidget = &SliverList{}
 var _ HasChildren = &SliverList{}
@@ -60,7 +60,7 @@ type SliverAppBar struct {
 	Floating       bool
 	Snap           bool
 	Actions        []Widget
-	FlexibleSpace  *FlexibleSpaceBar // Widget
+	FlexibleSpace  FlexibleSpaceBar // Widget
 }
 
 type FlexibleSpaceBar struct {
@@ -80,7 +80,7 @@ const (
 )
 
 type SliverList struct {
-	Delegate *SliverChildListDelegate
+	Delegate SliverChildListDelegate
 }
 
 type SliverChildListDelegate struct {

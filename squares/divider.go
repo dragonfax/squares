@@ -4,13 +4,13 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-var _ ElementWidget = &Divider{}
+var _ ElementWidget = Divider{}
 var _ Element = &DividerElement{}
 
 type Divider struct {
 }
 
-func (d *Divider) createElement() Element {
+func (d Divider) createElement() Element {
 	de := &DividerElement{}
 	de.widget = d
 	return de

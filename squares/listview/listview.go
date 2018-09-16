@@ -4,9 +4,9 @@ import (
 	"github.com/dragonfax/squares/squares"
 )
 
-var _ squares.StatefulWidget = &Builder{}
+var _ squares.StatefulWidget = Builder{}
 var _ squares.State = &BuilderState{}
-var _ squares.StatelessWidget = &ListTile{}
+var _ squares.StatelessWidget = ListTile{}
 
 type ItemBuilderFunc func(int) squares.Widget
 
@@ -15,7 +15,7 @@ type Builder struct {
 	ItemBuilder ItemBuilderFunc
 }
 
-func (b *Builder) CreateState() squares.State {
+func (b Builder) CreateState() squares.State {
 	return &BuilderState{}
 }
 
@@ -23,8 +23,8 @@ type BuilderState struct {
 	firstItem int
 }
 
-func (bs *BuilderState) Build(context squares.StatefulContext) (squares.Widget, error) {
-	widget := context.GetWidget().(*Builder)
+func (bs BuilderState) Build(context squares.StatefulContext) (squares.Widget, error) {
+	widget := context.GetWidget().(Builder)
 	children := make([]squares.Widget, 10)
 	for i := 0; i < 10; i++ {
 		child := widget.ItemBuilder(bs.firstItem + i)

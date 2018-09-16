@@ -26,15 +26,15 @@ Some adjustments do need to be made. Go doesn't have nearly the number of progra
 One early decision is to use struct literals instead of constructors when creating widgets and defining a UI. Using struct literals allows us to use named struct fields to better match the declarative style which Flutter is famous for.  Using functions as constructors would take away the ability to name the parameters given to a widget, and also require providing all parameters a widget takes. This declarative style takes the form.
 
 ```
-&Column{
+Column{
     CrossAxisAlignment: CrossAxisAlignmentCenter,
     MainAxisAlignment:  MainAxisAlignmentCenter,
     Children: []Widget{
-        &Padding{
+        Padding{
             Padding: EdgeInsetsAll(8), 
-            Child: &Text{Text: "Hello, World."}},
-        &Text{Text: "another row."},
-        &Text{Text: "yet another row."},
+            Child: Text{Text: "Hello, World."}},
+        Text{Text: "another row."},
+        Text{Text: "yet another row."},
     },
 },
 ```

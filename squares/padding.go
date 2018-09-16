@@ -2,9 +2,9 @@ package squares
 
 import "github.com/veandco/go-sdl2/sdl"
 
-var _ ElementWidget = &Padding{}
+var _ ElementWidget = Padding{}
 var _ Element = &PaddingElement{}
-var _ HasChild = &Padding{}
+var _ HasChild = Padding{}
 var _ HasChildElement = &PaddingElement{}
 
 type EdgeInsets struct {
@@ -34,7 +34,7 @@ type Padding struct {
 	Child   Widget
 }
 
-func (p *Padding) createElement() Element {
+func (p Padding) createElement() Element {
 	pe := &PaddingElement{}
 	pe.widget = p
 	return pe
@@ -51,7 +51,7 @@ func (element *PaddingElement) layout(c Constraints) error {
 		panic("padding with no child")
 	}
 
-	widget := element.widget.(*Padding)
+	widget := element.widget.(Padding)
 
 	innerConstraints := c.deflate(widget.Padding)
 	element.child.layout(innerConstraints)
