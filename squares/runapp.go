@@ -89,6 +89,7 @@ func RunApp(app Widget) error {
 	}
 
 	initRender(title)
+	initIcons()
 
 	fps := &gfx.FPSmanager{}
 	gfx.InitFramerate(fps)

@@ -35,10 +35,6 @@ func (d *FlexibleSpaceBar) getChildren() []Widget {
 	return []Widget{d.Title, d.Background}
 }
 
-func (d *Icon) Build(context StatelessContext) (Widget, error) {
-	return &Text{Text: "Icon"}, nil
-}
-
 func (d *IconButton) Build(context StatelessContext) (Widget, error) {
 	return d.getChild(), nil
 }

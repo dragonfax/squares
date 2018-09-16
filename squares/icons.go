@@ -1,16 +1,75 @@
 package squares
 
-var _ StatelessWidget = &Icon{}
+import (
+	"fmt"
+	"path"
+	"runtime"
+
+	"github.com/veandco/go-sdl2/sdl"
+	"github.com/veandco/go-sdl2/ttf"
+)
+
+var iconFont *ttf.Font
+
+func initIcons() {
+	_, file, _, _ := runtime.Caller(0)
+	var err error
+	iconFont, err = ttf.OpenFont(path.Dir(file)+"/fonts/MaterialIcons-Regular.ttf", 24)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("icon font name: ", iconFont.FaceFamilyName())
+	fmt.Println("is fixed: ", iconFont.FaceIsFixedWidth())
+	fmt.Println("num faces: ", iconFont.Faces())
+	fmt.Println(iconFont.GlyphMetrics('\ue150'))
+}
+
+var _ ElementWidget = &Icon{}
+var _ Element = &IconElement{}
 var _ StatelessWidget = &IconButton{}
 var _ HasChild = &IconButton{}
 
 type VoidCallback func()
 
 type IconData struct {
+	CodePoint rune
 }
 
 type Icon struct {
 	Icon *IconData
+}
+
+func (i *Icon) createElement() Element {
+	ie := &IconElement{}
+	ie.widget = i
+	return ie
+}
+
+type IconElement struct {
+	elementData
+}
+
+func (ie *IconElement) layout(c Constraints) error {
+	return nil
+}
+
+func (t *IconElement) render(offset Offset, renderer *sdl.Renderer) {
+	ux := int32(offset.x)
+	uy := int32(offset.y)
+	surface, err := iconFont.RenderUTF8Blended(string(t.widget.(*Icon).Icon.CodePoint), sdl.Color{R: 200, G: 200, B: 200, A: 255})
+	if err != nil {
+		panic(err)
+	}
+	texture, err := renderer.CreateTextureFromSurface(surface)
+	if err != nil {
+		panic(err)
+	}
+	renderer.Copy(texture, nil, &sdl.Rect{X: ux, Y: uy, W: surface.W, H: surface.H})
+}
+
+func (ie *IconElement) getSize() Size {
+	return Size{24, 24}
 }
 
 type IconButton struct {
@@ -27,11 +86,5 @@ const (
 	BrightnessLight Brightness = iota
 )
 
-var IconsCreate = &IconData{}
-var IconsCall = &IconData{}
-var IconsMessage = &IconData{}
-var IconsContactMail = &IconData{}
-var IconsEmail = &IconData{}
-var IconsLocationOn = &IconData{}
-var IconsMap = &IconData{}
-var IconsToday = &IconData{}
+// format for the icon data lines
+// var IconsCreate = &IconData{'\ue150'}
