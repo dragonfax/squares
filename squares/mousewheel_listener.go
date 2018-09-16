@@ -1,5 +1,9 @@
 package squares
 
+/* TODO
+ * replace with a proper ScrollView
+ */
+
 var _ StatefulWidget = MouseWheelListener{}
 var _ State = &MouseWheelListenerState{}
 var _ HasChild = MouseWheelListener{}

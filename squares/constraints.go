@@ -16,6 +16,11 @@ type Size struct {
 	Width, Height float64
 }
 
+// return a new size with both dimensions able to contain s
+func (s1 Size) Expand(s2 Size) Size {
+	return Size{Width: math.Max(s1.Width, s2.Width), Height: math.Max(s1.Height, s2.Height)}
+}
+
 type Constraints struct {
 	minWidth, minHeight, maxWidth, maxHeight float64
 }

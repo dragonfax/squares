@@ -10,8 +10,6 @@ var _ StatelessWidget = SliverAppBar{}
 var _ HasChildren = SliverAppBar{}
 var _ StatelessWidget = FlexibleSpaceBar{}
 var _ HasChildren = FlexibleSpaceBar{}
-var _ StatelessWidget = Stack{}
-var _ HasChildren = Stack{}
 
 // TODO var _ StatefulWidget = &SliverList{}
 var _ HasChildren = &SliverList{}
@@ -67,17 +65,6 @@ type FlexibleSpaceBar struct {
 	Title      Widget
 	Background Widget
 }
-
-type Stack struct {
-	Fit      StackFit
-	Children []Widget
-}
-
-type StackFit uint8
-
-const (
-	StackFitExpand StackFit = iota
-)
 
 type SliverList struct {
 	Delegate SliverChildListDelegate
