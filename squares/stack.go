@@ -31,15 +31,16 @@ type StackElement struct {
 
 func (se *StackElement) layout(c Constraints) error {
 
-	se.size = c.constrain(Size{})
+	size := c.constrain(Size{})
 	for _, childElement := range se.children {
 		err := childElement.layout(c)
 		if err != nil {
 			return err
 		}
 		childSize := childElement.getSize()
-		se.size = se.size.Expand(childSize)
+		size = se.size.Expand(childSize)
 	}
+	se.size = size
 
 	return nil
 }

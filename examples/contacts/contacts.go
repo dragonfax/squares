@@ -5,6 +5,9 @@ package main
 // found in the LICENSE file.
 
 import (
+	"path"
+	"runtime"
+
 	. "github.com/dragonfax/squares/squares"
 )
 
@@ -16,20 +19,24 @@ type ContactCategory struct {
 }
 
 func (cc ContactCategory) Build(context StatelessContext) (Widget, error) {
-	return Container{
-		Padding: EdgeInsetsSymmetric(16, 0),
+	return DecoratedBox{
 		Decoration: BoxDecoration{
 			Border: Border{Bottom: BorderSide{}},
 		},
-		Child: Row{
-			CrossAxisAlignment: CrossAxisAlignmentStart,
-			Children: []Widget{
-				Container{
-					Padding: EdgeInsetsSymmetric(24, 0),
-					Width:   72.0,
-					Child:   Icon{Icon: *cc.Icon},
+		Child: Padding{
+			Padding: EdgeInsetsSymmetric(16, 0),
+			Child: Row{
+				CrossAxisAlignment: CrossAxisAlignmentStart,
+				Children: []Widget{
+					SizedBox{
+						Size: Size{Width: 72.0, Height: -1},
+						Child: Padding{
+							Padding: EdgeInsetsSymmetric(24, 0),
+							Child:   Icon{Icon: *cc.Icon},
+						},
+					},
+					Expanded{Child: Column{Children: cc.Children}},
 				},
-				Expanded{Child: Column{Children: cc.Children}},
 			},
 		},
 	}, nil
@@ -64,7 +71,7 @@ func (ci ContactItem) Build(context StatelessContext) (Widget, error) {
 		rowChildren = append(rowChildren, SizedBox{
 			Size: Size{
 				Width:  72.0,
-				Height: 0,
+				Height: -1,
 			},
 			Child: IconButton{
 				Icon:      Icon{Icon: *ci.Icon},
@@ -87,7 +94,9 @@ type ContactsDemo struct {
 }
 
 func (cd ContactsDemo) CreateState() State {
-	return &ContactsDemoState{}
+	return &ContactsDemoState{
+		appBarHeight: 256.0,
+	}
 }
 
 type AppBarBehavior uint8
@@ -102,16 +111,14 @@ const (
 var _ State = &ContactsDemoState{}
 
 type ContactsDemoState struct {
-	appBarHeight uint16
-}
-
-// Use Init() in lue of a constructor
-func (cds *ContactsDemoState) Init() {
-	cds.appBarHeight = 256.0
+	appBarHeight float64
 }
 
 func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 	var appBarBehavior AppBarBehavior = AppBarBehaviorPinned
+
+	_, file, _, _ := runtime.Caller(0)
+	assetPath := path.Dir(file) + "/assets/"
 
 	return Scaffold{
 		Body: CustomScrollView{
@@ -164,16 +171,13 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 						Background: Stack{
 							Fit: StackFitExpand,
 							Children: []Widget{
-								NewImageFromAsset(
-									Asset{
-										File:    "people/ali_landscape.png",
-										Package: "flutter_gallery_assets",
+								SizedBox{
+									Size: Size{Height: cds.appBarHeight, Width: -1},
+									Child: Image{
+										File: assetPath + "people/ali_landscape.png",
+										Fit:  BoxFitCover,
 									},
-									Image{
-										Fit:    BoxFitCover,
-										Height: cds.appBarHeight,
-									},
-								),
+								},
 								// This gradient ensures that the toolbar icons are distinct
 								// against the background image.
 								DecoratedBox{

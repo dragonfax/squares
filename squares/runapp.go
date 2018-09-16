@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	"github.com/veandco/go-sdl2/gfx"
+	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 	"github.com/veandco/go-sdl2/ttf"
 )
@@ -24,6 +25,9 @@ func initRender(title string) {
 		panic(err)
 	}
 	// defer sdl.Quit()
+	if flags := img.Init(img.INIT_PNG); flags != img.INIT_PNG {
+		panic(img.GetError())
+	}
 
 	window, err := sdl.CreateWindow(title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
@@ -122,7 +126,7 @@ func RunApp(app Widget) error {
 			return err
 		}
 
-		err = windowElement.layout(Constraints{})
+		err = windowElement.layout(ConstraintsUnbounded())
 		if err != nil {
 			return err
 		}

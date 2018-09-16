@@ -111,14 +111,14 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		innerConstraints = Constraints{
 			maxHeight: constraints.maxHeight,
 			minHeight: 0,
-			maxWidth:  math.MaxInt16,
+			maxWidth:  math.Inf(1),
 			minWidth:  0,
 		}
 	case Vertical:
 		innerConstraints = Constraints{
 			maxWidth:  constraints.maxWidth,
 			minWidth:  0,
-			maxHeight: math.MaxInt16,
+			maxHeight: math.Inf(1),
 			minHeight: 0,
 		}
 	}

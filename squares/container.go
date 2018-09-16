@@ -1,7 +1,5 @@
 package squares
 
-var _ StatelessWidget = Container{}
-var _ HasChild = Container{}
 var _ StatelessWidget = DecoratedBox{}
 var _ HasChild = DecoratedBox{}
 var _ StatelessWidget = CustomScrollView{}
@@ -13,13 +11,6 @@ var _ HasChildren = FlexibleSpaceBar{}
 
 // TODO var _ StatefulWidget = &SliverList{}
 var _ HasChildren = &SliverList{}
-
-type Container struct {
-	Child      Widget
-	Padding    EdgeInsets
-	Width      uint16
-	Decoration BoxDecoration
-}
 
 type BoxDecoration struct {
 	Border   Border
@@ -53,7 +44,7 @@ type CustomScrollView struct {
 }
 
 type SliverAppBar struct {
-	ExpandedHeight uint16
+	ExpandedHeight float64
 	Pinned         bool
 	Floating       bool
 	Snap           bool

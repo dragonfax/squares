@@ -26,7 +26,6 @@ func (sb SizedBox) createElement() Element {
 }
 
 type SizedBoxElement struct {
-	widget Widget
 	elementData
 	childElementData
 }
@@ -35,10 +34,21 @@ func (sbe *SizedBoxElement) layout(constraints Constraints) error {
 	widget := sbe.widget.(SizedBox)
 
 	if sbe.child != nil {
-		sbe.child.layout(ConstraintsAbsolute(widget.Size.Width, widget.Size.Height))
+		// "tight" constraints to child,
+		// -1 constraints are honored, though. child adopts parent size
+		c := ConstraintsTight(widget.Size.Width, widget.Size.Height)
+		sbe.child.layout(c)
+		sbe.size = sbe.child.getSize()
+	} else {
+		// no child: use given size but treat -1's as zeros
+		sbe.size = widget.Size
+		if sbe.size.Width == -1 {
+			sbe.size.Width = 0
+		}
+		if sbe.size.Height == -1 {
+			sbe.size.Height = 0
+		}
 	}
-
-	sbe.size = widget.Size
 
 	return nil
 }

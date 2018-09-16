@@ -3,14 +3,6 @@ package squares
 /* Dummy implementation for the widgets, until I get around to building real
  * implementations */
 
-func (d Container) Build(context StatelessContext) (Widget, error) {
-	return d.Child, nil
-}
-
-func (d Container) getChild() Widget {
-	return d.Child
-}
-
 func (d DecoratedBox) Build(context StatelessContext) (Widget, error) {
 	return d.Child, nil
 }
@@ -41,10 +33,6 @@ func (d IconButton) Build(context StatelessContext) (Widget, error) {
 
 func (d IconButton) getChild() Widget {
 	return d.Icon
-}
-
-func (d Image) Build(context StatelessContext) (Widget, error) {
-	return &Text{Text: "Image"}, nil
 }
 
 func (d SnackBar) Build(context StatelessContext) (Widget, error) {
