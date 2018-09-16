@@ -133,7 +133,7 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 						},
 						PopupMenuButton{
 							OnSelected: func(value interface{}) {
-								context.(StatefulContext).SetState(func() {
+								context.SetState(func() {
 									appBarBehavior = value.(AppBarBehavior)
 								})
 							},

@@ -33,7 +33,7 @@ func (bs BuilderState) Build(context squares.StatefulContext) (squares.Widget, e
 
 	return &squares.MouseWheelListener{
 		Callback: func(d squares.MouseWheelDirection) {
-			context.(squares.StatefulContext).SetState(func() {
+			context.SetState(func() {
 				if d == squares.MOUSEWHEEL_UP {
 					bs.firstItem += 1
 				} else if d == squares.MOUSEWHEEL_DOWN && bs.firstItem > 0 {
