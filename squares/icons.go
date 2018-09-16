@@ -1,7 +1,6 @@
 package squares
 
 import (
-	"fmt"
 	"path"
 	"runtime"
 
@@ -18,11 +17,6 @@ func initIcons() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("icon font name: ", iconFont.FaceFamilyName())
-	fmt.Println("is fixed: ", iconFont.FaceIsFixedWidth())
-	fmt.Println("num faces: ", iconFont.Faces())
-	fmt.Println(iconFont.GlyphMetrics('\ue150'))
 }
 
 var _ ElementWidget = &Icon{}
