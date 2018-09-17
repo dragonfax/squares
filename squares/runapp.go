@@ -148,11 +148,20 @@ func RunApp(app Widget) error {
 					break
 				}
 			case *sdl.MouseWheelEvent:
-				if mouseWheelCallback != nil {
+				e := ScrollEvent{}
+				if event.Y != 0 {
 					if event.Y > 0 {
-						mouseWheelCallback(MOUSEWHEEL_UP)
+						e.Direction = Up
+						e.Delta = float64(event.Y)
 					} else if event.Y < 0 {
-						mouseWheelCallback(MOUSEWHEEL_DOWN)
+						e.Direction = Down
+						e.Delta = -float64(event.Y)
+					}
+
+					x, y, _ := sdl.GetMouseState()
+					element := hitTest(windowElement, float64(x), float64(y))
+					if element != nil {
+						bubbleUp(element, e)
 					}
 				}
 			case *sdl.WindowEvent:
@@ -164,6 +173,50 @@ func RunApp(app Widget) error {
 	}
 
 	return nil
+}
+
+func inBounds(offset Offset, size Size, x, y float64) bool {
+	xo := x - offset.x
+	yo := y - offset.y
+	return xo > 0 && yo > 0 && xo < size.Width && yo < size.Height
+}
+
+func hitTest(element Element, x, y float64) Element {
+	offset := element.getOffset()
+
+	if inBounds(offset, element.getSize(), x, y) {
+		for _, child := range getElementChildren(element) {
+			// translate x and y
+			xo := x - offset.x
+			yo := y - offset.y
+
+			r := hitTest(child, xo, yo)
+			if r != nil {
+				// child was in bounds too
+				// child returned deepest hit
+				return r
+			}
+		}
+		// this is widget is the deepest hit
+		return element
+	} else {
+		// not in bounds, skip our whole tree.
+		return nil
+	}
+}
+
+func bubbleUp(element Element, event PointerEvent) {
+	if pel, ok := element.(PointerEventListener); ok {
+		if pel.HandleEvent(event) {
+			// event handled
+			return
+		}
+	}
+
+	parent := element.getParentElement()
+	if parent != nil {
+		bubbleUp(parent, event)
+	}
 }
 
 /* recurse the element tree, rebuilding any subtree that is marked dirty */
