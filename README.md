@@ -45,6 +45,8 @@ Early alpha. Not really usable. You can create an app, it will render and even s
 
 There is a simple version of composition (rendered widget caching) implemented in the form of a CompositionWidget that you can insert anywhere in the widget tree.
 
+There is a scrollable widget, but it only scrolls vertically.
+
 Stateful and Stateless apps work as expected, including using setState to efficiently rebuild the UI.
 
 ## Plans
