@@ -218,22 +218,33 @@ type SliverAppBar struct {
 	FlexibleSpace  FlexibleSpaceBar // Widget
 }
 
+func (d SliverAppBar) Build(context StatelessContext) (Widget, error) {
+	return Stack{
+		Children: []Widget{
+			d.FlexibleSpace,
+			Align{
+				Alignment: AlignmentUpperRight,
+				Child: Row{
+					Children: d.Actions,
+				},
+			},
+		},
+	}, nil
+}
+
 type FlexibleSpaceBar struct {
 	Title      Widget
 	Background Widget
 }
 
-func (d SliverAppBar) Build(context StatelessContext) (Widget, error) {
-	return Column{
+func (d FlexibleSpaceBar) Build(context StatelessContext) (Widget, error) {
+	return Stack{
 		Children: []Widget{
-			Row{
-				Children: d.Actions,
+			d.Background,
+			Align{
+				Alignment: AlignmentBottomLeft,
+				Child:     d.Title,
 			},
-			d.FlexibleSpace,
 		},
 	}, nil
-}
-
-func (d SliverAppBar) getChildren() []Widget {
-	return append(d.Actions, d.FlexibleSpace)
 }

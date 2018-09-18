@@ -18,6 +18,10 @@ type Stack struct {
 	Children []Widget
 }
 
+func (d Stack) getChildren() []Widget {
+	return d.Children
+}
+
 func (s Stack) createElement() Element {
 	se := &StackElement{}
 	se.widget = s
@@ -38,7 +42,7 @@ func (se *StackElement) layout(c Constraints) error {
 			return err
 		}
 		childSize := childElement.getSize()
-		size = se.size.Expand(childSize)
+		size = size.Expand(childSize)
 	}
 	se.size = size
 

@@ -11,22 +11,6 @@ func (d DecoratedBox) getChild() Widget {
 	return d.Child
 }
 
-func (d Stack) Build(context StatelessContext) (Widget, error) {
-	return &Column{Children: d.Children}, nil
-}
-
-func (d Stack) getChildren() []Widget {
-	return d.Children
-}
-
-func (d FlexibleSpaceBar) Build(context StatelessContext) (Widget, error) {
-	return &Column{Children: d.getChildren()}, nil
-}
-
-func (d FlexibleSpaceBar) getChildren() []Widget {
-	return []Widget{d.Title, d.Background}
-}
-
 func (d IconButton) Build(context StatelessContext) (Widget, error) {
 	return d.getChild(), nil
 }

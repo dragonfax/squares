@@ -13,7 +13,7 @@ import (
 	"github.com/veandco/go-sdl2/ttf"
 )
 
-const DEFAULT_WINDOW_WIDTH = 800
+const DEFAULT_WINDOW_WIDTH = 380
 const DEFAULT_WINDOW_HEIGHT = 600
 
 var renderer *sdl.Renderer

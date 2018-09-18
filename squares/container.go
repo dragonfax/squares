@@ -3,9 +3,7 @@ package squares
 var _ StatelessWidget = DecoratedBox{}
 var _ HasChild = DecoratedBox{}
 var _ StatelessWidget = SliverAppBar{}
-var _ HasChildren = SliverAppBar{}
 var _ StatelessWidget = FlexibleSpaceBar{}
-var _ HasChildren = FlexibleSpaceBar{}
 
 type BoxDecoration struct {
 	Border   Border
