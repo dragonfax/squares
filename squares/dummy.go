@@ -43,37 +43,6 @@ func (d SnackBar) getChild() Widget {
 	return d.Content
 }
 
-func (d CustomScrollView) Build(context StatelessContext) (Widget, error) {
-	return &Column{Children: d.getChildren()}, nil
-}
-
-func (d CustomScrollView) getChildren() []Widget {
-	return d.Slivers
-}
-
-func (d SliverAppBar) Build(context StatelessContext) (Widget, error) {
-	return Column{
-		Children: []Widget{
-			Row{
-				Children: d.Actions,
-			},
-			d.FlexibleSpace,
-		},
-	}, nil
-}
-
-func (d SliverAppBar) getChildren() []Widget {
-	return append(d.Actions, d.FlexibleSpace)
-}
-
-func (d SliverList) Build(context StatelessContext) (Widget, error) {
-	return &Column{Children: d.getChildren()}, nil
-}
-
-func (d SliverList) getChildren() []Widget {
-	return d.Delegate.Children
-}
-
 func (d MaterialApp) Build(context StatelessContext) (Widget, error) {
 	return d.getChild(), nil
 }

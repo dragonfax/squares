@@ -206,6 +206,7 @@ func hitTest(element Element, x, y float64) Element {
 }
 
 func bubbleUp(element Element, event PointerEvent) {
+	fmt.Printf("checking %T\n", element)
 	if pel, ok := element.(PointerEventListener); ok {
 		if pel.HandleEvent(event) {
 			// event handled
@@ -302,7 +303,7 @@ func elementFromStatelessWidget(sw StatelessWidget, oldElement Element) (Element
 	if err != nil {
 		return nil, err
 	}
-	element.child = childElement
+	element.setChildElement(element, childElement)
 
 	return element, nil
 }
@@ -316,7 +317,6 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 		element = oldStatefulElement
 		element.updateWidget(widget)
 	} else {
-		println("new element, creating new state")
 		state := widget.CreateState()
 		element = NewStatefulElement(widget, state)
 	}
@@ -336,7 +336,7 @@ func elementFromStatefulWidget(widget StatefulWidget, oldElement Element) (Eleme
 	if err != nil {
 		return nil, err
 	}
-	element.child = childElement
+	element.setChildElement(element, childElement)
 	element.built = true
 	return element, nil
 }

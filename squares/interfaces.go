@@ -13,6 +13,7 @@ type BuildContext interface {
 
 type StatelessContext interface {
 	// not sure what goes here yet.
+	getElement() *StatelessElement
 }
 
 type StatefulContext interface {

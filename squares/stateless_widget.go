@@ -9,6 +9,11 @@ type StatelessElement struct {
 	childElementData
 }
 
+// for the StatelessContext
+func (se *StatelessElement) getElement() *StatelessElement {
+	return se
+}
+
 func NewStatelessElement(widget Widget) *StatelessElement {
 	se := &StatelessElement{}
 	se.widget = widget

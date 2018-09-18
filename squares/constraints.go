@@ -12,6 +12,10 @@ func (o Offset) Add(o2 Offset) Offset {
 	return Offset{x: o.x + o2.x, y: o.y + o2.y}
 }
 
+func (o Offset) Sub(o2 Offset) Offset {
+	return Offset{x: o.x - o2.x, y: o.y - o2.y}
+}
+
 /* a dimension of -1 means "no specification" */
 type Size struct {
 	Width, Height float64

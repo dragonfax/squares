@@ -51,6 +51,9 @@ func (ce childElementData) getChildElement() Element {
 }
 
 func (ce *childElementData) setChildElement(parent Element, child Element) {
+	if child == nil {
+		return
+	}
 	if ce.child != nil {
 		ce.child.setParentElement(nil)
 	}
