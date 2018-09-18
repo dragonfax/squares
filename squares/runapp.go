@@ -54,7 +54,7 @@ func initRender(title string) {
 
 func render(windowElement Element) {
 
-	renderer.SetDrawColor(0, 0, 0, 255)
+	renderer.SetDrawColor(255, 255, 255, 255)
 	renderer.Clear()
 
 	windowElement.render(Offset{0, 0}, renderer)

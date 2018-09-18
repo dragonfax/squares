@@ -29,7 +29,7 @@ func (ce *DividerElement) layout(c Constraints) error {
 
 func (ce *DividerElement) render(offset Offset, renderer *sdl.Renderer) {
 
-	renderer.SetDrawColor(0x80, 0x80, 0x80, 255)
+	renderer.SetDrawColor(200, 200, 200, 255)
 	ux := int32(offset.x)
 	uy := int32(offset.y + ce.size.Height/2)
 	renderer.DrawLine(ux+0, uy, ux+int32(ce.size.Width), uy)

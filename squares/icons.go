@@ -52,7 +52,7 @@ func (ie *IconElement) layout(c Constraints) error {
 func (t *IconElement) render(offset Offset, renderer *sdl.Renderer) {
 	ux := int32(offset.x)
 	uy := int32(offset.y)
-	surface, err := iconFont.RenderUTF8Blended(string(t.widget.(Icon).Icon.CodePoint), sdl.Color{R: 200, G: 200, B: 200, A: 255})
+	surface, err := iconFont.RenderUTF8Blended(string(t.widget.(Icon).Icon.CodePoint), sdl.Color{R: 0, G: 0, B: 0, A: 255})
 	if err != nil {
 		panic(err)
 	}
