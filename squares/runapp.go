@@ -206,7 +206,6 @@ func hitTest(element Element, x, y float64) Element {
 }
 
 func bubbleUp(element Element, event PointerEvent) {
-	fmt.Printf("checking %T\n", element)
 	if pel, ok := element.(PointerEventListener); ok {
 		if pel.HandleEvent(event) {
 			// event handled
