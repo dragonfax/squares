@@ -65,7 +65,7 @@ func (se *CompositeElement) render(o Offset, r *sdl.Renderer) {
 		// render to the texture.
 		prevTarget := r.GetRenderTarget()
 		r.SetRenderTarget(se.renderedTexture)
-		r.SetDrawColor(255, 255, 255, 255)
+		r.SetDrawColor(255, 255, 255, 0)
 		r.Clear()
 		se.child.render(Offset{0, 0}, r)
 		// r.Present()
