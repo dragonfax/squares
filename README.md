@@ -81,4 +81,6 @@ Some widgets take optional Size or Padding arguments for convenience and just cr
   * `go get github.com/veandco/go-sdl2/img`
 
 ## Screenshot
-![Screenshot](Contacts_App.png | width=100)
+progress...
+
+<img src="Contacts_App.png" width="200" >
