@@ -1,8 +1,6 @@
 package squares
 
 import (
-	"math"
-
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -119,7 +117,7 @@ type ViewportElement struct {
 func (ve *ViewportElement) layout(c Constraints) error {
 	// decide viewport size
 	// the viewport itself should fill the parent.
-	ve.size = c.constrain(Size{Width: math.Inf(1), Height: math.Inf(1)})
+	ve.size = c.constrain(Size{Width: Inf, Height: Inf})
 
 	// start with viewport size.
 	// keep width constraints, toss height constraints.
@@ -127,7 +125,7 @@ func (ve *ViewportElement) layout(c Constraints) error {
 		minWidth:  0,
 		maxWidth:  ve.size.Width,
 		minHeight: 0,
-		maxHeight: math.Inf(1),
+		maxHeight: Inf,
 	}
 
 	lastY := 0.0

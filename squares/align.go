@@ -1,8 +1,6 @@
 package squares
 
 import (
-	"math"
-
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -47,11 +45,11 @@ func (ae *AlignElement) layout(c Constraints) error {
 
 	// our size
 	size := Size{Width: -1, Height: -1}
-	if math.IsInf(c.maxHeight, 1) {
+	if c.maxHeight == Inf {
 		// unbound height, use childs
 		size.Height = childSize.Height
 	}
-	if math.IsInf(c.maxWidth, 1) {
+	if c.maxWidth == Inf {
 		size.Width = childSize.Width
 	}
 	ae.size = c.constrain(size)

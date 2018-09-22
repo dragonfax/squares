@@ -5,26 +5,18 @@ package main
 // found in the LICENSE file.
 
 import (
-	"github.com/dragonfax/squares/squares"
+	. "github.com/dragonfax/squares/squares"
 )
 
 func main() {
 
-	/*
-		w, err := os.Create("contacts.trace")
-		if err != nil {
-			panic(err)
-		}
-
-		trace.Start(w)
-		defer trace.Stop()
-	*/
-
-	err := squares.RunApp(&squares.MaterialApp{
-		Title: "Contacts App",
-		Color: squares.ColorsGrey,
-		Child: &ContactsDemo{},
-	})
+	err := RunApp(
+		Center{
+			Child: MaterialApp{
+				Title: "Contacts App",
+				Color: ColorsGrey,
+				Child: ContactsDemo{},
+			}})
 
 	if err != nil {
 		panic(err)

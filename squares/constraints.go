@@ -4,6 +4,8 @@ import (
 	"math"
 )
 
+var Inf float64 = math.MaxFloat64
+
 type Offset struct {
 	x, y float64
 }
@@ -41,11 +43,11 @@ func ConstraintsTight(width, height float64) Constraints {
 	c := Constraints{minWidth: width, maxWidth: width, minHeight: height, maxHeight: height}
 	if width == -1 {
 		c.minWidth = 0
-		c.maxWidth = math.Inf(1)
+		c.maxWidth = Inf
 	}
 	if height == -1 {
 		c.minHeight = 0
-		c.maxHeight = math.Inf(1)
+		c.maxHeight = Inf
 	}
 	return c
 }
@@ -54,8 +56,8 @@ func ConstraintsUnbounded() Constraints {
 	return Constraints{
 		minWidth:  0,
 		minHeight: 0,
-		maxWidth:  math.Inf(1),
-		maxHeight: math.Inf(1),
+		maxWidth:  Inf,
+		maxHeight: Inf,
 	}
 }
 
@@ -102,12 +104,12 @@ func (c Constraints) deflate(in EdgeInsets) Constraints {
 	deflatedMinWidth := math.Max(0.0, c.minWidth-in.horizontal())
 	deflatedMinHeight := math.Max(0.0, c.minHeight-in.vertical())
 	deflatedMaxWidth := math.Max(deflatedMinWidth, c.maxWidth-in.horizontal())
-	if math.IsInf(c.maxWidth, 1) {
-		deflatedMaxWidth = math.Inf(1)
+	if c.maxWidth == Inf {
+		deflatedMaxWidth = Inf
 	}
 	deflatedMaxHeight := math.Max(deflatedMinHeight, c.maxHeight-in.vertical())
-	if math.IsInf(c.maxHeight, 1) {
-		deflatedMaxHeight = math.Inf(1)
+	if c.maxHeight == Inf {
+		deflatedMaxHeight = Inf
 	}
 	return Constraints{
 		minWidth:  deflatedMinWidth,

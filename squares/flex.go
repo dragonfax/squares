@@ -100,7 +100,7 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 	if widget.Direction == Horizontal {
 		maxMainSize = constraints.maxWidth
 	}
-	canFlex := !math.IsInf(maxMainSize, 1)
+	canFlex := maxMainSize != Inf
 
 	crossSize := 0.0
 	allocatedSize := 0.0
@@ -111,14 +111,14 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 		innerConstraints = Constraints{
 			maxHeight: constraints.maxHeight,
 			minHeight: 0,
-			maxWidth:  math.Inf(1),
+			maxWidth:  Inf,
 			minWidth:  0,
 		}
 	case Vertical:
 		innerConstraints = Constraints{
 			maxWidth:  constraints.maxWidth,
 			minWidth:  0,
-			maxHeight: math.Inf(1),
+			maxHeight: Inf,
 			minHeight: 0,
 		}
 	}
@@ -169,7 +169,7 @@ func (ce *FlexElement) layout(constraints Constraints) error {
 
 			if flex > 0 {
 
-				var maxChildExtent = math.Inf(1)
+				var maxChildExtent = Inf
 				if canFlex {
 					if child == lastFlexChild {
 						maxChildExtent = freeSpace - allocatedFlexSpace
