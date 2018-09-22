@@ -1,21 +1,21 @@
 package listview
 
 import (
-	"github.com/dragonfax/squares/squares"
+	. "github.com/dragonfax/squares/squares"
 )
 
-var _ squares.StatefulWidget = Builder{}
-var _ squares.State = &BuilderState{}
-var _ squares.StatelessWidget = ListTile{}
+var _ StatefulWidget = Builder{}
+var _ State = &BuilderState{}
+var _ StatelessWidget = ListTile{}
 
-type ItemBuilderFunc func(int) squares.Widget
+type ItemBuilderFunc func(int) Widget
 
 type Builder struct {
-	Padding     squares.EdgeInsets
+	Padding     EdgeInsets
 	ItemBuilder ItemBuilderFunc
 }
 
-func (b Builder) CreateState() squares.State {
+func (b Builder) CreateState() State {
 	return &BuilderState{}
 }
 
@@ -23,32 +23,37 @@ type BuilderState struct {
 	firstItem int
 }
 
-func (bs BuilderState) Build(context squares.StatefulContext) (squares.Widget, error) {
+func (bs BuilderState) Build(context StatefulContext) (Widget, error) {
 	widget := context.GetWidget().(Builder)
-	children := make([]squares.Widget, 10)
+	children := make([]Widget, 10)
 	for i := 0; i < 10; i++ {
 		child := widget.ItemBuilder(bs.firstItem + i)
-		children[i] = &squares.Padding{Padding: widget.Padding, Child: child}
+		children[i] = &Padding{Padding: widget.Padding, Child: child}
 	}
 
-	return &squares.MouseWheelListener{
-		Callback: func(d squares.MouseWheelDirection) {
+	return Listener{
+		OnMouseWheelDown: func(d PointerEvent) bool {
 			context.SetState(func() {
-				if d == squares.MOUSEWHEEL_UP {
-					bs.firstItem += 1
-				} else if d == squares.MOUSEWHEEL_DOWN && bs.firstItem > 0 {
+				if bs.firstItem > 0 {
 					bs.firstItem -= 1
 				}
 			})
+			return true
 		},
-		Child: &squares.Column{Children: children},
+		OnMouseWheelUp: func(d PointerEvent) bool {
+			context.SetState(func() {
+				bs.firstItem += 1
+			})
+			return true
+		},
+		Child: &Column{Children: children},
 	}, nil
 }
 
 type ListTile struct {
-	Title squares.Widget
+	Title Widget
 }
 
-func (w ListTile) Build(context squares.StatelessContext) (squares.Widget, error) {
+func (w ListTile) Build(context StatelessContext) (Widget, error) {
 	return w.Title, nil
 }
