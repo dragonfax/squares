@@ -37,7 +37,7 @@ type AlignElement struct {
 	childElementData
 }
 
-func (ae *AlignElement) layout(c Constraints) error {
+func (ae *AlignElement) layout(c Size) error {
 
 	// child size
 	ae.child.layout(c)

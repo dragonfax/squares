@@ -29,13 +29,13 @@ func (cc ContactCategory) Build(context StatelessContext) (Widget, error) {
 				CrossAxisAlignment: CrossAxisAlignmentStart,
 				Children: []Widget{
 					SizedBox{
-						Size: Size{Width: 72.0, Height: -1},
+						Size: Size{Width: 72.0, Height: Inf},
 						Child: Padding{
 							Padding: EdgeInsetsSymmetric(24, 0),
 							Child:   Icon{Icon: *cc.Icon},
 						},
 					},
-					Expanded{Child: Column{Children: cc.Children}},
+					Column{Children: cc.Children},
 				},
 			},
 		},
@@ -56,7 +56,7 @@ func (ci ContactItem) Build(context StatelessContext) (Widget, error) {
 	for _, line := range ci.Lines[0 : len(ci.Lines)-1] {
 		columnChildren = append(columnChildren, Text{Text: line})
 	}
-	columnChildren = append(columnChildren, Text{Text: ci.Lines[len(ci.Lines)-1]})
+	columnChildren = append(columnChildren, SizedBox{Size: Size{200, Inf}, Child: Text{Text: ci.Lines[len(ci.Lines)-1]}})
 
 	rowChildren := []Widget{
 		Expanded{
@@ -71,7 +71,7 @@ func (ci ContactItem) Build(context StatelessContext) (Widget, error) {
 		rowChildren = append(rowChildren, SizedBox{
 			Size: Size{
 				Width:  72.0,
-				Height: -1,
+				Height: Inf,
 			},
 			Child: IconButton{
 				Icon:      Icon{Icon: *ci.Icon},
@@ -172,10 +172,12 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 							Fit: StackFitExpand,
 							Children: []Widget{
 								SizedBox{
-									Size: Size{Height: cds.appBarHeight, Width: -1},
-									Child: Image{
-										File: assetPath + "people/ali_landscape.png",
-										Fit:  BoxFitCover,
+									Size: Size{Height: cds.appBarHeight, Width: Inf},
+									Child: FittedBox{
+										Fit: BoxFitCover,
+										Child: Image{
+											File: assetPath + "people/ali_landscape.png",
+										},
 									},
 								},
 								// This gradient ensures that the toolbar icons are distinct
@@ -183,9 +185,9 @@ func (cds *ContactsDemoState) Build(context StatefulContext) (Widget, error) {
 								DecoratedBox{
 									Decoration: BoxDecoration{
 										Gradient: LinearGradient{
-											Begin:  Alignment{0.0, -1.0},
-											End:    Alignment{0.0, -0.4},
-											Colors: []Color{Color{0x60000000}, Color{0x00000000}},
+											Begin:  AlignmentTopCenter,
+											End:    AlignmentCenter,
+											Colors: []Color{ColorsRed, ColorsWhite},
 										},
 									},
 								},
